@@ -151,5 +151,5 @@ jobs:
               --title "$TITLE" \
               --body "Автоматическая синхронизация против upstream openchamber ${TAG} упала. Структура чанков изменилась или сборка не удалась.
 
-Лог: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          Лог: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           fi
