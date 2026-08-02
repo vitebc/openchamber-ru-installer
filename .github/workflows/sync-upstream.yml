@@ -64,11 +64,12 @@ jobs:
           ref: ${{ steps.upstream.outputs.tag }}
           path: upstream
 
-      - name: Copy ru sources into upstream build
+      - name: Copy ru sources and patch upstream for ru
         if: steps.upstream.outputs.skip != '1'
         run: |
           cp i18n/messages/ru.ts upstream/packages/ui/src/lib/i18n/messages/ru.ts
           cp i18n/messages/ru.settings.ts upstream/packages/ui/src/lib/i18n/messages/ru.settings.ts
+          node scripts/patch-upstream-sources.mjs "$PWD/upstream"
 
       - name: Install upstream dependencies
         if: steps.upstream.outputs.skip != '1'
