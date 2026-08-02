@@ -98,3 +98,12 @@ Workflow `.github/workflows/sync-upstream.yml` следит за релизам�
 - `patch/openchamber-ru-patch.mjs` — основной патчер (кроссплатформенный, Node.js)
 - `patch/ru-ruinstaller.js` — пресобранный русский словарь
 - `i18n/messages/ru.ts`, `ru.settings.ts` — исходники перевода (для регенерации)
+
+## Лицензия
+
+Распространяется под лицензией [MIT](LICENSE). Copyright © 2026 vitebc.
+
+Переводы (`i18n/messages/`, `patch/ru-ruinstaller.js`) являются производными от строк интерфейса
+[OpenChamber](https://github.com/openchamber/openchamber), который распространяется под лицензией
+MIT — распространение в рамках MIT допустимо при сохранении оригинального уведомления об авторстве
+и текста лицензии.
