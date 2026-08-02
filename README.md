@@ -12,33 +12,48 @@
 
 ## Установка (Windows)
 
-1. Скачай/клонируй этот репозиторий.
-2. Закрой OpenChamber полностью (трей → Quit).
-3. Запусти `install-desktop-ru.cmd` (или `install-desktop-ru.ps1`).
-   - Путь к установке ищется автоматически (`%LOCALAPPDATA%\Programs\@openchamberelectron\resources\web-dist\assets`).
-   - Если не нашлось — передай путь аргументом:
-     ```
-     install-desktop-ru.cmd "C:\Users\Имя\AppData\Local\Programs\@openchamberelectron\resources\web-dist\assets"
-     ```
-4. Запусти OpenChamber, открой **Settings → Appearance → Language → Russian**.
+Одной командой (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.ps1 | iex
+```
+
+Если установка не найдена автоматически:
+
+```powershell
+$env:OC_ASSETS = "C:\Users\Имя\AppData\Local\Programs\@openchamberelectron\resources\web-dist\assets"; irm https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.ps1 | iex
+```
+
+Или вручную: закрой OpenChamber полностью (трей → Quit), запусти `install-desktop-ru.cmd` (или `.ps1`), передав путь, если автообнаружение не сработало.
 
 ## Установка (Linux, AppImage)
 
-```
-./install-desktop-ru.sh ./OpenChamber-1.17.1-linux-x86_64.AppImage
+Одной командой (AppImage как аргумент):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash -s -- ./OpenChamber-1.17.2-linux-x86_64.AppImage
 ```
 
-Скрипт распакует AppImage, пропатчит `resources/web-dist/assets`, пересоберёт новый AppImage (нужны `curl` + `appimagetool`, скачивается автоматически). Готовый файл будет в `/tmp/.../OpenChamber-ru.AppImage`.
+Без аргумента скрипт попытается найти установку сам (`~/.local/share`, `~/Applications`, `/opt` и т.д.):
 
-Если AppImage уже распакован (`--appimage-extract`), можно патчить каталог напрямую:
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash
+```
 
-```
-./install-desktop-ru.sh /путь/к/squashfs-root/resources/web-dist/assets
-```
+Для AppImage нужны `curl` + `appimagetool` (скачивается автоматически). Результат — новый AppImage в `/tmp/.../OpenChamber-ru.AppImage`. Если AppImage уже распакован — можно патчить каталог напрямую (`install.sh /путь/к/assets`).
 
 ## Удаление
 
-Запусти `uninstall-desktop-ru.cmd` / `uninstall-desktop-ru.ps1` / `uninstall-desktop-ru.sh <assets>` — оригинальные файлы восстановятся из резервных копий (`.bak`), `ru-ruinstaller.js` удалится.
+Одной командой:
+
+```bash
+# Linux
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash -s -- --uninstall
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.ps1 | iex -ArgumentList --uninstall
+```
+
+Либо `uninstall-desktop-ru.cmd` / `.ps1` / `.sh <assets>` — оригинальные файлы восстановятся из резервных копий (`.bak`), `ru-ruinstaller.js` удалится.
 
 ## Что делает патчер
 
