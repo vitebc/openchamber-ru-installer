@@ -1,0 +1,155 @@
+name: sync-upstream
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: '1.3.14'
+
+      - name: Resolve latest upstream release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="$(gh release list --repo openchamber/openchamber --limit 1 \
+            --exclude-drafts --exclude-pre-releases \
+            --json tagName --jq '.[0].tagName' || true)"
+          echo "upstream tag: ${TAG}"
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "reason=no upstream release"
+            exit 0
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          OUR_TAG="openchamber-$TAG"
+          echo "our-tag=$OUR_TAG" >> "$GITHUB_OUTPUT"
+          if gh release view "$OUR_TAG" --repo "$GITHUB_REPOSITORY" --json tagName --jq '.tagName' >/dev/null 2>&1; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "reason=release ${OUR_TAG} already exists"
+          else
+            echo "skip=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if nothing to do
+        if: steps.upstream.outputs.skip == '1'
+        run: |
+          echo "skip: ${{ steps.upstream.outputs.reason }}"
+
+      - name: Checkout upstream at tag
+        if: steps.upstream.outputs.skip != '1'
+        uses: actions/checkout@v4
+        with:
+          repository: openchamber/openchamber
+          ref: ${{ steps.upstream.outputs.tag }}
+          path: upstream
+
+      - name: Copy ru sources into upstream build
+        if: steps.upstream.outputs.skip != '1'
+        run: |
+          cp i18n/messages/ru.ts upstream/packages/ui/src/lib/i18n/messages/ru.ts
+          cp i18n/messages/ru.settings.ts upstream/packages/ui/src/lib/i18n/messages/ru.settings.ts
+
+      - name: Install upstream dependencies
+        if: steps.upstream.outputs.skip != '1'
+        working-directory: upstream
+        run: bun install --frozen-lockfile
+
+      - name: Build upstream web bundle
+        if: steps.upstream.outputs.skip != '1'
+        working-directory: upstream
+        run: bun run build:web
+
+      - name: Extract and update bundled ru chunk
+        if: steps.upstream.outputs.skip != '1'
+        run: |
+          RU="$(ls upstream/packages/web/dist/assets/ru-*.js | head -1)"
+          if [ -z "$RU" ] || [ ! -f "$RU" ]; then
+            echo "ru chunk not found in upstream build" >&2
+            exit 1
+          fi
+          cp "$RU" patch/ru-ruinstaller.js
+          echo "ru chunk: $RU ($(wc -c < patch/ru-ruinstaller.js) bytes)"
+
+      - name: Smoke-test the patcher
+        if: steps.upstream.outputs.skip != '1'
+        run: |
+          node scripts/simulate-official.mjs \
+            "$PWD/upstream/packages/web/dist/assets" \
+            "$PWD/scripts/.simulate-official"
+          node patch/openchamber-ru-patch.mjs install "$PWD/scripts/.simulate-official/assets"
+          node scripts/verify-patched.mjs "$PWD/scripts/.simulate-official/assets"
+
+      - name: Commit and push bundled ru chunk
+        if: steps.upstream.outputs.skip != '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add patch/ru-ruinstaller.js
+          if git diff --cached --quiet; then
+            echo "no change to ru-ruinstaller.js"
+          else
+            git commit -m "chore: sync ru chunk for openchamber ${{ steps.upstream.outputs.tag }}"
+            git push
+          fi
+
+      - name: Create GitHub release
+        if: steps.upstream.outputs.skip != '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.upstream.outputs.tag }}"
+          OUR_TAG="${{ steps.upstream.outputs.our-tag }}"
+          SIZE="$(wc -c < patch/ru-ruinstaller.js)"
+          BODY="Автоматическая синхронизация с upstream openchamber ${TAG}.
+
+          - Словарь: patch/ru-ruinstaller.js (${SIZE} байт)
+          - Установка: скачайте архив релиза, запустите install-desktop-ru.cmd (Windows) или install-desktop-ru.sh (Linux/AppImage).
+          - Подробности: https://github.com/${GITHUB_REPOSITORY}#readme"
+          gh release create "$OUR_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "OpenChamber ${TAG} — RU installer" \
+            --notes "$BODY" \
+            install-desktop-ru.cmd uninstall-desktop-ru.cmd \
+            install-desktop-ru.ps1 uninstall-desktop-ru.ps1 \
+            install-desktop-ru.sh uninstall-desktop-ru.sh \
+            patch/openchamber-ru-patch.mjs \
+            patch/ru-ruinstaller.js
+
+      - name: Open issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.upstream.outputs.tag }}"
+          TITLE="OpenChamber ${TAG:-release} — RU installer sync failed"
+          if gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+              --search "in:title \"$TITLE\"" --json number --jq 'length' | grep -q '^[1-9]'; then
+            echo "issue already open"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --body "Автоматическая синхронизация против upstream openchamber ${TAG} упала. Структура чанков изменилась или сборка не удалась.
+
+Лог: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          fi
