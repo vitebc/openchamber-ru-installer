@@ -31,8 +31,17 @@ function Find-Assets {
   param([string]$Hint)
   if ($Hint) { return $Hint }
   $paths = @(
-    "$env:LOCALAPPDATA\Programs\@openchamberelectron\resources\web-dist\assets"
+    "$env:LOCALAPPDATA\Programs\@openchamberelectron\resources\web-dist\assets",
+    "$env:APPDATA\npm\node_modules\@openchamber\web\dist\assets",
+    "$env:APPDATA\npm\node_modules\openchamber\dist\assets",
+    "$PWD\node_modules\@openchamber\web\dist\assets",
+    "$PWD\node_modules\openchamber\dist\assets"
   )
+  $npmRoot = & npm root -g 2>$null
+  if ($npmRoot) {
+    $paths += "$npmRoot\@openchamber\web\dist\assets"
+    $paths += "$npmRoot\openchamber\dist\assets"
+  }
   $reg = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
     Where-Object { $_.DisplayName -like '*OpenChamber*' }
   foreach ($r in $reg) {
@@ -41,7 +50,9 @@ function Find-Assets {
     }
   }
   foreach ($p in $paths) {
-    if (Test-Path $p) { return $p }
+    if ((Test-Path $p) -and (Get-ChildItem "$p\useAppFontEffects-*.js" -ErrorAction SilentlyContinue)) {
+      return $p
+    }
   }
   return $null
 }

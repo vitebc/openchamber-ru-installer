@@ -42,6 +42,27 @@ curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/mai
 
 Для AppImage нужны `curl` + `appimagetool` (скачивается автоматически). Результат — новый AppImage в `/tmp/.../OpenChamber-ru.AppImage`. Если AppImage уже распакован — можно патчить каталог напрямую (`install.sh /путь/к/assets`).
 
+## Установка (Web / CLI)
+
+Веб-версия (`openchamber serve`, установленная через npm или bun) тоже поддерживается — её статика лежит в `<пакет>/dist/assets/`, а не в `resources/web-dist/assets/`.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash
+```
+
+Скрипт сам найдёт установку по путям:
+- npm global: `$(npm root -g)/@openchamber/web/dist/assets/`
+- bun global: `~/.bun/install/global/node_modules/@openchamber/web/dist/assets/`
+- локально: `./node_modules/@openchamber/web/dist/assets/`
+
+Если не нашлось — передай путь явно:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash -s -- "$(npm root -g)/@openchamber/web/dist/assets"
+```
+
+После патча перезапусти веб-сервер (`openchamber serve`), чтобы изменения подхватились.
+
 ## Удаление
 
 Одной командой:

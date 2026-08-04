@@ -38,13 +38,42 @@ download_patcher() {
   curl -fsSL "$BASE/patch/ru-ruinstaller.js" -o "$tmp/ru-ruinstaller.js" || die "failed to download Russian dictionary"
 }
 
+is_assets() {
+  local d="$1"
+  [ -d "$d" ] && ls "$d"/useAppFontEffects-*.js >/dev/null 2>&1
+}
+
 detect_assets() {
-  local root
-  for root in "$HOME/.local/share" "$HOME/.local/bin" "$HOME/Applications" "$HOME/bin" /opt /usr/local; do
-    local hit
-    hit="$(find "$root" -maxdepth 4 -type d -path '*resources/web-dist/assets' 2>/dev/null | head -1)"
-    if [ -n "$hit" ]; then
-      echo "$hit"
+  local cand root
+  # Статические пути веб/CLI-установок (npm/bun глобальные, локальные node_modules).
+  for cand in \
+    "${HOME}/.bun/install/global/node_modules/@openchamber/web/dist/assets" \
+    "${HOME}/.bun/install/global/node_modules/openchamber/dist/assets" \
+    "/usr/local/lib/node_modules/@openchamber/web/dist/assets" \
+    "/usr/lib/node_modules/@openchamber/web/dist/assets" \
+    "/usr/local/lib/node_modules/openchamber/dist/assets" \
+    "/usr/lib/node_modules/openchamber/dist/assets" \
+    "${PWD}/node_modules/@openchamber/web/dist/assets" \
+    "${PWD}/node_modules/openchamber/dist/assets"; do
+    if is_assets "$cand"; then
+      echo "$cand"
+      return 0
+    fi
+  done
+  # npm root -g fallback
+  if command -v npm >/dev/null 2>&1; then
+    cand="$(npm root -g 2>/dev/null)/@openchamber/web/dist/assets"
+    if is_assets "$cand"; then echo "$cand"; return 0; fi
+    cand="$(npm root -g 2>/dev/null)/openchamber/dist/assets"
+    if is_assets "$cand"; then echo "$cand"; return 0; fi
+  fi
+  # Поиск по распространённым корням: Electron (resources/web-dist) и web (dist).
+  for root in "$HOME/.bun" "$HOME/.local" "$HOME/Applications" "$HOME/bin" /opt /usr /usr/local; do
+    cand="$(find "$root" -maxdepth 6 -type d \
+      \( -path '*resources/web-dist/assets' -o -path '*/@openchamber/web/dist/assets' -o -path '*/openchamber/dist/assets' \) \
+      2>/dev/null | head -1)"
+    if [ -n "$cand" ]; then
+      echo "$cand"
       return 0
     fi
   done
