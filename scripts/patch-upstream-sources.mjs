@@ -49,26 +49,23 @@ function replaceIfMissing(src, marker, replacement, desc, onFail) {
 
 // ---- runtime.ts ----
 patchFile('runtime.ts', (src, onFail) => {
+  // Resilient markers: ru is always appended after the last locale ('ja'),
+  // regardless of how upstream orders or extends the locale list.
+  src = replaceIfMissing(src, "'ja';", "'ja' | 'ru';", 'Locale union', onFail);
   src = replaceIfMissing(
     src,
-    "export type Locale = 'en' | 'fr' | 'zh-CN' | 'zh-TW' | 'uk' | 'es' | 'pt-BR' | 'ko' | 'pl' | 'ja';",
-    "export type Locale = 'en' | 'fr' | 'zh-CN' | 'zh-TW' | 'uk' | 'es' | 'pt-BR' | 'ko' | 'pl' | 'ja' | 'ru';",
-    'Locale union',
-    onFail,
-  );
-  src = replaceIfMissing(
-    src,
-    "['en', 'fr', 'zh-CN', 'zh-TW', 'uk', 'es', 'pt-BR', 'ko', 'pl', 'ja']",
-    "['en', 'fr', 'zh-CN', 'zh-TW', 'uk', 'es', 'pt-BR', 'ko', 'pl', 'ja', 'ru']",
+    "'ja'] as const",
+    "'ja', 'ru'] as const",
     'LOCALES array',
     onFail,
   );
-  const labelUnion = "Record<Locale, 'common.language.english' | 'common.language.french' | 'common.language.simplifiedChinese' | 'common.language.traditionalChinese' | 'common.language.ukrainian' | 'common.language.spanish' | 'common.language.brazilianPortuguese' | 'common.language.korean' | 'common.language.polish' | 'common.language.japanese'>";
-  const labelUnionRu = labelUnion.replace(
-    "| 'common.language.japanese'>",
-    "| 'common.language.japanese' | 'common.language.russian'>",
+  src = replaceIfMissing(
+    src,
+    "'common.language.japanese'>",
+    "'common.language.japanese' | 'common.language.russian'>",
+    'LOCALE_LABEL_KEYS type union',
+    onFail,
   );
-  src = replaceIfMissing(src, labelUnion, labelUnionRu, 'LOCALE_LABEL_KEYS type union', onFail);
   src = replaceIfMissing(
     src,
     "  ja: 'common.language.japanese',\n};",
@@ -84,9 +81,17 @@ patchFile('runtime.ts', (src, onFail) => {
 
 // ---- store.ts (dictionary loader chain) ----
 patchFile('store.ts', (src, onFail) => {
-  const marker = "                : locale === 'ja'\n                  ? await import('./messages/ja') as { dict: I18nDictionary }\n                  : { dict: enDict };";
-  const replacement = "                : locale === 'ja'\n                  ? await import('./messages/ja') as { dict: I18nDictionary }\n                  : locale === 'ru'\n                    ? await import('./messages/ru') as { dict: I18nDictionary }\n                    : { dict: enDict };";
-  return replaceIfMissing(src, marker, replacement, 'loadDictionary ru branch', onFail);
+  if (src.includes("locale === 'ru'")) return src;
+  const re =
+    /(\s*: locale === 'ja'\s*\n\s*\? await import\('\.\/messages\/ja'\) as \{ dict: I18nDictionary \}\s*\n)(\s*): \{ dict: enDict \};/;
+  const m = src.match(re);
+  if (!m) onFail('store.ts: loadDictionary ja branch not found');
+  const indent = m[2];
+  const ruBranch =
+    `${indent}: locale === 'ru'\n` +
+    `${indent}  ? await import('./messages/ru') as { dict: I18nDictionary }\n` +
+    `${indent}: { dict: enDict };`;
+  return src.replace(re, `$1${ruBranch}`);
 }, 'store.ts');
 
 // ---- intl.ts ----
