@@ -61,7 +61,7 @@ if (!ruSrc.includes('common.language.russian":"Русский')) {
 }
 console.log(`[verify] ok: ru-ruinstaller.js (${ruSrc.length} chars)`);
 
-const localeRe = /^(en|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
+const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
 let locales = 0;
 for (const f of fs.readdirSync(dir)) {
   if (!localeRe.test(f)) continue;

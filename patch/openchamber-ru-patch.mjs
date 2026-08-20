@@ -27,6 +27,7 @@ const RUSSIAN_LABEL_KEY = 'common.language.russian';
 // Native name of "Russian" as shown inside each locale's language picker.
 const RUSSIAN_PER_LOCALE = {
   en: 'Russian',
+  de: 'Russisch',
   es: 'Ruso',
   fr: 'Russe',
   ja: 'ロシア語',
@@ -116,13 +117,14 @@ function patchRuntime(runtimePath, ruChunkName) {
   }
 
   // 4. Dictionary loader chain: add the ru dynamic import after the ja branch.
+  // The second import() argument may be `[]` or vite's `__vite__mapDeps([...])`.
   const loaderRe =
-    /(\w+)==="ja"\?await (\w+)\(\(\)=>import\("\.\/ja-([^"]+)"\),\[\]\):(\{dict:[\w$]+\})/;
+    /(\w+)==="ja"\?await (\w+)\(\(\)=>import\("\.\/ja-([^"]+)"\),((?:__vite__mapDeps\(\[[0-9,]*\]\)|\[\]))\):(\{dict:[\w$]+\})/;
   const loaderM = src.match(loaderRe);
   if (!loaderM) throw new Error(`${name}: dictionary loader marker not found`);
   const loaderAfter =
-    `${loaderM[1]}==="ja"?await ${loaderM[2]}(()=>import("./${loaderM[3]}"),[]):` +
-    `${loaderM[1]}==="ru"?await ${loaderM[2]}(()=>import("./${ruChunkName}"),[]):${loaderM[4]}`;
+    `${loaderM[1]}==="ja"?await ${loaderM[2]}(()=>import("./${loaderM[3]}"),${loaderM[4]}):` +
+    `${loaderM[1]}==="ru"?await ${loaderM[2]}(()=>import("./${ruChunkName}"),[]):${loaderM[5]}`;
   if (!src.includes(loaderAfter)) {
     src = src.replace(loaderRe, loaderAfter);
     log(`${name}: patched dictionary loader`);
@@ -134,7 +136,7 @@ function patchRuntime(runtimePath, ruChunkName) {
 }
 
 function patchLocales(assetsDir) {
-  const localeRe = /^(en|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
+  const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
   const names = fs.readdirSync(assetsDir).filter((n) => localeRe.test(n));
   for (const name of names) {
     const locale = name.replace(/^([a-z]{2}(-[A-Z]{2})?)-.*\.js$/, '$1');
