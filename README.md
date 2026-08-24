@@ -42,6 +42,22 @@ curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/mai
 
 Для AppImage нужны `curl` + `appimagetool` (скачивается автоматически). Результат — новый AppImage в `/tmp/.../OpenChamber-ru.AppImage`. Если AppImage уже распакован — можно патчить каталог напрямую (`install.sh /путь/к/assets`).
 
+## Установка (macOS, DMG/.app)
+
+macOS-версия распространяется как DMG с `.app` бандлом. Одной командой:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install-macos.sh | bash
+```
+
+Если OpenChamber установлен нестандартно — передайте путь к `.app`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install-macos.sh | bash -s -- /Applications/OpenChamber.app
+```
+
+После патча перезапустите OpenChamber, затем **Settings → Appearance → Language → Russian**.
+
 ## Установка (Web / CLI)
 
 Веб-версия (`openchamber serve`, установленная через npm или bun) тоже поддерживается — её статика лежит в `<пакет>/dist/assets/`, а не в `resources/web-dist/assets/`.
@@ -70,6 +86,10 @@ curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/mai
 ```bash
 # Linux
 curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.sh | bash -s -- --uninstall
+
+# macOS
+curl -fsSL https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install-macos.sh | bash -s -- --uninstall
+
 # Windows (PowerShell)
 irm https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.ps1 | iex -ArgumentList --uninstall
 ```
