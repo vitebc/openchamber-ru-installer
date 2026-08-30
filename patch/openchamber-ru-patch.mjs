@@ -103,38 +103,20 @@ function patchRuntime(runtimePath, ruChunkName) {
     log(`${name}: LOCALE_LABEL_KEYS already patched`);
   }
 
-  // 3. normalizeLocale: add the ru / ru-* branch as the last check before the default (generic: before I2}).
+  // 3. normalizeLocale: add the ru / ru-* branch as the last check before the default.
   if (!src.includes('startsWith("ru-")')) {
-    // Dist normalize: ...? "pl":<fallback>  where fallback is Stainless? In minified it's e.startsWith("pl-")?"pl":I2}
-    // Insert ru branch before the final fallback I2} that returns DEFAULT_LOCALE.
-    // Robust: find the `?"pl":` branch's fallback and insert ru before it, or just the final I2 if pl is last.
-    // Generic fallback: the function ends with `?"pl":X} where X is I2 or another branch. Insert ru before the final }.
-    // Simplest: replace the trailing `I2}` that is the fallback of sL() with ru branch + fallback.
-    // Dist sL ends with `?"pl":I2}` (or now with tr). Detect the last `?"pl":`? Better target fallback I2 directly.
-    // Find the runtime's sL fallback: look for `return DEFAULT_LOCALE` equivalent minified as `I2}` preceded by locale checks.
-    // Workaround: insert ru check right before the final `I2}` that follows the last locale check (pl or tr).
-    // Use a regex that captures the last locale branch's result variable and replaces `I2}` with ru branch.
-    const normFallbackRe = /(\?"pl":[^\}]*?)(\b\w+\})/;
-    // Fallback to simple: if the above fails, look for the generic I2 fallback before `}function oL`
-    let replaced = false;
-    // Try locale-specific: find `?"pl":<X>}` and inject
-    if (/e\.startsWith\("pl-"\)\?"pl":\w+\}/.test(src)) {
-      src = src.replace(/e\.startsWith\("pl-"\)\?"pl":(\w+)\}/, (all, fallback) => `e.startsWith("pl-")?"pl":e==="ru"||e.startsWith("ru-")?"ru":${fallback}}`);
-      replaced = true;
-    }
-    if (!replaced) {
-      // Generic last-resort: insert ru branch right before the `}function oL` that ends sL
-      // Find `return DEFAULT` equivalent: `I2}function oL` in dist.
-      src = src.replace(/(\w+)\}function oL\(/, (all, fallback) => {
-        // fallback is I2 (e.g. "I2}function oL" -> fallback = "I2")
-        // But we need arg name (e). Peek arg from function signature `function sL(e){`
-        const argM = src.match(/function sL\((\w+)\)/);
-        const arg = argM ? argM[1] : 'e';
-        // Avoid double-insert
-        if (src.includes('startsWith("ru-")')) return all;
-        return `${arg}==="ru"||${arg}.startsWith("ru-")?"ru":${fallback}}function oL(`;
-      });
-    }
+    const argM = src.match(/function sL\((\w+)\)/);
+    const arg = argM ? argM[1] : 'e';
+    const sLIdx = src.indexOf('function sL(');
+    if (sLIdx === -1) throw new Error(`${name}: function sL not found`);
+    const afterSL = src.slice(sLIdx);
+    const fbM = afterSL.match(/(\w+)\}function \w+\(/);
+    if (!fbM) throw new Error(`${name}: normalizeLocale fallback not found`);
+    // fbM[1] is like "I2" or "E2" — the fallback var. Extract last word chars.
+    const fallbackVar = fbM[1].match(/(\w+)$/) ? fbM[1].match(/(\w+)$/)[1] : fbM[1];
+    const needle = `${fallbackVar}}function`;
+    if (!src.includes(needle)) throw new Error(`${name}: normalizeLocale needle not found`);
+    src = src.replace(needle, `${arg}==="ru"||${arg}.startsWith("ru-")?"ru":${fallbackVar}}function`);
     if (!src.includes('startsWith("ru-")')) throw new Error(`${name}: normalizeLocale marker not found after attempted fix`);
     log(`${name}: patched normalizeLocale`);
   } else {
