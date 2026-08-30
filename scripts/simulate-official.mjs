@@ -81,7 +81,7 @@ src = src.replace(loaderRe, '');
 fs.writeFileSync(mainPath, src);
 
 // 3. Strip common.language.russian from every locale dictionary chunk.
-const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
+const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
 let strippedLocales = 0;
 for (const f of fs.readdirSync(DST)) {
   if (!localeRe.test(f)) continue;

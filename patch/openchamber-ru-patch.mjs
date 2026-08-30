@@ -34,6 +34,7 @@ const RUSSIAN_PER_LOCALE = {
   ko: '러시아어',
   pl: 'Rosyjski',
   'pt-BR': 'Russo',
+  tr: 'Rusça',
   uk: 'Російська',
   'zh-CN': '俄语',
   'zh-TW': '俄語',
@@ -80,53 +81,82 @@ function patchRuntime(runtimePath, ruChunkName) {
   const name = path.basename(runtimePath);
   let src = fs.readFileSync(runtimePath, 'utf8');
 
-  // 1. LOCALES array: add 'ru'.
-  const localesMark = '"pl","ja"]';
-  const localesAfter = '"pl","ja","ru"]';
-  if (!src.includes(localesMark)) throw new Error(`${name}: LOCALES marker not found`);
-  if (!src.includes(localesAfter)) {
-    src = src.replace(localesMark, localesAfter);
+  // 1. LOCALES array: add 'ru' (generic — works no matter which locale is currently last).
+  if (!src.includes('"ru"]')) {
+    // tL=["en","de","fr","zh-CN","zh-TW","uk","es","pt-BR","ko","pl","ja","tr"],I2="en",nL={
+    const m = src.match(/(\["en"[^\]]*?)(\],\w+="en",nL=)/);
+    if (!m) throw new Error(`${name}: LOCALES array not found`);
+    src = src.replace(m[0], `${m[1]},"ru"${m[2]}`);
     log(`${name}: patched LOCALES`);
   } else {
     log(`${name}: LOCALES already patched`);
   }
 
-  // 2. LOCALE_LABEL_KEYS: add ru -> common.language.russian.
-  const labelMark = 'ja:"common.language.japanese"}';
-  if (!src.includes(labelMark)) throw new Error(`${name}: LOCALE_LABEL_KEYS marker not found`);
-  const labelAfter = `ja:"common.language.japanese",ru:"${RUSSIAN_LABEL_KEY}"}`;
-  if (!src.includes(labelAfter)) {
-    src = src.replace(labelMark, labelAfter);
+  // 2. LOCALE_LABEL_KEYS: add ru -> common.language.russian (generic: last entry before } of the nL object).
+  if (!src.includes(`ru:"${RUSSIAN_LABEL_KEY}"`)) {
+    // Find the nL object by its unique content (en -> common.language.english).
+    const nLRe = /(\{en:"common\.language\.english"[^}]*?)(\})/;
+    const m = src.match(nLRe);
+    if (!m) throw new Error(`${name}: LOCALE_LABEL_KEYS (nL) marker not found`);
+    src = src.replace(nLRe, (all, head, tail) => `${head},ru:"${RUSSIAN_LABEL_KEY}"${tail}`);
     log(`${name}: patched LOCALE_LABEL_KEYS`);
   } else {
     log(`${name}: LOCALE_LABEL_KEYS already patched`);
   }
 
-  // 3. normalizeLocale: add the ru / ru-* branch.
-  const normRe = /(\w+)\.startsWith\("pl-"\)\?"pl":(\w+)\}/;
-  const normM = src.match(normRe);
-  if (!normM) throw new Error(`${name}: normalizeLocale marker not found`);
-  const normAfter =
-    `${normM[1]}.startsWith("pl-")?"pl":` +
-    `${normM[1]}==="ru"||${normM[1]}.startsWith("ru-")?"ru":${normM[2]}}`;
-  if (!src.includes(normAfter)) {
-    src = src.replace(normRe, normAfter);
+  // 3. normalizeLocale: add the ru / ru-* branch as the last check before the default (generic: before I2}).
+  if (!src.includes('startsWith("ru-")')) {
+    // Dist normalize: ...? "pl":<fallback>  where fallback is Stainless? In minified it's e.startsWith("pl-")?"pl":I2}
+    // Insert ru branch before the final fallback I2} that returns DEFAULT_LOCALE.
+    // Robust: find the `?"pl":` branch's fallback and insert ru before it, or just the final I2 if pl is last.
+    // Generic fallback: the function ends with `?"pl":X} where X is I2 or another branch. Insert ru before the final }.
+    // Simplest: replace the trailing `I2}` that is the fallback of sL() with ru branch + fallback.
+    // Dist sL ends with `?"pl":I2}` (or now with tr). Detect the last `?"pl":`? Better target fallback I2 directly.
+    // Find the runtime's sL fallback: look for `return DEFAULT_LOCALE` equivalent minified as `I2}` preceded by locale checks.
+    // Workaround: insert ru check right before the final `I2}` that follows the last locale check (pl or tr).
+    // Use a regex that captures the last locale branch's result variable and replaces `I2}` with ru branch.
+    const normFallbackRe = /(\?"pl":[^\}]*?)(\b\w+\})/;
+    // Fallback to simple: if the above fails, look for the generic I2 fallback before `}function oL`
+    let replaced = false;
+    // Try locale-specific: find `?"pl":<X>}` and inject
+    if (/e\.startsWith\("pl-"\)\?"pl":\w+\}/.test(src)) {
+      src = src.replace(/e\.startsWith\("pl-"\)\?"pl":(\w+)\}/, (all, fallback) => `e.startsWith("pl-")?"pl":e==="ru"||e.startsWith("ru-")?"ru":${fallback}}`);
+      replaced = true;
+    }
+    if (!replaced) {
+      // Generic last-resort: insert ru branch right before the `}function oL` that ends sL
+      // Find `return DEFAULT` equivalent: `I2}function oL` in dist.
+      src = src.replace(/(\w+)\}function oL\(/, (all, fallback) => {
+        // fallback is I2 (e.g. "I2}function oL" -> fallback = "I2")
+        // But we need arg name (e). Peek arg from function signature `function sL(e){`
+        const argM = src.match(/function sL\((\w+)\)/);
+        const arg = argM ? argM[1] : 'e';
+        // Avoid double-insert
+        if (src.includes('startsWith("ru-")')) return all;
+        return `${arg}==="ru"||${arg}.startsWith("ru-")?"ru":${fallback}}function oL(`;
+      });
+    }
+    if (!src.includes('startsWith("ru-")')) throw new Error(`${name}: normalizeLocale marker not found after attempted fix`);
     log(`${name}: patched normalizeLocale`);
   } else {
     log(`${name}: normalizeLocale already patched`);
   }
 
-  // 4. Dictionary loader chain: add the ru dynamic import after the ja branch.
-  // The second import() argument may be `[]` or vite's `__vite__mapDeps([...])`.
-  const loaderRe =
-    /(\w+)==="ja"\?await (\w+)\(\(\)=>import\("\.\/ja-([^"]+)"\),((?:__vite__mapDeps\(\[[0-9,]*\]\)|\[\]))\):(\{dict:[\w$]+\})/;
-  const loaderM = src.match(loaderRe);
-  if (!loaderM) throw new Error(`${name}: dictionary loader marker not found`);
-  const loaderAfter =
-    `${loaderM[1]}==="ja"?await ${loaderM[2]}(()=>import("./${loaderM[3]}"),${loaderM[4]}):` +
-    `${loaderM[1]}==="ru"?await ${loaderM[2]}(()=>import("./${ruChunkName}"),[]):${loaderM[5]}`;
-  if (!src.includes(loaderAfter)) {
-    src = src.replace(loaderRe, loaderAfter);
+  // 4. Dictionary loader chain: add the ru dynamic import as the last locale before the enDict fallback.
+  if (!src.includes('==="ru"?await')) {
+    const fallbackRe = /:\{dict:[\w$]+\}/;
+    const fb = src.match(fallbackRe);
+    if (!fb) throw new Error(`${name}: dictionary loader fallback not found`);
+    const beforeFallback = src.slice(0, src.indexOf(fb[0]));
+    const lastBranchRe =
+      /(\w+)==="[^"]+"\?await (\w+)\(\(\)=>import\("\.\/[^"]+"\),(?:__vite__mapDeps\(\[[0-9,]*\]\)|\[\])\):[^:]*$/;
+    const tail = beforeFallback.slice(-800);
+    const lm = tail.match(lastBranchRe) ?? beforeFallback.match(lastBranchRe);
+    if (!lm) throw new Error(`${name}: dictionary loader last branch not found`);
+    const lVar = lm[1];
+    const wrap = lm[2];
+    const ruBranch = `:${lVar}==="ru"?await ${wrap}(()=>import("./${ruChunkName}"),[]):${fb[0].slice(1)}`;
+    src = src.replace(fallbackRe, ruBranch);
     log(`${name}: patched dictionary loader`);
   } else {
     log(`${name}: dictionary loader already patched`);
@@ -136,7 +166,7 @@ function patchRuntime(runtimePath, ruChunkName) {
 }
 
 function patchLocales(assetsDir) {
-  const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
+  const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
   const names = fs.readdirSync(assetsDir).filter((n) => localeRe.test(n));
   for (const name of names) {
     const locale = name.replace(/^([a-z]{2}(-[A-Z]{2})?)-.*\.js$/, '$1');

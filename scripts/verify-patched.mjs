@@ -42,7 +42,7 @@ const mainSrc = fs.readFileSync(path.join(dir, main[0]), 'utf8');
 checkSyntax(path.join(dir, main[0]));
 
 const checks = [
-  ['LOCALES contains ru', /"pl","ja","ru"\]/.test(mainSrc)],
+  ['LOCALES contains ru', /"ru"\]/.test(mainSrc)],
   ['LOCALE_LABEL_KEYS has ru', /ru:"common\.language\.russian"/.test(mainSrc)],
   ['normalizeLocale has ru branch', /startsWith\("ru-"\)\?"ru"/.test(mainSrc)],
   ['loader imports ru chunk', /import\("\.\/ru-ruinstaller\.js"\)/.test(mainSrc)],
@@ -61,7 +61,7 @@ if (!ruSrc.includes('common.language.russian":"Русский')) {
 }
 console.log(`[verify] ok: ru-ruinstaller.js (${ruSrc.length} chars)`);
 
-const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|uk|zh-CN|zh-TW)-[^/]+\.js$/;
+const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
 let locales = 0;
 for (const f of fs.readdirSync(dir)) {
   if (!localeRe.test(f)) continue;
