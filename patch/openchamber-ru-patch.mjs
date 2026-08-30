@@ -81,10 +81,9 @@ function patchRuntime(runtimePath, ruChunkName) {
   const name = path.basename(runtimePath);
   let src = fs.readFileSync(runtimePath, 'utf8');
 
-  // 1. LOCALES array: add 'ru' (generic — works no matter which locale is currently last).
+  // 1. LOCALES array: add 'ru' (generic — the only array starting with ["en" that holds locales).
   if (!src.includes('"ru"]')) {
-    // tL=["en","de","fr","zh-CN","zh-TW","uk","es","pt-BR","ko","pl","ja","tr"],I2="en",nL={
-    const m = src.match(/(\["en"[^\]]*?)(\],\w+="en",nL=)/);
+    const m = src.match(/(\["en"[^\]]*)(\])/);
     if (!m) throw new Error(`${name}: LOCALES array not found`);
     src = src.replace(m[0], `${m[1]},"ru"${m[2]}`);
     log(`${name}: patched LOCALES`);
