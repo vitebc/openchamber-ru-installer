@@ -137,6 +137,18 @@ jobs:
             patch/openchamber-ru-patch.mjs \
             patch/ru-ruinstaller.js
 
+      - name: Close resolved sync-failure issues
+        if: steps.upstream.outputs.skip != '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for NUMBER in $(gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+              --search "RU installer sync failed in:title" --json number --jq '.[].number'); do
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+              --comment "Синхронизация прошла успешно."
+            echo "closed #$NUMBER"
+          done
+
       - name: Open issue on failure
         if: failure()
         env:
