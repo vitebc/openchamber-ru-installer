@@ -105,14 +105,16 @@ function patchRuntime(runtimePath, ruChunkName) {
 
   // 3. normalizeLocale: add the ru / ru-* branch as the last check before the default.
   if (!src.includes('startsWith("ru-")')) {
-    const funcM = src.match(/function (\w+)\((\w+)\)[^{]*\{[^}]*startsWith\("pl-"\)/s);
+    const ident = '[A-Za-z_$][\\w$]*';
+    const funcRe = new RegExp(`function\\s+(${ident})\\s*\\((${ident})\\)[^{]*\\{[^}]*startsWith\\("pl-"\\)`, 's');
+    const funcM = src.match(funcRe);
     if (!funcM) throw new Error(`${name}: normalizeLocale function not found`);
     const arg = funcM[2];
     const sLIdx = src.indexOf(`function ${funcM[1]}(`);
     const afterSL = src.slice(sLIdx);
-    const fbM = afterSL.match(/(\w+)\}function \w+\(/);
+    const fbM = afterSL.match(/([$\w]+)\}function\s+[$\w]+\s*\(/);
     if (!fbM) throw new Error(`${name}: normalizeLocale fallback not found`);
-    const fallbackVar = fbM[1].match(/(\w+)$/) ? fbM[1].match(/(\w+)$/)[1] : fbM[1];
+    const fallbackVar = fbM[1].match(/([$\w]+)$/) ? fbM[1].match(/([$\w]+)$/)[1] : fbM[1];
     const needle = `${fallbackVar}}function`;
     src = src.replace(needle, `${arg}==="ru"||${arg}.startsWith("ru-")?"ru":${fallbackVar}}function`);
     if (!src.includes('startsWith("ru-")')) throw new Error(`${name}: normalizeLocale marker not found after attempted fix`);

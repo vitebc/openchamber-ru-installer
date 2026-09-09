@@ -47,6 +47,62 @@ function replaceIfMissing(src, marker, replacement, desc, onFail) {
   return src.replace(marker, replacement);
 }
 
+function patchFunctionEnd(src, fnMarker, onFail, makeInsertion) {
+  const fnStart = src.indexOf(fnMarker);
+  if (fnStart < 0) onFail(`function not found: ${fnMarker}`);
+  const openIndex = src.indexOf('{', fnStart);
+  if (openIndex < 0) onFail('function body not found');
+  let depth = 0;
+  let inString = null;
+  let escaped = false;
+  let inLineComment = false;
+  let inBlockComment = false;
+  let closeIndex = -1;
+  for (let i = openIndex; i < src.length; i += 1) {
+    const ch = src[i];
+    const next = src[i + 1];
+    if (inLineComment) {
+      if (ch === '\n') inLineComment = false;
+    } else if (inBlockComment) {
+      if (ch === '*' && next === '/') {
+        inBlockComment = false;
+        i += 1;
+      }
+    } else if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (ch === '\\') {
+        escaped = true;
+      } else if (ch === inString) {
+        inString = null;
+      }
+    } else if (ch === '/' && next === '/') {
+      inLineComment = true;
+      i += 1;
+    } else if (ch === '/' && next === '*') {
+      inBlockComment = true;
+      i += 1;
+    } else if (ch === "'" || ch === '"' || ch === '`') {
+      inString = ch;
+    } else if (ch === '{') {
+      depth += 1;
+    } else if (ch === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        closeIndex = i;
+        break;
+      }
+    }
+  }
+  if (closeIndex < 0) onFail('function body end not found');
+  const body = src.slice(openIndex + 1, closeIndex);
+  const returns = [...body.matchAll(/\n([ \t]*)return\s+DEFAULT_LOCALE;/g)];
+  if (returns.length === 0) onFail('function fallback not found');
+  const target = returns[returns.length - 1];
+  const insertion = makeInsertion(target[1]);
+  return src.slice(0, openIndex + 1 + target.index) + insertion + src.slice(openIndex + 1 + target.index);
+}
+
 // ---- runtime.ts ----
 patchFile('runtime.ts', (src, onFail) => {
   // Generic: ru is always the last locale, inserted before the closing token so
@@ -75,14 +131,11 @@ patchFile('runtime.ts', (src, onFail) => {
     if (!src.includes("ru: 'common.language.russian'")) onFail('LOCALE_LABEL_KEYS entry not inserted');
   }
   if (!src.includes("normalized === 'ru'")) {
-    const re = /\n(\s*)return DEFAULT_LOCALE;/;
-    const m = src.match(re);
-    if (!m) onFail('normalizeLocale: return DEFAULT_LOCALE not found');
-    const indent = m[1];
-    src = src.replace(
-      re,
-      `\n${indent}if (normalized === 'ru' || normalized.startsWith('ru-')) {\n${indent}  return 'ru';\n${indent}}\n${indent}return DEFAULT_LOCALE;`,
-    );
+    src = patchFunctionEnd(src, 'export function normalizeLocale(', onFail, (bodyIndent) => (
+      `\n${bodyIndent}if (normalized === 'ru' || normalized.startsWith('ru-')) {\n` +
+      `${bodyIndent}  return 'ru';\n` +
+      `${bodyIndent}}`
+    ));
   }
   return src;
 }, 'runtime.ts');
