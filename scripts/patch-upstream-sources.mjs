@@ -10,6 +10,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const [rootArg] = process.argv.slice(2);
 if (!rootArg) {
@@ -18,6 +20,7 @@ if (!rootArg) {
 }
 const root = path.resolve(rootArg);
 const I18N = path.join(root, 'packages', 'ui', 'src', 'lib', 'i18n');
+const INSTALLER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function read(rel) {
   return fs.readFileSync(path.join(I18N, rel), 'utf8');
@@ -222,4 +225,168 @@ patchFile('messages/en.ts', (src, onFail) => {
   );
 }, 'en.ts');
 
-console.log('[patch-upstream] done');
+console.log('[patch-upstream] done (base registration)');
+
+// ---------------------------------------------------------------------------
+// v2 additions below: component hardcode fixes (unified diff), all-locale
+// russian labels, feature-module ru blocks, and shared toast/label keys.
+// ---------------------------------------------------------------------------
+
+// ---- component fixes: exact fork diff, applied with git (fails loud on drift) ----
+{
+  const diff = path.join(INSTALLER_ROOT, 'upstream-patches', 'ru-v2-component-fixes.diff');
+  if (!fs.existsSync(diff)) fail(`component fixes diff not found: ${diff}`);
+  try {
+    execFileSync('git', ['apply', diff], { cwd: root, stdio: 'pipe' });
+    console.log('[patch-upstream] patched component fixes (ru-v2-component-fixes.diff)');
+  } catch {
+    try {
+      execFileSync('git', ['apply', '--reverse', '--check', diff], { cwd: root, stdio: 'pipe' });
+      console.log('[patch-upstream] component fixes: already applied');
+    } catch {
+      fail('component fixes diff does not apply (upstream drifted?)');
+    }
+  }
+}
+
+function emitTs(raw) {
+  return `'${raw.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')}'`;
+}
+
+function insertAfterAnchor(file, anchor, linesToAdd, onFail) {
+  let src = fs.readFileSync(file, 'utf8');
+  const idx = src.split('\n').findIndex((l) => l.includes(`'${anchor}'`) || l.includes(`"${anchor}"`));
+  if (idx < 0) onFail(`anchor not found: ${anchor} in ${path.basename(file)}`);
+  const arr = src.split('\n');
+  const indent = arr[idx].match(/^\s*/)[0];
+  const q = arr[idx].trimStart().startsWith('"') ? '"' : "'";
+  const add = linesToAdd.map(([k, v]) => {
+    const val = q === '"' ? `"${v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}"` : emitTs(v);
+    return `${indent}${q}${k}${q}: ${val},`;
+  });
+  arr.splice(idx + 1, 0, ...add);
+  fs.writeFileSync(file, arr.join('\n'));
+}
+
+// ---- common.language.russian in every locale dictionary ----
+const RUSSIAN_PER_LOCALE = {
+  en: 'Russian', de: 'Russisch', es: 'Ruso', fr: 'Russe', ja: 'ロシア語',
+  ko: '러시아어', pl: 'Rosyjski', 'pt-BR': 'Russo', tr: 'Rusça',
+  uk: 'Російська', 'zh-CN': '俄语', 'zh-TW': '俄語',
+};
+{
+  const MESSAGES = path.join(I18N, 'messages');
+  for (const [loc, word] of Object.entries(RUSSIAN_PER_LOCALE)) {
+    const file = path.join(MESSAGES, `${loc}.ts`);
+    if (!fs.existsSync(file)) fail(`locale file not found: ${loc}.ts`);
+    const src = fs.readFileSync(file, 'utf8');
+    if (src.includes('common.language.russian')) {
+      console.log(`[patch-upstream] ${loc}.ts: russian label already present`);
+      continue;
+    }
+    insertAfterAnchor(file, 'common.language.turkish', [['common.language.russian', word]], fail);
+    console.log(`[patch-upstream] patched ${loc}.ts (russian label)`);
+  }
+}
+
+// ---- feature-module ru blocks + test locale arrays ----
+{
+  const MODULES = {
+    'linear-issue-picker': 'linearIssuePickerI18n', 'linear-panel': 'linearPanelI18n',
+    routing: 'routingI18n', 'plugin-panel': 'pluginPanelI18n',
+    'surface-panel': 'surfacePanelI18n', 'file-artifacts': 'fileArtifactsI18n',
+    'usage-stats': 'usageStatsI18n', websearch: 'webSearchI18n',
+    'linear-integration': 'linearIntegrationI18n', 'guest-integrations': 'guestIntegrationsI18n',
+    'extensions.settings': 'extensionsSettingsI18n',
+  };
+  const MESSAGES = path.join(I18N, 'messages');
+  for (const mod of Object.keys(MODULES)) {
+    const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
+    if (!fs.existsSync(dataFile)) fail(`module ru data not found: ${dataFile}`);
+    const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+    const file = path.join(MESSAGES, `${mod}.i18n.ts`);
+    let src = fs.readFileSync(file, 'utf8');
+    if (!/^\s*ru: \{$/m.test(src)) {
+      // Key order follows the en block so diffs stay reviewable.
+      const enBlock = src.match(/^  en: \{$([\s\S]*?)^  \},?$/m);
+      if (!enBlock) fail(`${mod}: en block not found`);
+      const order = [...enBlock[1].matchAll(/^\s*['"]([^'"]+)['"]\s*:/gm)].map((m) => m[1]);
+      const lines = ['  ru: {'];
+      for (const key of order) {
+        if (data[key] === undefined) fail(`${mod}: missing ru translation for ${key}`);
+        lines.push(`    '${key}': ${emitTs(data[key])},`);
+      }
+      lines.push('  },');
+      const tail = '} as const;';
+      const idx = src.lastIndexOf(tail);
+      if (idx < 0) fail(`${mod}: module tail not found`);
+      src = `${src.slice(0, idx).replace(/\s+$/, '\n') + lines.join('\n')}\n${src.slice(idx)}`;
+      fs.writeFileSync(file, src);
+      console.log(`[patch-upstream] patched ${mod}.i18n.ts (ru block, ${order.length} keys)`);
+    } else {
+      console.log(`[patch-upstream] ${mod}.i18n.ts: ru block already present`);
+    }
+    const testFile = path.join(MESSAGES, `${mod}.i18n.test.ts`);
+    if (fs.existsSync(testFile)) {
+      let t = fs.readFileSync(testFile, 'utf8');
+      if (!t.includes("'ru'")) {
+        if (!t.includes("'zh-TW', 'tr'] as const")) fail(`${mod} test: locales array marker not found`);
+        t = t.replace("'zh-TW', 'tr'] as const", "'zh-TW', 'tr', 'ru'] as const");
+        fs.writeFileSync(testFile, t);
+        console.log(`[patch-upstream] patched ${mod}.i18n.test.ts (ru locale)`);
+      } else {
+        console.log(`[patch-upstream] ${mod}.i18n.test.ts: ru already present`);
+      }
+    }
+  }
+}
+
+// ---- shared toast/label keys in every locale (anchors + per-locale values) ----
+{
+  const GROUPS = [
+    { anchor: 'chat.messageBody.forkDialog.createWorktree', keys: {
+      'chat.messageBody.forkDialog.toast.forked': { en: 'Forked from {title}', de: 'Abgezweigt von {title}', es: 'Ramificación creada a partir de {title}', fr: 'Fourche créée à partir de {title}', ja: '「{title}」からフォークしました', ko: '{title}에서 분기를 만들었습니다', pl: 'Utworzono odgałęzienie z {title}', 'pt-BR': 'Ramificação criada a partir de {title}', uk: 'Створено відгалуження від {title}', 'zh-CN': '已从“{title}”创建分支', 'zh-TW': '已從「{title}」建立分支', tr: '{title}’den fork oluşturuldu', ru: 'Создано ответвление от {title}' },
+      'chat.messageBody.forkDialog.toast.forkFailed': { en: 'Failed to fork session', de: 'Fehler beim Abzweigen der Sitzung', es: 'No se pudo ramificar la sesión', fr: 'Échec de la création de la fourche', ja: 'セッションのフォークに失敗しました', ko: '세션 분기에 실패했습니다', pl: 'Nie udało się utworzyć odgałęzienia sesji', 'pt-BR': 'Falha ao ramificar a sessão', uk: 'Не вдалося створити відгалуження сесії', 'zh-CN': '创建会话分支失败', 'zh-TW': '建立工作階段分支失敗', tr: 'Oturum fork’lanamadı', ru: 'Не удалось создать ответвление сессии' } } },
+    { anchor: 'chat.permissionToast.permissionFallback', keys: {
+      'chat.permissionToast.respondFailed': { en: 'Failed to respond to permission request', de: 'Antwort auf die Berechtigungsanfrage fehlgeschlagen', es: 'No se pudo responder a la solicitud de permiso', fr: 'Échec de la réponse à la demande d’autorisation', ja: '権限リクエストへの応答に失敗しました', ko: '권한 요청에 응답하지 못했습니다', pl: 'Nie udało się odpowiedzieć na żądanie uprawnień', 'pt-BR': 'Falha ao responder à solicitação de permissão', uk: 'Не вдалося відповісти на запит дозволу', 'zh-CN': '未能响应权限请求', 'zh-TW': '未能回應權限請求', tr: 'İzin isteğine yanıt verilemedi', ru: 'Не удалось ответить на запрос разрешения' } } },
+    { anchor: 'openCodeStatusDialog.toast.copyFailed', keys: {
+      'openCodeStatusDialog.toast.collectFailed': { en: 'Failed to collect OpenCode status', de: 'Fehler beim Erfassen des OpenCode-Status', es: 'No se pudo recopilar el estado de OpenCode', fr: 'Échec de la collecte du statut OpenCode', ja: 'OpenCodeのステータスの取得に失敗しました', ko: 'OpenCode 상태를 수집하지 못했습니다', pl: 'Nie udało się pobrać statusu OpenCode', 'pt-BR': 'Falha ao coletar o status do OpenCode', uk: 'Не вдалося отримати статус OpenCode', 'zh-CN': '未能收集OpenCode状态', 'zh-TW': '未能收集OpenCode狀態', tr: 'OpenCode durumu alınamadı', ru: 'Не удалось получить статус OpenCode' } } },
+    { anchor: 'desktopHostSwitcher.instance.local', keys: {
+      'desktopHostSwitcher.instance.localOpenChamber': { en: 'Local OpenChamber', de: 'Lokales OpenChamber', es: 'OpenChamber local', fr: 'OpenChamber local', ja: 'ローカル OpenChamber', ko: '로컬 OpenChamber', pl: 'Lokalny OpenChamber', 'pt-BR': 'OpenChamber local', uk: 'Локальний OpenChamber', 'zh-CN': '本地 OpenChamber', 'zh-TW': '本機 OpenChamber', tr: 'Yerel OpenChamber', ru: 'Локальный OpenChamber' } } },
+    { anchor: 'session.newWorktree.error.worktreeDirectoryRequired', keys: {
+      'session.newWorktree.error.projectNotRegistered': { en: 'Project is not registered in OpenChamber', de: 'Projekt ist nicht in OpenChamber registriert', es: 'El proyecto no está registrado en OpenChamber', fr: 'Le projet n’est pas enregistré dans OpenChamber', ja: 'プロジェクトはOpenChamberに登録されていません', ko: '프로젝트가 OpenChamber에 등록되어 있지 않습니다', pl: 'Projekt nie jest zarejestrowany w OpenChamber', 'pt-BR': 'O projeto não está registrado no OpenChamber', uk: 'Проєкт не зареєстровано в OpenChamber', 'zh-CN': '项目尚未在OpenChamber中注册', 'zh-TW': '專案尚未在OpenChamber中註冊', tr: 'Proje OpenChamber’a kayıtlı değil', ru: 'Проект не зарегистрирован в OpenChamber' },
+      'session.newWorktree.error.sessionCreateFailed': { en: 'Could not create a session for the worktree', de: 'Sitzung für den Worktree konnte nicht erstellt werden', es: 'No se pudo crear una sesión para el worktree', fr: 'Impossible de créer une session pour le worktree', ja: 'ワークツリー用のセッションを作成できませんでした', ko: '워크트리에 대한 세션을 만들 수 없습니다', pl: 'Nie można utworzyć sesji dla drzewa pracy', 'pt-BR': 'Não foi possível criar uma sessão para o worktree', uk: 'Не вдалося створити сесію для worktree', 'zh-CN': '无法为工作树创建会话', 'zh-TW': '無法為 worktree 建立工作階段', tr: 'Worktree için oturum oluşturulamadı', ru: 'Не удалось создать сессию для ворктрейя' } } },
+  ];
+  const SETTINGS_GROUPS = [
+    { anchor: 'settings.voice.page.field.apiKey', keys: {
+      'settings.voice.page.field.apiKeyOptional': { en: 'Optional', de: 'Optional', es: 'Opcional', fr: 'Facultatif', ja: '任意', ko: '선택 사항', pl: 'Opcjonalne', 'pt-BR': 'Opcional', uk: 'Додатково', 'zh-CN': '可选', 'zh-TW': '可選', tr: 'İsteğe bağlı', ru: 'Необязательно' } } },
+  ];
+  const LOCALES = ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'uk', 'zh-CN', 'zh-TW', 'tr', 'ru'];
+  const MESSAGES = path.join(I18N, 'messages');
+  for (const loc of LOCALES) {
+    const mainFile = path.join(MESSAGES, `${loc}.ts`);
+    const setFile = path.join(MESSAGES, `${loc}.settings.ts`);
+    for (const g of GROUPS) {
+      const missing = Object.entries(g.keys).filter(([k]) => !fs.readFileSync(mainFile, 'utf8').includes(`'${k}'`) && !fs.readFileSync(mainFile, 'utf8').includes(`"${k}"`));
+      if (missing.length) {
+        insertAfterAnchor(mainFile, g.anchor, missing.map(([k, vals]) => {
+          if (vals[loc] === undefined) fail(`no ${loc} value for ${k}`);
+          return [k, vals[loc]];
+        }), fail);
+        console.log(`[patch-upstream] patched ${loc}.ts (${missing.map(([k]) => k).join(', ')})`);
+      }
+    }
+    for (const g of SETTINGS_GROUPS) {
+      const missing = Object.entries(g.keys).filter(([k]) => !fs.readFileSync(setFile, 'utf8').includes(`'${k}'`) && !fs.readFileSync(setFile, 'utf8').includes(`"${k}"`));
+      if (missing.length) {
+        insertAfterAnchor(setFile, g.anchor, missing.map(([k, vals]) => {
+          if (vals[loc] === undefined) fail(`no ${loc} value for ${k}`);
+          return [k, vals[loc]];
+        }), fail);
+        console.log(`[patch-upstream] patched ${loc}.settings.ts (${missing.map(([k]) => k).join(', ')})`);
+      }
+    }
+  }
+}
+
+console.log('[patch-upstream] done (v2 additions)');

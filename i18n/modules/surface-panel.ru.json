@@ -1,0 +1,16 @@
+{
+ "contextPanel.surface.unavailable": "Поверхность этого расширения недоступна. Проверьте, что оно включено и одобрено в «Настройки → Расширения».",
+ "contextPanel.surface.status.connecting": "Подключение…",
+ "contextPanel.surface.status.reconnecting": "Соединение потеряно. Переподключение…",
+ "contextPanel.surface.status.ready": "Нажмите или начните печатать, чтобы взять управление",
+ "contextPanel.surface.status.readyFocused": "Печатайте, чтобы управлять поверхностью; нажмите за её пределами, чтобы выйти",
+ "contextPanel.surface.status.agentWorking": "Агент работает",
+ "contextPanel.surface.status.youControl": "Вы управляете",
+ "contextPanel.surface.status.otherControls": "Управляет другое устройство",
+ "contextPanel.surface.handBack": "Вернуть агенту",
+ "contextPanel.surface.retry": "Попробовать ещё раз",
+ "contextPanel.surface.canvasAria": "Живая поверхность {name}",
+ "contextPanel.surface.ended.service-stopped": "Служба расширения остановилась.",
+ "contextPanel.surface.ended.extension-unavailable": "Расширение недоступно. Проверьте «Настройки → Расширения».",
+ "contextPanel.surface.ended.host-shutdown": "OpenChamber завершает работу."
+}

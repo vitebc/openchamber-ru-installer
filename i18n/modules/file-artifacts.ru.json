@@ -1,0 +1,17 @@
+{
+ "filesView.artifact.image.fit": "Вписать",
+ "filesView.artifact.image.fitTitle": "Вписать изображение в панель",
+ "filesView.artifact.image.actualTitle": "Показать изображение в настоящем размере",
+ "filesView.artifact.media.unplayable": "Этот файл здесь не воспроизводится. Скачайте его, чтобы открыть в другом приложении.",
+ "filesView.artifact.font.sample": "Съешь же ещё этих мягких французских булок да выпей чаю",
+ "filesView.artifact.font.loadFailed": "Не удалось загрузить этот шрифт.",
+ "filesView.artifact.table.rowsSingle": "{rows} строка · {columns} столбцов",
+ "filesView.artifact.table.rowsPlural": "{rows} строк · {columns} столбцов",
+ "filesView.artifact.table.truncated": "Показаны первые {shown} из {total} строк",
+ "filesView.artifact.table.empty": "В этом файле нет строк.",
+ "filesView.artifact.table.showTable": "Показать как таблицу",
+ "filesView.artifact.table.showSource": "Показать исходный текст",
+ "filesView.artifact.binary.title": "Нет предпросмотра для этого файла",
+ "filesView.artifact.binary.description": "OpenChamber не декодирует файлы такого типа. Скачайте его, чтобы открыть в другом приложении.",
+ "filesView.artifact.binary.descriptionWithType": "OpenChamber не декодирует файлы {extension}. Скачайте его, чтобы открыть в другом приложении."
+}

@@ -1,0 +1,511 @@
+diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
+index eb6313589..5ecb8e92c 100644
+--- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
++++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
+@@ -287,13 +287,13 @@ export function DesktopHostSwitcherDialog({
+   const sshSwitchTokenRef = React.useRef(0);
+ 
+   const allHosts = React.useMemo(() => {
+-    const local = buildLocalDesktopHost(localOrigin);
++    const local = buildLocalDesktopHost(localOrigin, t('desktopHostSwitcher.instance.local'));
+     const normalizedRemote = configHosts.map((h) => ({
+       ...h,
+       url: normalizeHostUrl(h.url) || h.url,
+     }));
+     return [local, ...normalizedRemote];
+-  }, [configHosts, localOrigin]);
++  }, [configHosts, localOrigin, t]);
+ 
+   React.useEffect(() => {
+     return subscribeRuntimeEndpointChanged(() => setRuntimeEndpointEpoch((epoch) => epoch + 1));
+@@ -301,8 +301,12 @@ export function DesktopHostSwitcherDialog({
+ 
+   const current = React.useMemo(() => {
+     void runtimeEndpointEpoch;
+-    return resolveCurrentDesktopHost(allHosts);
+-  }, [allHosts, runtimeEndpointEpoch]);
++    return resolveCurrentDesktopHost(
++      allHosts,
++      t('desktopHostSwitcher.instance.local'),
++      t('desktopHostSwitcher.instance.fallback'),
++    );
++  }, [allHosts, runtimeEndpointEpoch, t]);
+   const currentDefaultLabel = React.useMemo(() => {
+     const id = defaultHostId || LOCAL_HOST_ID;
+     return allHosts.find((h) => h.id === id)?.label || t('desktopHostSwitcher.instance.local');
+diff --git a/packages/ui/src/components/layout/Header.tsx b/packages/ui/src/components/layout/Header.tsx
+index 31a8c8b97..01b200e9a 100644
+--- a/packages/ui/src/components/layout/Header.tsx
++++ b/packages/ui/src/components/layout/Header.tsx
+@@ -404,7 +404,7 @@ export const Header: React.FC = () => {
+   }, [contextUsage, currentSessionId, isContextUsageResolvedForSession]);
+ 
+   const [isDesktopServicesOpen, setIsDesktopServicesOpen] = React.useState(false);
+-  const [currentInstanceLabel, setCurrentInstanceLabel] = React.useState('Local');
++  const [currentInstanceLabel, setCurrentInstanceLabel] = React.useState(() => t('desktopHostSwitcher.instance.local'));
+   const [currentInstanceIsLocal, setCurrentInstanceIsLocal] = React.useState(true);
+   const [remoteUpdateDialogOpen, setRemoteUpdateDialogOpen] = React.useState(false);
+   const [remoteUpdateInfo, setRemoteUpdateInfo] = React.useState<UpdateInfo | null>(null);
+@@ -447,7 +447,7 @@ export const Header: React.FC = () => {
+ 
+     try {
+       if (isDesktopLocalOriginActive()) {
+-        setCurrentInstanceLabel('Local');
++        setCurrentInstanceLabel(t('desktopHostSwitcher.instance.local'));
+         setCurrentInstanceIsLocal(true);
+         return;
+       }
+@@ -457,20 +457,24 @@ export const Header: React.FC = () => {
+       // the panel it opens can never disagree about which instance this is.
+       const cfg = await desktopHostsGet();
+       const localOrigin = getLocalDesktopOrigin();
+-      const resolved = resolveCurrentDesktopHost([buildLocalDesktopHost(localOrigin), ...cfg.hosts]);
++      const resolved = resolveCurrentDesktopHost(
++        [buildLocalDesktopHost(localOrigin, t('desktopHostSwitcher.instance.local')), ...cfg.hosts],
++        t('desktopHostSwitcher.instance.local'),
++        t('desktopHostSwitcher.instance.fallback'),
++      );
+ 
+       if (resolved.id === LOCAL_HOST_ID) {
+-        setCurrentInstanceLabel('Local');
++        setCurrentInstanceLabel(t('desktopHostSwitcher.instance.local'));
+         setCurrentInstanceIsLocal(true);
+         return;
+       }
+ 
+-      setCurrentInstanceLabel(redactSensitiveUrl(resolved.label.trim() || 'Instance'));
++      setCurrentInstanceLabel(redactSensitiveUrl(resolved.label.trim() || t('desktopHostSwitcher.instance.fallback')));
+     } catch {
+-      setCurrentInstanceLabel('Local');
++      setCurrentInstanceLabel(t('desktopHostSwitcher.instance.local'));
+       setCurrentInstanceIsLocal(true);
+     }
+-  }, [isDesktopApp]);
++  }, [isDesktopApp, t]);
+ 
+   useEffect(() => {
+     void refreshCurrentInstanceLabel();
+diff --git a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
+index 8e2199f46..8394a3a07 100644
+--- a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
++++ b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
+@@ -966,9 +966,9 @@ export const VoiceSettings: React.FC = () => {
+                                         </div>
+                                     </div>
+                                     <div className="space-y-1.5">
+-                                        <span className={SETTINGS_FIELD_LABEL_CLASS}>API Key</span>
++                                        <span className={SETTINGS_FIELD_LABEL_CLASS}>{t('settings.voice.page.field.apiKey')}</span>
+                                         <span className={SETTINGS_HELPER_CLASS}>
+-                                            Optional
++                                            {t('settings.voice.page.field.apiKeyOptional')}
+                                         </span>
+                                         <div className={cn('relative', SETTINGS_CONTROL_CLUSTER_CLASS)}>
+                                             <input
+@@ -1242,9 +1242,9 @@ export const VoiceSettings: React.FC = () => {
+                                     </div>
+                                 </div>
+                                 <div className="space-y-1.5">
+-                                    <span className={SETTINGS_FIELD_LABEL_CLASS}>API Key</span>
++                                    <span className={SETTINGS_FIELD_LABEL_CLASS}>{t('settings.voice.page.field.apiKey')}</span>
+                                     <span className={SETTINGS_HELPER_CLASS}>
+-                                        Optional
++                                        {t('settings.voice.page.field.apiKeyOptional')}
+                                     </span>
+                                     <div className={cn('relative', SETTINGS_CONTROL_CLUSTER_CLASS)}>
+                                         <input
+diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
+index dd163593c..c27dcc46c 100644
+--- a/packages/ui/src/hooks/useMenuActions.ts
++++ b/packages/ui/src/hooks/useMenuActions.ts
+@@ -7,6 +7,7 @@ import { useProjectsStore } from '@/stores/useProjectsStore';
+ import { normalizeContextPanelDirectoryKey, useUIStore } from '@/stores/useUIStore';
+ import { useUpdateStore } from '@/stores/useUpdateStore';
+ import { useThemeSystem } from '@/contexts/useThemeSystem';
++import { useI18n } from '@/lib/i18n';
+ import { sessionEvents } from '@/lib/sessionEvents';
+ import { createWorktreeSession } from '@/lib/worktreeSessionCreator';
+ import { showOpenCodeStatus } from '@/lib/openCodeStatus';
+@@ -105,6 +106,7 @@ export const useMenuActions = (
+   const setSettingsDialogOpen = useUIStore((s) => s.setSettingsDialogOpen);
+   const setAboutDialogOpen = useUIStore((s) => s.setAboutDialogOpen);
+   const checkForUpdates = useUpdateStore((state) => state.checkForUpdates);
++  const { t } = useI18n();
+   const { setThemeMode } = useThemeSystem();
+   const checkUpdatesInFlightRef = React.useRef(false);
+ 
+@@ -118,20 +120,20 @@ export const useMenuActions = (
+       .then(() => {
+         const { available, error } = useUpdateStore.getState();
+         if (error) {
+-          toast.error('Failed to check for updates', {
++          toast.error(t('sessions.sidebar.updateCheck.errorTitle'), {
+             description: error,
+           });
+           return;
+         }
+ 
+         if (!available) {
+-          toast.success('You are on the latest version');
++          toast.success(t('sessions.sidebar.updateCheck.latestVersion'));
+         }
+       })
+       .finally(() => {
+         checkUpdatesInFlightRef.current = false;
+       });
+-  }, [checkForUpdates]);
++  }, [checkForUpdates, t]);
+ 
+   const handleChangeWorkspace = React.useCallback(() => {
+     sessionEvents.requestDirectoryDialog();
+@@ -324,7 +326,7 @@ export const useMenuActions = (
+ 
+         case 'download-logs': {
+           void showOpenCodeStatus().catch(() => {
+-            toast.error('Failed to collect OpenCode status');
++            toast.error(t('openCodeStatusDialog.toast.collectFailed'));
+           });
+           break;
+         }
+@@ -341,6 +343,7 @@ export const useMenuActions = (
+       setCommandPaletteOpen,
+       setSettingsDialogOpen,
+       setThemeMode,
++      t,
+       toggleCommandPalette,
+       toggleHelpDialog,
+       toggleSidebar,
+diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
+index 1ab498075..e8bab231f 100644
+--- a/packages/ui/src/hooks/useTraySync.ts
++++ b/packages/ui/src/hooks/useTraySync.ts
+@@ -28,6 +28,7 @@ import { resolveProjectForSessionDirectory, normalizeProjectPath } from '@/lib/p
+ import type { ProjectEntry } from '@/lib/api/types';
+ import type { WorktreeMetadata } from '@/types/worktree';
+ import { toast } from '@/components/ui';
++import { useI18n } from '@/lib/i18n';
+ 
+ // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
+ // streams a compact snapshot of live session/approval state to it via the
+@@ -197,20 +198,26 @@ const buildUsage = (): TrayUsage => {
+ };
+ 
+ // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
+-// the local origin shows as "Local OpenChamber"; a remote host shows its
+-// configured name. Async because the host config is read over IPC.
+-const resolveInstanceName = async (): Promise<string> => {
++// the local origin shows as the localized "Local OpenChamber" label; a remote
++// host shows its configured name. Async because the host config is read over IPC.
++const resolveInstanceName = async ({
++  localName,
++  fallbackName,
++}: {
++  localName: string;
++  fallbackName: string;
++}): Promise<string> => {
+   try {
+-    if (isDesktopLocalOriginActive()) return 'Local OpenChamber';
++    if (isDesktopLocalOriginActive()) return localName;
+     const localOrigin = (window as unknown as { __OPENCHAMBER_LOCAL_ORIGIN__?: string }).__OPENCHAMBER_LOCAL_ORIGIN__
+       || window.location.origin;
+     const runtimeApiBaseUrl = getRuntimeApiBaseUrl();
+-    if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) return 'Local OpenChamber';
++    if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) return localName;
+     const cfg = await desktopHostsGet();
+     const match = cfg.hosts.find((host) =>
+       runtimeApiBaseUrl ? locationMatchesHost(runtimeApiBaseUrl, getDesktopHostApiUrl(host)) : false);
+     if (match?.label?.trim()) return redactSensitiveUrl(match.label.trim());
+-    return 'Instance';
++    return fallbackName;
+   } catch {
+     return '';
+   }
+@@ -408,6 +415,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+ };
+ 
+ export const useTraySync = (): void => {
++  const { t } = useI18n();
++
+   React.useEffect(() => {
+     if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
+     const trayEnabled = isTrayEnabled();
+@@ -458,7 +467,10 @@ export const useTraySync = (): void => {
+       return stopBadgeSync;
+     }
+ 
+-    void resolveInstanceName().then((name) => {
++    void resolveInstanceName({
++      localName: t('desktopHostSwitcher.instance.localOpenChamber'),
++      fallbackName: t('desktopHostSwitcher.instance.fallback'),
++    }).then((name) => {
+       if (disposed) return;
+       instanceName = name;
+       flushNow();
+@@ -550,7 +562,7 @@ export const useTraySync = (): void => {
+       for (const unsub of storeUnsubs.values()) unsub();
+       storeUnsubs.clear();
+     };
+-  }, []);
++  }, [t]);
+ 
+   React.useEffect(() => {
+     if (!isTrayPlatform() || !isTrayEnabled() || !canUseElectronDesktopIPC()) return;
+@@ -562,7 +574,7 @@ export const useTraySync = (): void => {
+       switch (action.type) {
+         case 'respond-permission':
+           void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
+-            toast.error('Failed to respond to permission request');
++            toast.error(t('chat.permissionToast.respondFailed'));
+           });
+           break;
+       }
+@@ -585,5 +597,5 @@ export const useTraySync = (): void => {
+         // ignore
+       }
+     };
+-  }, []);
++  }, [t]);
+ };
+diff --git a/packages/ui/src/lib/desktopCurrentHost.ts b/packages/ui/src/lib/desktopCurrentHost.ts
+index 154382eaa..c7fd7603a 100644
+--- a/packages/ui/src/lib/desktopCurrentHost.ts
++++ b/packages/ui/src/lib/desktopCurrentHost.ts
+@@ -19,9 +19,9 @@ import { getRuntimeApiBaseUrl, getRuntimeKey } from '@/lib/runtime-switch';
+ 
+ export const LOCAL_HOST_ID = 'local';
+ 
+-export const buildLocalDesktopHost = (localOrigin?: string | null): DesktopHost => ({
++export const buildLocalDesktopHost = (localOrigin?: string | null, localLabel = 'Local'): DesktopHost => ({
+   id: LOCAL_HOST_ID,
+-  label: 'Local',
++  label: localLabel,
+   url: localOrigin || getLocalDesktopOrigin(),
+ });
+ 
+@@ -41,7 +41,11 @@ type ResolvedDesktopHost = {
+   url: string;
+ };
+ 
+-export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktopHost => {
++export const resolveCurrentDesktopHost = (
++  hosts: DesktopHost[],
++  localLabel = 'Local',
++  fallbackLabel = 'Instance',
++): ResolvedDesktopHost => {
+   const currentHref = typeof window === 'undefined' ? '' : window.location.href;
+   const localOrigin = hosts.find((host) => host.id === LOCAL_HOST_ID)?.url || getLocalDesktopOrigin();
+   const runtimeApiBaseUrl = getRuntimeApiBaseUrl();
+@@ -58,7 +62,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+   }
+ 
+   if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) {
+-    return { id: LOCAL_HOST_ID, label: 'Local', url: normalizedLocal };
++    return { id: LOCAL_HOST_ID, label: localLabel, url: normalizedLocal };
+   }
+ 
+   const runtimeMatch = hosts.find((host) => (
+@@ -74,7 +78,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+   }
+ 
+   if (currentHref && locationMatchesHost(currentHref, localOrigin)) {
+-    return { id: LOCAL_HOST_ID, label: 'Local', url: normalizedLocal };
++    return { id: LOCAL_HOST_ID, label: localLabel, url: normalizedLocal };
+   }
+ 
+   const match = hosts.find((host) => (currentHref ? locationMatchesHost(currentHref, host.url) : false));
+@@ -84,14 +88,14 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+   }
+ 
+   if (currentHref.startsWith('openchamber-ui://')) {
+-    return { id: LOCAL_HOST_ID, label: 'Local', url: normalizedLocal };
++    return { id: LOCAL_HOST_ID, label: localLabel, url: normalizedLocal };
+   }
+ 
+   // Nothing configured matches. Naming the address is still more use than the
+-  // bare word "Instance"; the redaction strips anything credential-shaped.
++  // bare fallback word; the redaction strips anything credential-shaped.
+   return {
+     id: 'custom',
+-    label: redactSensitiveUrl(normalizedCurrent || 'Instance'),
++    label: redactSensitiveUrl(normalizedCurrent || fallbackLabel),
+     url: normalizedCurrent,
+   };
+ };
+diff --git a/packages/ui/src/lib/worktreeSessionCreator.ts b/packages/ui/src/lib/worktreeSessionCreator.ts
+index 66d3248fe..0da47cb94 100644
+--- a/packages/ui/src/lib/worktreeSessionCreator.ts
++++ b/packages/ui/src/lib/worktreeSessionCreator.ts
+@@ -5,6 +5,7 @@
+  */
+ 
+ import { toast } from '@/components/ui';
++import { formatMessage, useI18nStore, type I18nKey, type I18nParams } from '@/lib/i18n';
+ import { useSessionUIStore } from '@/sync/session-ui-store';
+ import { useProjectsStore } from '@/stores/useProjectsStore';
+ import { useConfigStore } from '@/stores/useConfigStore';
+@@ -30,6 +31,9 @@ import { waitForWorktreeBootstrap } from '@/lib/worktrees/worktreeBootstrap';
+ import { normalizePath } from '@/lib/pathNormalization';
+ import { resolveProjectForDirectory } from '@/lib/projectResolution';
+ 
++const translateToast = (key: I18nKey, params?: I18nParams): string =>
++  formatMessage(useI18nStore.getState().dictionary, key, params);
++
+ const waitForWorktreeBootstrapIfEnabled = async (project: ProjectRef, directory: string): Promise<void> => {
+   if (await getWorktreeSetupWaitEnabled(project)) {
+     await waitForWorktreeBootstrap(directory);
+@@ -188,8 +192,8 @@ const createInstantWorktreeDraft = async (options?: {
+ 
+   const activeProject = useProjectsStore.getState().getActiveProject();
+   if (!activeProject?.path) {
+-    toast.error('No active project', {
+-      description: 'Please select a project first.',
++    toast.error(translateToast('session.newWorktree.error.noActiveProject'), {
++      description: translateToast('sessions.scheduledTasks.dialog.error.chooseProjectFirst'),
+     });
+     return null;
+   }
+@@ -204,8 +208,8 @@ const createInstantWorktreeDraft = async (options?: {
+   }
+ 
+   if (!isGitRepo) {
+-    toast.error('Not a Git repository', {
+-      description: 'Worktrees can only be created in Git repositories.',
++    toast.error(translateToast('gitView.empty.notGitRepository'), {
++      description: translateToast('rightSidebar.contextNotesTodo.toast.worktreeRequiresGitRepo'),
+     });
+     return null;
+   }
+@@ -259,14 +263,14 @@ const createInstantWorktreeDraft = async (options?: {
+ 
+     return metadata.path;
+   } catch (error) {
+-    const message = error instanceof Error ? error.message : 'Failed to create worktree';
++    const message = error instanceof Error ? error.message : translateToast('session.newWorktree.error.createWorktreeFailed');
+     const requestId = useSessionUIStore.getState().newSessionDraft.pendingWorktreeRequestId;
+     if (requestId) {
+       rejectPendingDraftWorktreeRequest(requestId, error instanceof Error ? error : new Error(message));
+       useSessionUIStore.getState().resolvePendingDraftWorktreeTarget(requestId, null);
+     }
+     useSessionUIStore.getState().setDraftBootstrapPendingDirectory(null);
+-    toast.error('Failed to create worktree', {
++    toast.error(translateToast('session.newWorktree.error.createWorktreeFailed'), {
+       description: message,
+     });
+     return null;
+@@ -321,14 +325,14 @@ export async function createWorktreeSessionForNewBranch(
+     const start = startPoint?.trim() || 'HEAD';
+     const base = preferredBranchName?.trim();
+     if (!base) {
+-      throw new Error('Branch name is required');
++      throw new Error(translateToast('session.newWorktree.error.branchNameRequired'));
+     }
+ 
+     const kind = options?.kind ?? 'standard';
+ 
+     const projectRef = resolveProjectRef(projectDirectory);
+     if (!projectRef) {
+-      throw new Error('Project is not registered in OpenChamber');
++      throw new Error(translateToast('session.newWorktree.error.projectNotRegistered'));
+     }
+ 
+     let isGitRepo = false;
+@@ -339,8 +343,8 @@ export async function createWorktreeSessionForNewBranch(
+     }
+ 
+     if (!isGitRepo) {
+-      toast.error('Not a Git repository', {
+-        description: 'Worktrees can only be created in Git repositories.',
++      toast.error(translateToast('gitView.empty.notGitRepository'), {
++        description: translateToast('rightSidebar.contextNotesTodo.toast.worktreeRequiresGitRepo'),
+       });
+       return null;
+     }
+@@ -374,15 +378,15 @@ export async function createWorktreeSessionForNewBranch(
+       const session = await sessionStore.createSession(undefined, metadata.path);
+       if (!session) {
+         await removeProjectWorktree(projectRef, metadata, { deleteLocalBranch: true }).catch(() => undefined);
+-        throw new Error('Could not create a session for the worktree.');
++        throw new Error(translateToast('session.newWorktree.error.sessionCreateFailed'));
+       }
+ 
+       initializeSessionForWorktree(session.id, createdMetadata);
+ 
+       return { id: session.id, branch: metadata.branch || base, path: metadata.path };
+     } catch (error) {
+-      const message = error instanceof Error ? error.message : 'Failed to create worktree session';
+-      toast.error('Failed to create worktree', { description: message });
++      const message = error instanceof Error ? error.message : translateToast('session.newWorktree.error.createWorktreeFailed');
++      toast.error(translateToast('session.newWorktree.error.createWorktreeFailed'), { description: message });
+       return null;
+     }
+   } finally {
+diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
+index 44fd065d3..8b55ba4e3 100644
+--- a/packages/ui/src/sync/session-ui-store.ts
++++ b/packages/ui/src/sync/session-ui-store.ts
+@@ -2055,11 +2055,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+       await forkFromMessageAction(sessionId, messageId)
+ 
+       const { toast } = await import("sonner")
+-      toast.success(`Forked from ${existingSession.title}`)
++      const { useI18nStore, formatMessage } = await import("@/lib/i18n/store")
++      const { dictionary } = useI18nStore.getState()
++      toast.success(formatMessage(dictionary, "chat.messageBody.forkDialog.toast.forked", { title: existingSession.title }))
+     } catch (error) {
+       console.error("Failed to fork session:", error)
+       const { toast } = await import("sonner")
+-      toast.error("Failed to fork session")
++      const { useI18nStore, formatMessage } = await import("@/lib/i18n/store")
++      const { dictionary } = useI18nStore.getState()
++      toast.error(formatMessage(dictionary, "chat.messageBody.forkDialog.toast.forkFailed"))
+     }
+   },
+ 
+@@ -2071,11 +2075,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+       await forkAfterMessageAction(sessionId, messageId)
+ 
+       const { toast } = await import("sonner")
+-      toast.success(`Forked from ${existingSession.title}`)
++      const { useI18nStore, formatMessage } = await import("@/lib/i18n/store")
++      const { dictionary } = useI18nStore.getState()
++      toast.success(formatMessage(dictionary, "chat.messageBody.forkDialog.toast.forked", { title: existingSession.title }))
+     } catch (error) {
+       console.error("Failed to fork session:", error)
+       const { toast } = await import("sonner")
+-      toast.error("Failed to fork session")
++      const { useI18nStore, formatMessage } = await import("@/lib/i18n/store")
++      const { dictionary } = useI18nStore.getState()
++      toast.error(formatMessage(dictionary, "chat.messageBody.forkDialog.toast.forkFailed"))
+     }
+   },
+ 
+diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
+index 2e69eef49..70ee21549 100644
+--- a/packages/vscode/src/webviewHtml.ts
++++ b/packages/vscode/src/webviewHtml.ts
+@@ -220,6 +220,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+         locale = 'fr';
+       } else if (detected.indexOf('tr') === 0) {
+         locale = 'tr';
++      } else if (detected.indexOf('ru') === 0) {
++        locale = 'ru';
+       }
+ 
+       if (locale === 'fr') {
+@@ -244,6 +246,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+           cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
+         };
+       }
++      if (locale === 'ru') {
++        return {
++          startingApi: 'Запуск OpenCode API…',
++          initializing: 'Инициализация…',
++          connecting: 'Подключение…',
++          connected: 'Подключено!',
++          connectionError: 'Ошибка подключения',
++          reconnecting: 'Переподключение…',
++          cliNotFound: 'OpenCode CLI не найден. Сначала установите его.',
++        };
++      }
+       return {
+         startingApi: 'Starting OpenCode API…',
+         initializing: 'Initializing…',

@@ -74,7 +74,8 @@ if (!normRe.test(src)) fail('normalizeLocale strip regex not found');
 src = src.replace(normRe, '');
 
 // Dictionary loader branch: '<var>==="ru"?await <fn>(()=>import("./ru-*.js"),[]):' removed
-const loaderRe = /(\w+)==="ru"\?await (\w+)\(\(\)=>import\("\.\/ru-[^"]+"\),\[\]\):/;
+// (v2 shares vendor deps via __vite__mapDeps([...]); 1.x used empty [].)
+const loaderRe = /(\w+)==="ru"\?await (\w+)\(\(\)=>import\("\.\/ru-[^"]+"\),(?:__vite__mapDeps\(\[[0-9,]*\]\)|\[\])\):/;
 if (!loaderRe.test(src)) fail('dictionary loader strip regex not found');
 src = src.replace(loaderRe, '');
 
