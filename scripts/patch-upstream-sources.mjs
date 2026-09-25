@@ -253,6 +253,68 @@ function emitTs(raw) {
   return `'${raw.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')}'`;
 }
 
+function flatKeys(src) {
+  const keys = new Set();
+  for (const line of src.split('\n')) {
+    const m = line.match(/^\s*['"]([^'"]+)['"]\s*:/);
+    if (m) keys.add(m[1]);
+  }
+  return keys;
+}
+
+function moduleBlockKeys(src, locale) {
+  const lines = src.split('\n');
+  const open = locale.includes('-') ? `  '${locale}': {` : `  ${locale}: {`;
+  const s = lines.findIndex((l) => l === open);
+  if (s < 0) return null;
+  const keys = [];
+  for (let i = s + 1; i < lines.length; i++) {
+    if (/^  \},?\s*$/.test(lines[i])) break;
+    const m = lines[i].match(/^\s*['"]([^'"]+)['"]\s*:/);
+    if (m) keys.push(m[1]);
+  }
+  return keys;
+}
+
+// ---- pre-patch audit: fail once with the COMPLETE list of untranslated keys ----
+{
+  const MESSAGES = path.join(I18N, 'messages');
+  const gaps = [];
+  const enKeys = new Set([
+    ...flatKeys(fs.readFileSync(path.join(MESSAGES, 'en.ts'), 'utf8')),
+    ...flatKeys(fs.readFileSync(path.join(MESSAGES, 'en.settings.ts'), 'utf8')),
+  ]);
+  const ruKeys = new Set([
+    ...flatKeys(fs.readFileSync(path.join(MESSAGES, 'ru.ts'), 'utf8')),
+    ...flatKeys(fs.readFileSync(path.join(MESSAGES, 'ru.settings.ts'), 'utf8')),
+  ]);
+  for (const k of enKeys) {
+    if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
+  }
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings'];
+  for (const mod of MODULE_FILES) {
+    const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
+    if (!fs.existsSync(dataFile)) {
+      gaps.push(`module ${mod}: missing data file`);
+      continue;
+    }
+    const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+    const src = fs.readFileSync(path.join(MESSAGES, `${mod}.i18n.ts`), 'utf8');
+    const enBlock = moduleBlockKeys(src, 'en');
+    if (!enBlock) {
+      gaps.push(`module ${mod}: en block not found`);
+      continue;
+    }
+    for (const k of enBlock) {
+      if (data[k] === undefined) gaps.push(`module ${mod}: ${k}`);
+    }
+  }
+  if (gaps.length) {
+    fail(`untranslated keys (${gaps.length}):\n${gaps.join('\n')}`);
+  }
+  console.log('[patch-upstream] audit: no untranslated keys');
+}
+
 function insertAfterAnchor(file, anchor, linesToAdd, onFail) {
   let src = fs.readFileSync(file, 'utf8');
   const idx = src.split('\n').findIndex((l) => l.includes(`'${anchor}'`) || l.includes(`"${anchor}"`));

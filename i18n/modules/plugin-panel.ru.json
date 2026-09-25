@@ -38,5 +38,6 @@
  "chat.chatInput.toast.guestCommandNothing": "{name} не нашёл ничего для прикрепления.",
  "chat.chatInput.toast.guestCommandFailed": "/{command} не удалась: {reason}",
  "chat.chatInput.toast.guestCommandUnavailable": "{name} не ответил.",
- "chat.chatInput.toast.guestUnavailableHere": "Это расширение здесь недоступно. Откройте его в OpenChamber web или на десктопе."
+ "chat.chatInput.toast.guestUnavailableHere": "Это расширение здесь недоступно. Откройте его в OpenChamber web или на десктопе.",
+ "chat.workStatus.sections.extensionBadge": "Расширение"
 }
