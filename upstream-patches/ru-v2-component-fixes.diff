@@ -34,10 +34,10 @@ index eb6313589..5ecb8e92c 100644
      const id = defaultHostId || LOCAL_HOST_ID;
      return allHosts.find((h) => h.id === id)?.label || t('desktopHostSwitcher.instance.local');
 diff --git a/packages/ui/src/components/layout/Header.tsx b/packages/ui/src/components/layout/Header.tsx
-index 31a8c8b97..01b200e9a 100644
+index 31ae8c3b4..5fde147b1 100644
 --- a/packages/ui/src/components/layout/Header.tsx
 +++ b/packages/ui/src/components/layout/Header.tsx
-@@ -404,7 +404,7 @@ export const Header: React.FC = () => {
+@@ -407,7 +407,7 @@ export const Header: React.FC = () => {
    }, [contextUsage, currentSessionId, isContextUsageResolvedForSession]);
  
    const [isDesktopServicesOpen, setIsDesktopServicesOpen] = React.useState(false);
@@ -46,7 +46,7 @@ index 31a8c8b97..01b200e9a 100644
    const [currentInstanceIsLocal, setCurrentInstanceIsLocal] = React.useState(true);
    const [remoteUpdateDialogOpen, setRemoteUpdateDialogOpen] = React.useState(false);
    const [remoteUpdateInfo, setRemoteUpdateInfo] = React.useState<UpdateInfo | null>(null);
-@@ -447,7 +447,7 @@ export const Header: React.FC = () => {
+@@ -450,7 +450,7 @@ export const Header: React.FC = () => {
  
      try {
        if (isDesktopLocalOriginActive()) {
@@ -55,7 +55,7 @@ index 31a8c8b97..01b200e9a 100644
          setCurrentInstanceIsLocal(true);
          return;
        }
-@@ -457,20 +457,24 @@ export const Header: React.FC = () => {
+@@ -460,20 +460,24 @@ export const Header: React.FC = () => {
        // the panel it opens can never disagree about which instance this is.
        const cfg = await desktopHostsGet();
        const localOrigin = getLocalDesktopOrigin();
@@ -439,10 +439,10 @@ index 66d3248fe..0da47cb94 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 44fd065d3..8b55ba4e3 100644
+index eb5e24262..3a1fca102 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2055,11 +2055,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2108,11 +2108,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -460,7 +460,7 @@ index 44fd065d3..8b55ba4e3 100644
      }
    },
  
-@@ -2071,11 +2075,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2124,11 +2128,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -479,10 +479,10 @@ index 44fd065d3..8b55ba4e3 100644
    },
  
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
-index 2e69eef49..70ee21549 100644
+index a2400d53b..23afbedb3 100644
 --- a/packages/vscode/src/webviewHtml.ts
 +++ b/packages/vscode/src/webviewHtml.ts
-@@ -220,6 +220,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -219,6 +219,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
          locale = 'fr';
        } else if (detected.indexOf('tr') === 0) {
          locale = 'tr';
@@ -491,7 +491,7 @@ index 2e69eef49..70ee21549 100644
        }
  
        if (locale === 'fr') {
-@@ -244,6 +246,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -243,6 +245,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
            cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
          };
        }

@@ -1,4 +1,5 @@
 {
+ "chat.workStatus.sections.extensionBadge": "Расширение",
  "chat.chatInput.toast.guestHasNoPanel": "Это расширение работает без панели.",
  "header.mainSurface.backToChat": "Назад в чат",
  "sessions.sidebar.header.actions.extensionPages": "Страницы расширений",
@@ -38,6 +39,5 @@
  "chat.chatInput.toast.guestCommandNothing": "{name} не нашёл ничего для прикрепления.",
  "chat.chatInput.toast.guestCommandFailed": "/{command} не удалась: {reason}",
  "chat.chatInput.toast.guestCommandUnavailable": "{name} не ответил.",
- "chat.chatInput.toast.guestUnavailableHere": "Это расширение здесь недоступно. Откройте его в OpenChamber web или на десктопе.",
- "chat.workStatus.sections.extensionBadge": "Расширение"
+ "chat.chatInput.toast.guestUnavailableHere": "Это расширение здесь недоступно. Откройте его в OpenChamber web или на десктопе."
 }

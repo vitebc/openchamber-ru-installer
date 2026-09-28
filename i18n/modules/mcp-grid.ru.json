@@ -1,0 +1,12 @@
+{
+ "settings.mcp.grid.actionsAria": "Действия для {name}",
+ "settings.mcp.grid.description": "Серверы инструментов, которые могут вызывать ваши агенты. Откройте сервер, чтобы увидеть его состояние и настройки.",
+ "settings.mcp.grid.searchPlaceholder": "Поиск серверов",
+ "settings.mcp.grid.addHint": "Локальная команда или удалённый URL",
+ "settings.mcp.grid.noMatches": "Нет серверов по запросу «{query}».",
+ "settings.mcp.grid.empty": "MCP-серверов пока нет.",
+ "settings.mcp.grid.status.disabled": "Отключено",
+ "settings.mcp.grid.status.pending": "Подключение",
+ "settings.mcp.grid.scope.project": "Проект",
+ "settings.mcp.page.back": "Все серверы"
+}
