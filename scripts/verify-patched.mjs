@@ -63,14 +63,22 @@ console.log(`[verify] ok: ru-ruinstaller.js (${ruSrc.length} chars)`);
 
 const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
 let locales = 0;
+let skipped = 0;
 for (const f of fs.readdirSync(dir)) {
   if (!localeRe.test(f)) continue;
   const c = fs.readFileSync(path.join(dir, f), 'utf8');
+  // Since v2.0.3 Vite also emits regional chunks (de-DE-*.js, …) that match
+  // the locale prefix but carry Intl data, not dictionaries. Only dictionary
+  // chunks (with the language-label marker) must carry the russian label.
+  if (!c.includes('"common.language.japanese"')) {
+    skipped += 1;
+    continue;
+  }
   if (!c.includes('"common.language.russian"')) {
     fail(`${f}: missing common.language.russian`);
   }
   locales += 1;
 }
 if (locales === 0) fail('no locale chunks found to verify');
-console.log(`[verify] ok: common.language.russian present in ${locales} locale chunks`);
+console.log(`[verify] ok: common.language.russian present in ${locales} locale chunks (skipped ${skipped} non-dictionary chunks)`);
 console.log('[verify] PASS');
