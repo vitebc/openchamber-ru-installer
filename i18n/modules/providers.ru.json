@@ -1,5 +1,12 @@
 {
  "settings.providers.grid.description": "Провайдеры моделей, которые может использовать OpenCode. Откройте провайдера, чтобы управлять его аккаунтами и моделями.",
+ "settings.providers.enterpriseTitle": "Режим enterprise",
+ "settings.providers.enterpriseManagedBy": "Управляет {organization}.",
+ "settings.providers.enterprisePolicyUnreadable": "Не удалось прочитать файл политики на этом компьютере, поэтому режим enterprise остаётся включённым. Попросите администратора проверить его.",
+ "settings.providers.enterpriseMode": "Провайдерами управляют в конфигурации OpenCode, поэтому подключить новые здесь нельзя. Вы по-прежнему можете переключаться между имеющимися учётными записями или удалять их.",
+ "settings.providers.enterprisePolicyMissing": "В OpenCode пока нет политики провайдеров, поэтому он по-прежнему может использовать все известные ему провайдеры, включая ключи из переменных окружения и встроенные провайдеры.",
+ "settings.providers.enterprisePolicyConsole": "Правила для провайдеров могут также поступать из вашего рабочего пространства OpenCode Console, которое OpenChamber не может прочитать.",
+ "settings.providers.enterprisePolicyLink": "Ограничить провайдеров политикой",
  "settings.providers.grid.searchPlaceholder": "Поиск провайдеров",
  "settings.providers.grid.connect": "Подключить провайдера",
  "settings.providers.grid.connectHint": "API-ключ или вход",

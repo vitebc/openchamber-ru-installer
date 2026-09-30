@@ -1,0 +1,14 @@
+{
+ "settings.integrations.extensionCatalog.title": "Расширения OpenChamber",
+ "settings.integrations.extensionCatalog.info": "Дополнительные возможности от команды OpenChamber. Установите расширение здесь, и оно появится там, где вы им пользуетесь. Установленные расширения также перечислены в разделе Настройки → Расширения.",
+ "settings.integrations.extensionCatalog.excalidraw.name": "Excalidraw",
+ "settings.integrations.extensionCatalog.excalidraw.description": "Рисуйте в файлах .excalidraw и рисунках Obsidian прямо в разделе «Файлы».",
+ "settings.integrations.extensionCatalog.status.paused": "Выключено",
+ "settings.integrations.extensionCatalog.status.needsApproval": "Нужно разрешение",
+ "settings.integrations.extensionCatalog.actions.enable": "Включить",
+ "settings.integrations.extensionCatalog.actions.manage": "Открыть расширения",
+ "settings.integrations.extensionCatalog.dialog.remove.title": "Удалить расширение",
+ "settings.integrations.extensionCatalog.dialog.remove.description": "Удалить {name} из этого OpenChamber? Ваши файлы останутся без изменений.",
+ "settings.integrations.extensionCatalog.toast.enabled": "{name} включено",
+ "settings.integrations.extensionCatalog.toast.enableFailed": "Не удалось включить {name}"
+}

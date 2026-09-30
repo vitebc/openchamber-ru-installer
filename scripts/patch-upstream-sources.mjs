@@ -291,7 +291,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -334,7 +334,7 @@ function insertAfterAnchor(file, anchor, linesToAdd, onFail) {
 const RUSSIAN_PER_LOCALE = {
   en: 'Russian', de: 'Russisch', es: 'Ruso', fr: 'Russe', ja: 'ロシア語',
   ko: '러시아어', pl: 'Rosyjski', 'pt-BR': 'Russo', tr: 'Rusça',
-  uk: 'Російська', 'zh-CN': '俄语', 'zh-TW': '俄語',
+  uk: 'Російська', 'zh-CN': '俄语', 'zh-TW': '俄語', nl: 'Russisch',
 };
 {
   const MESSAGES = path.join(I18N, 'messages');
@@ -361,7 +361,7 @@ const RUSSIAN_PER_LOCALE = {
     'linear-integration': 'linearIntegrationI18n', 'guest-integrations': 'guestIntegrationsI18n',
     'extensions.settings': 'extensionsSettingsI18n', 'isolated-spaces': 'isolatedSpacesI18n',
     providers: 'providersI18n', 'mcp-grid': 'mcpGridI18n', 'plugins-grid': 'pluginsGridI18n',
-    'third-party-integrations': 'thirdPartyIntegrationI18n',
+    'third-party-integrations': 'thirdPartyIntegrationI18n', 'extension-catalog': 'extensionCatalogI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {
@@ -409,23 +409,23 @@ const RUSSIAN_PER_LOCALE = {
 {
   const GROUPS = [
     { anchor: 'chat.messageBody.forkDialog.createWorktree', keys: {
-      'chat.messageBody.forkDialog.toast.forked': { en: 'Forked from {title}', de: 'Abgezweigt von {title}', es: 'Ramificación creada a partir de {title}', fr: 'Fourche créée à partir de {title}', ja: '「{title}」からフォークしました', ko: '{title}에서 분기를 만들었습니다', pl: 'Utworzono odgałęzienie z {title}', 'pt-BR': 'Ramificação criada a partir de {title}', uk: 'Створено відгалуження від {title}', 'zh-CN': '已从“{title}”创建分支', 'zh-TW': '已從「{title}」建立分支', tr: '{title}’den fork oluşturuldu', ru: 'Создано ответвление от {title}' },
-      'chat.messageBody.forkDialog.toast.forkFailed': { en: 'Failed to fork session', de: 'Fehler beim Abzweigen der Sitzung', es: 'No se pudo ramificar la sesión', fr: 'Échec de la création de la fourche', ja: 'セッションのフォークに失敗しました', ko: '세션 분기에 실패했습니다', pl: 'Nie udało się utworzyć odgałęzienia sesji', 'pt-BR': 'Falha ao ramificar a sessão', uk: 'Не вдалося створити відгалуження сесії', 'zh-CN': '创建会话分支失败', 'zh-TW': '建立工作階段分支失敗', tr: 'Oturum fork’lanamadı', ru: 'Не удалось создать ответвление сессии' } } },
+      'chat.messageBody.forkDialog.toast.forked': { en: 'Forked from {title}', de: 'Abgezweigt von {title}', es: 'Ramificación creada a partir de {title}', fr: 'Fourche créée à partir de {title}', ja: '「{title}」からフォークしました', ko: '{title}에서 분기를 만들었습니다', pl: 'Utworzono odgałęzienie z {title}', 'pt-BR': 'Ramificação criada a partir de {title}', uk: 'Створено відгалуження від {title}', 'zh-CN': '已从“{title}”创建分支', 'zh-TW': '已從「{title}」建立分支', tr: '{title}’den fork oluşturuldu', ru: 'Создано ответвление от {title}', nl: 'Geforkt van {title}' },
+      'chat.messageBody.forkDialog.toast.forkFailed': { en: 'Failed to fork session', de: 'Fehler beim Abzweigen der Sitzung', es: 'No se pudo ramificar la sesión', fr: 'Échec de la création de la fourche', ja: 'セッションのフォークに失敗しました', ko: '세션 분기에 실패했습니다', pl: 'Nie udało się utworzyć odgałęzienia sesji', 'pt-BR': 'Falha ao ramificar a sessão', uk: 'Не вдалося створити відгалуження сесії', 'zh-CN': '创建会话分支失败', 'zh-TW': '建立工作階段分支失敗', tr: 'Oturum fork’lanamadı', ru: 'Не удалось создать ответвление сессии', nl: 'Sessie forken mislukt' } } },
     { anchor: 'chat.permissionToast.permissionFallback', keys: {
-      'chat.permissionToast.respondFailed': { en: 'Failed to respond to permission request', de: 'Antwort auf die Berechtigungsanfrage fehlgeschlagen', es: 'No se pudo responder a la solicitud de permiso', fr: 'Échec de la réponse à la demande d’autorisation', ja: '権限リクエストへの応答に失敗しました', ko: '권한 요청에 응답하지 못했습니다', pl: 'Nie udało się odpowiedzieć na żądanie uprawnień', 'pt-BR': 'Falha ao responder à solicitação de permissão', uk: 'Не вдалося відповісти на запит дозволу', 'zh-CN': '未能响应权限请求', 'zh-TW': '未能回應權限請求', tr: 'İzin isteğine yanıt verilemedi', ru: 'Не удалось ответить на запрос разрешения' } } },
+      'chat.permissionToast.respondFailed': { en: 'Failed to respond to permission request', de: 'Antwort auf die Berechtigungsanfrage fehlgeschlagen', es: 'No se pudo responder a la solicitud de permiso', fr: 'Échec de la réponse à la demande d’autorisation', ja: '権限リクエストへの応答に失敗しました', ko: '권한 요청에 응답하지 못했습니다', pl: 'Nie udało się odpowiedzieć na żądanie uprawnień', 'pt-BR': 'Falha ao responder à solicitação de permissão', uk: 'Не вдалося відповісти на запит дозволу', 'zh-CN': '未能响应权限请求', 'zh-TW': '未能回應權限請求', tr: 'İzin isteğine yanıt verilemedi', ru: 'Не удалось ответить на запрос разрешения', nl: 'Reageren op toestemmingsverzoek mislukt' } } },
     { anchor: 'openCodeStatusDialog.toast.copyFailed', keys: {
-      'openCodeStatusDialog.toast.collectFailed': { en: 'Failed to collect OpenCode status', de: 'Fehler beim Erfassen des OpenCode-Status', es: 'No se pudo recopilar el estado de OpenCode', fr: 'Échec de la collecte du statut OpenCode', ja: 'OpenCodeのステータスの取得に失敗しました', ko: 'OpenCode 상태를 수집하지 못했습니다', pl: 'Nie udało się pobrać statusu OpenCode', 'pt-BR': 'Falha ao coletar o status do OpenCode', uk: 'Не вдалося отримати статус OpenCode', 'zh-CN': '未能收集OpenCode状态', 'zh-TW': '未能收集OpenCode狀態', tr: 'OpenCode durumu alınamadı', ru: 'Не удалось получить статус OpenCode' } } },
+      'openCodeStatusDialog.toast.collectFailed': { en: 'Failed to collect OpenCode status', de: 'Fehler beim Erfassen des OpenCode-Status', es: 'No se pudo recopilar el estado de OpenCode', fr: 'Échec de la collecte du statut OpenCode', ja: 'OpenCodeのステータスの取得に失敗しました', ko: 'OpenCode 상태를 수집하지 못했습니다', pl: 'Nie udało się pobrać statusu OpenCode', 'pt-BR': 'Falha ao coletar o status do OpenCode', uk: 'Не вдалося отримати статус OpenCode', 'zh-CN': '未能收集OpenCode状态', 'zh-TW': '未能收集OpenCode狀態', tr: 'OpenCode durumu alınamadı', ru: 'Не удалось получить статус OpenCode', nl: 'OpenCode-status ophalen mislukt' } } },
     { anchor: 'desktopHostSwitcher.instance.local', keys: {
-      'desktopHostSwitcher.instance.localOpenChamber': { en: 'Local OpenChamber', de: 'Lokales OpenChamber', es: 'OpenChamber local', fr: 'OpenChamber local', ja: 'ローカル OpenChamber', ko: '로컬 OpenChamber', pl: 'Lokalny OpenChamber', 'pt-BR': 'OpenChamber local', uk: 'Локальний OpenChamber', 'zh-CN': '本地 OpenChamber', 'zh-TW': '本機 OpenChamber', tr: 'Yerel OpenChamber', ru: 'Локальный OpenChamber' } } },
+      'desktopHostSwitcher.instance.localOpenChamber': { en: 'Local OpenChamber', de: 'Lokales OpenChamber', es: 'OpenChamber local', fr: 'OpenChamber local', ja: 'ローカル OpenChamber', ko: '로컬 OpenChamber', pl: 'Lokalny OpenChamber', 'pt-BR': 'OpenChamber local', uk: 'Локальний OpenChamber', 'zh-CN': '本地 OpenChamber', 'zh-TW': '本機 OpenChamber', tr: 'Yerel OpenChamber', ru: 'Локальный OpenChamber', nl: 'Lokale OpenChamber' } } },
     { anchor: 'session.newWorktree.error.worktreeDirectoryRequired', keys: {
-      'session.newWorktree.error.projectNotRegistered': { en: 'Project is not registered in OpenChamber', de: 'Projekt ist nicht in OpenChamber registriert', es: 'El proyecto no está registrado en OpenChamber', fr: 'Le projet n’est pas enregistré dans OpenChamber', ja: 'プロジェクトはOpenChamberに登録されていません', ko: '프로젝트가 OpenChamber에 등록되어 있지 않습니다', pl: 'Projekt nie jest zarejestrowany w OpenChamber', 'pt-BR': 'O projeto não está registrado no OpenChamber', uk: 'Проєкт не зареєстровано в OpenChamber', 'zh-CN': '项目尚未在OpenChamber中注册', 'zh-TW': '專案尚未在OpenChamber中註冊', tr: 'Proje OpenChamber’a kayıtlı değil', ru: 'Проект не зарегистрирован в OpenChamber' },
-      'session.newWorktree.error.sessionCreateFailed': { en: 'Could not create a session for the worktree', de: 'Sitzung für den Worktree konnte nicht erstellt werden', es: 'No se pudo crear una sesión para el worktree', fr: 'Impossible de créer une session pour le worktree', ja: 'ワークツリー用のセッションを作成できませんでした', ko: '워크트리에 대한 세션을 만들 수 없습니다', pl: 'Nie można utworzyć sesji dla drzewa pracy', 'pt-BR': 'Não foi possível criar uma sessão para o worktree', uk: 'Не вдалося створити сесію для worktree', 'zh-CN': '无法为工作树创建会话', 'zh-TW': '無法為 worktree 建立工作階段', tr: 'Worktree için oturum oluşturulamadı', ru: 'Не удалось создать сессию для ворктрейя' } } },
+      'session.newWorktree.error.projectNotRegistered': { en: 'Project is not registered in OpenChamber', de: 'Projekt ist nicht in OpenChamber registriert', es: 'El proyecto no está registrado en OpenChamber', fr: 'Le projet n’est pas enregistré dans OpenChamber', ja: 'プロジェクトはOpenChamberに登録されていません', ko: '프로젝트가 OpenChamber에 등록되어 있지 않습니다', pl: 'Projekt nie jest zarejestrowany w OpenChamber', 'pt-BR': 'O projeto não está registrado no OpenChamber', uk: 'Проєкт не зареєстровано в OpenChamber', 'zh-CN': '项目尚未在OpenChamber中注册', 'zh-TW': '專案尚未在OpenChamber中註冊', tr: 'Proje OpenChamber’a kayıtlı değil', ru: 'Проект не зарегистрирован в OpenChamber', nl: 'Project is niet geregistreerd in OpenChamber' },
+      'session.newWorktree.error.sessionCreateFailed': { en: 'Could not create a session for the worktree', de: 'Sitzung für den Worktree konnte nicht erstellt werden', es: 'No se pudo crear una sesión para el worktree', fr: 'Impossible de créer une session pour le worktree', ja: 'ワークツリー用のセッションを作成できませんでした', ko: '워크트리에 대한 세션을 만들 수 없습니다', pl: 'Nie można utworzyć sesji dla drzewa pracy', 'pt-BR': 'Não foi possível criar uma sessão para o worktree', uk: 'Не вдалося створити сесію для worktree', 'zh-CN': '无法为工作树创建会话', 'zh-TW': '無法為 worktree 建立工作階段', tr: 'Worktree için oturum oluşturulamadı', ru: 'Не удалось создать сессию для ворктрейя', nl: 'Kon geen sessie aanmaken voor de worktree' } } },
   ];
   const SETTINGS_GROUPS = [
     { anchor: 'settings.voice.page.field.apiKey', keys: {
-      'settings.voice.page.field.apiKeyOptional': { en: 'Optional', de: 'Optional', es: 'Opcional', fr: 'Facultatif', ja: '任意', ko: '선택 사항', pl: 'Opcjonalne', 'pt-BR': 'Opcional', uk: 'Додатково', 'zh-CN': '可选', 'zh-TW': '可選', tr: 'İsteğe bağlı', ru: 'Необязательно' } } },
+      'settings.voice.page.field.apiKeyOptional': { en: 'Optional', de: 'Optional', es: 'Opcional', fr: 'Facultatif', ja: '任意', ko: '선택 사항', pl: 'Opcjonalne', 'pt-BR': 'Opcional', uk: 'Додатково', 'zh-CN': '可选', 'zh-TW': '可選', tr: 'İsteğe bağlı', ru: 'Необязательно', nl: 'Optioneel' } } },
   ];
-  const LOCALES = ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'uk', 'zh-CN', 'zh-TW', 'tr', 'ru'];
+  const LOCALES = ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'uk', 'zh-CN', 'zh-TW', 'tr', 'ru', 'nl'];
   const MESSAGES = path.join(I18N, 'messages');
   for (const loc of LOCALES) {
     const mainFile = path.join(MESSAGES, `${loc}.ts`);

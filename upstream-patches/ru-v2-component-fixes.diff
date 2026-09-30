@@ -86,10 +86,10 @@ index 31ae8c3b4..5fde147b1 100644
    useEffect(() => {
      void refreshCurrentInstanceLabel();
 diff --git a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
-index 8e2199f46..8394a3a07 100644
+index 682ad27e3..dc7b58336 100644
 --- a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
 +++ b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
-@@ -966,9 +966,9 @@ export const VoiceSettings: React.FC = () => {
+@@ -974,9 +974,9 @@ export const VoiceSettings: React.FC = () => {
                                          </div>
                                      </div>
                                      <div className="space-y-1.5">
@@ -101,7 +101,7 @@ index 8e2199f46..8394a3a07 100644
                                          </span>
                                          <div className={cn('relative', SETTINGS_CONTROL_CLUSTER_CLASS)}>
                                              <input
-@@ -1242,9 +1242,9 @@ export const VoiceSettings: React.FC = () => {
+@@ -1250,9 +1250,9 @@ export const VoiceSettings: React.FC = () => {
                                      </div>
                                  </div>
                                  <div className="space-y-1.5">
@@ -439,10 +439,10 @@ index 66d3248fe..0da47cb94 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index eb5e24262..3a1fca102 100644
+index 94c7b105d..4065b1272 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2108,11 +2108,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2109,11 +2109,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -460,7 +460,7 @@ index eb5e24262..3a1fca102 100644
      }
    },
  
-@@ -2124,11 +2128,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2125,11 +2129,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
