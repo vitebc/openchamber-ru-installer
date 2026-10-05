@@ -34,10 +34,10 @@ index eb6313589..5ecb8e92c 100644
      const id = defaultHostId || LOCAL_HOST_ID;
      return allHosts.find((h) => h.id === id)?.label || t('desktopHostSwitcher.instance.local');
 diff --git a/packages/ui/src/components/layout/Header.tsx b/packages/ui/src/components/layout/Header.tsx
-index 31ae8c3b4..5fde147b1 100644
+index b6fc5f727..fc7243bc0 100644
 --- a/packages/ui/src/components/layout/Header.tsx
 +++ b/packages/ui/src/components/layout/Header.tsx
-@@ -407,7 +407,7 @@ export const Header: React.FC = () => {
+@@ -408,7 +408,7 @@ export const Header: React.FC = () => {
    }, [contextUsage, currentSessionId, isContextUsageResolvedForSession]);
  
    const [isDesktopServicesOpen, setIsDesktopServicesOpen] = React.useState(false);
@@ -46,7 +46,7 @@ index 31ae8c3b4..5fde147b1 100644
    const [currentInstanceIsLocal, setCurrentInstanceIsLocal] = React.useState(true);
    const [remoteUpdateDialogOpen, setRemoteUpdateDialogOpen] = React.useState(false);
    const [remoteUpdateInfo, setRemoteUpdateInfo] = React.useState<UpdateInfo | null>(null);
-@@ -450,7 +450,7 @@ export const Header: React.FC = () => {
+@@ -451,7 +451,7 @@ export const Header: React.FC = () => {
  
      try {
        if (isDesktopLocalOriginActive()) {
@@ -55,7 +55,7 @@ index 31ae8c3b4..5fde147b1 100644
          setCurrentInstanceIsLocal(true);
          return;
        }
-@@ -460,20 +460,24 @@ export const Header: React.FC = () => {
+@@ -461,20 +461,24 @@ export const Header: React.FC = () => {
        // the panel it opens can never disagree about which instance this is.
        const cfg = await desktopHostsGet();
        const localOrigin = getLocalDesktopOrigin();
@@ -85,36 +85,8 @@ index 31ae8c3b4..5fde147b1 100644
  
    useEffect(() => {
      void refreshCurrentInstanceLabel();
-diff --git a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
-index 682ad27e3..dc7b58336 100644
---- a/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
-+++ b/packages/ui/src/components/sections/openchamber/VoiceSettings.tsx
-@@ -974,9 +974,9 @@ export const VoiceSettings: React.FC = () => {
-                                         </div>
-                                     </div>
-                                     <div className="space-y-1.5">
--                                        <span className={SETTINGS_FIELD_LABEL_CLASS}>API Key</span>
-+                                        <span className={SETTINGS_FIELD_LABEL_CLASS}>{t('settings.voice.page.field.apiKey')}</span>
-                                         <span className={SETTINGS_HELPER_CLASS}>
--                                            Optional
-+                                            {t('settings.voice.page.field.apiKeyOptional')}
-                                         </span>
-                                         <div className={cn('relative', SETTINGS_CONTROL_CLUSTER_CLASS)}>
-                                             <input
-@@ -1250,9 +1250,9 @@ export const VoiceSettings: React.FC = () => {
-                                     </div>
-                                 </div>
-                                 <div className="space-y-1.5">
--                                    <span className={SETTINGS_FIELD_LABEL_CLASS}>API Key</span>
-+                                    <span className={SETTINGS_FIELD_LABEL_CLASS}>{t('settings.voice.page.field.apiKey')}</span>
-                                     <span className={SETTINGS_HELPER_CLASS}>
--                                        Optional
-+                                        {t('settings.voice.page.field.apiKeyOptional')}
-                                     </span>
-                                     <div className={cn('relative', SETTINGS_CONTROL_CLUSTER_CLASS)}>
-                                         <input
 diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
-index dd163593c..c27dcc46c 100644
+index ee2d3b5f6..48720a2bc 100644
 --- a/packages/ui/src/hooks/useMenuActions.ts
 +++ b/packages/ui/src/hooks/useMenuActions.ts
 @@ -7,6 +7,7 @@ import { useProjectsStore } from '@/stores/useProjectsStore';
@@ -125,7 +97,7 @@ index dd163593c..c27dcc46c 100644
  import { sessionEvents } from '@/lib/sessionEvents';
  import { createWorktreeSession } from '@/lib/worktreeSessionCreator';
  import { showOpenCodeStatus } from '@/lib/openCodeStatus';
-@@ -105,6 +106,7 @@ export const useMenuActions = (
+@@ -106,6 +107,7 @@ export const useMenuActions = (
    const setSettingsDialogOpen = useUIStore((s) => s.setSettingsDialogOpen);
    const setAboutDialogOpen = useUIStore((s) => s.setAboutDialogOpen);
    const checkForUpdates = useUpdateStore((state) => state.checkForUpdates);
@@ -133,7 +105,7 @@ index dd163593c..c27dcc46c 100644
    const { setThemeMode } = useThemeSystem();
    const checkUpdatesInFlightRef = React.useRef(false);
  
-@@ -118,20 +120,20 @@ export const useMenuActions = (
+@@ -119,20 +121,20 @@ export const useMenuActions = (
        .then(() => {
          const { available, error } = useUpdateStore.getState();
          if (error) {
@@ -157,7 +129,7 @@ index dd163593c..c27dcc46c 100644
  
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
-@@ -324,7 +326,7 @@ export const useMenuActions = (
+@@ -327,7 +329,7 @@ export const useMenuActions = (
  
          case 'download-logs': {
            void showOpenCodeStatus().catch(() => {
@@ -166,7 +138,7 @@ index dd163593c..c27dcc46c 100644
            });
            break;
          }
-@@ -341,6 +343,7 @@ export const useMenuActions = (
+@@ -344,6 +346,7 @@ export const useMenuActions = (
        setCommandPaletteOpen,
        setSettingsDialogOpen,
        setThemeMode,
@@ -439,10 +411,10 @@ index 66d3248fe..0da47cb94 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 94c7b105d..4065b1272 100644
+index 3876d1294..ca618eb7b 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2109,11 +2109,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2131,11 +2131,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -460,7 +432,7 @@ index 94c7b105d..4065b1272 100644
      }
    },
  
-@@ -2125,11 +2129,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2147,11 +2151,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -479,10 +451,10 @@ index 94c7b105d..4065b1272 100644
    },
  
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
-index a2400d53b..23afbedb3 100644
+index 3e8fbaa57..528843740 100644
 --- a/packages/vscode/src/webviewHtml.ts
 +++ b/packages/vscode/src/webviewHtml.ts
-@@ -219,6 +219,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -228,6 +228,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
          locale = 'fr';
        } else if (detected.indexOf('tr') === 0) {
          locale = 'tr';
@@ -491,7 +463,7 @@ index a2400d53b..23afbedb3 100644
        }
  
        if (locale === 'fr') {
-@@ -243,6 +245,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -252,6 +254,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
            cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
          };
        }
