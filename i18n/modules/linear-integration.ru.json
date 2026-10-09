@@ -42,9 +42,5 @@
  "settings.integrations.linear.sessionComments.label": "Комментарии о сессии",
  "settings.integrations.linear.sessionComments.info": "Добавляет комментарий к задаче, когда сессия начинается, завершается или завершается с ошибкой. Комментарии публикуются, только если у этого сервера есть публичный адрес, чтобы ссылка открывала сессию всем участникам задачи.",
  "settings.integrations.linear.sessionComments.aria": "Публиковать комментарии о статусе сессии в Linear",
- "settings.integrations.linear.sessionComments.loadFailed": "Не удалось загрузить настройки комментариев Linear.",
- "settings.magicPrompts.sidebar.group.linear": "Linear",
- "settings.magicPrompts.sidebar.item.linearIssueReview": "Обзор issue",
- "settings.magicPrompts.page.group.linearIssueReview.title": "Обзор issue",
- "settings.magicPrompts.page.group.linearIssueReview.description": "Промпты, используемые при старте сессии из задачи Linear: видимое сообщение пользователя и скрытые инструкции."
+ "settings.integrations.linear.sessionComments.loadFailed": "Не удалось загрузить настройки комментариев Linear."
 }

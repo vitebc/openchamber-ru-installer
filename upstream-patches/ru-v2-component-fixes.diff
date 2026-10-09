@@ -1,5 +1,5 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index eb6313589..5ecb8e92c 100644
+index 115f6003d..d7a774cd5 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 @@ -287,13 +287,13 @@ export function DesktopHostSwitcherDialog({
@@ -34,10 +34,10 @@ index eb6313589..5ecb8e92c 100644
      const id = defaultHostId || LOCAL_HOST_ID;
      return allHosts.find((h) => h.id === id)?.label || t('desktopHostSwitcher.instance.local');
 diff --git a/packages/ui/src/components/layout/Header.tsx b/packages/ui/src/components/layout/Header.tsx
-index b6fc5f727..fc7243bc0 100644
+index 9b90786de..f0134bc37 100644
 --- a/packages/ui/src/components/layout/Header.tsx
 +++ b/packages/ui/src/components/layout/Header.tsx
-@@ -408,7 +408,7 @@ export const Header: React.FC = () => {
+@@ -409,7 +409,7 @@ export const Header: React.FC = () => {
    }, [contextUsage, currentSessionId, isContextUsageResolvedForSession]);
  
    const [isDesktopServicesOpen, setIsDesktopServicesOpen] = React.useState(false);
@@ -46,7 +46,7 @@ index b6fc5f727..fc7243bc0 100644
    const [currentInstanceIsLocal, setCurrentInstanceIsLocal] = React.useState(true);
    const [remoteUpdateDialogOpen, setRemoteUpdateDialogOpen] = React.useState(false);
    const [remoteUpdateInfo, setRemoteUpdateInfo] = React.useState<UpdateInfo | null>(null);
-@@ -451,7 +451,7 @@ export const Header: React.FC = () => {
+@@ -452,7 +452,7 @@ export const Header: React.FC = () => {
  
      try {
        if (isDesktopLocalOriginActive()) {
@@ -55,7 +55,7 @@ index b6fc5f727..fc7243bc0 100644
          setCurrentInstanceIsLocal(true);
          return;
        }
-@@ -461,20 +461,24 @@ export const Header: React.FC = () => {
+@@ -462,20 +462,24 @@ export const Header: React.FC = () => {
        // the panel it opens can never disagree about which instance this is.
        const cfg = await desktopHostsGet();
        const localOrigin = getLocalDesktopOrigin();
@@ -411,10 +411,10 @@ index 66d3248fe..0da47cb94 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 3876d1294..ca618eb7b 100644
+index 498b3bd75..f48711543 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2131,11 +2131,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2128,11 +2128,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -432,7 +432,7 @@ index 3876d1294..ca618eb7b 100644
      }
    },
  
-@@ -2147,11 +2151,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2144,11 +2148,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
