@@ -53,9 +53,17 @@ for (const f of fs.readdirSync(DST)) {
   if (/^ru-[^/]+\.js$/.test(f)) fs.rmSync(path.join(DST, f));
 }
 
-// 2. Strip ru from the i18n runtime chunk.
-const main = fs.readdirSync(DST).filter((f) => /^useAppFontEffects-[^/]+\.js$/.test(f));
-if (main.length !== 1) fail(`expected one useAppFontEffects chunk, found ${main.length}`);
+// 2. Strip ru from the i18n runtime chunk (discovered by content: since v2.2
+// the useAppFontEffects chunk is only a preload manifest).
+const main = fs.readdirSync(DST).filter((f) => {
+  if (!f.endsWith('.js')) return false;
+  try {
+    return fs.readFileSync(path.join(DST, f), 'utf8').includes('["en",');
+  } catch {
+    return false;
+  }
+});
+if (main.length !== 1) fail(`expected one i18n runtime chunk, found ${main.length}`);
 const mainPath = path.join(DST, main[0]);
 let src = fs.readFileSync(mainPath, 'utf8');
 

@@ -36,8 +36,15 @@ function checkSyntax(file) {
   }
 }
 
-const main = fs.readdirSync(dir).filter((f) => /^useAppFontEffects-[^/]+\.js$/.test(f));
-if (main.length !== 1) fail(`expected one useAppFontEffects chunk, found ${main.length}`);
+const main = fs.readdirSync(dir).filter((f) => {
+  if (!f.endsWith('.js')) return false;
+  try {
+    return fs.readFileSync(path.join(dir, f), 'utf8').includes('["en",');
+  } catch {
+    return false;
+  }
+});
+if (main.length !== 1) fail(`expected one i18n runtime chunk, found ${main.length}`);
 const mainSrc = fs.readFileSync(path.join(dir, main[0]), 'utf8');
 checkSyntax(path.join(dir, main[0]));
 

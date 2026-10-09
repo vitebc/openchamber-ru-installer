@@ -10,8 +10,9 @@
 //   Linux:   <unpacked AppImage>\squashfs-root\resources\web-dist\assets
 //
 // The patcher works on the minified bundles produced by vite:
-//   - useAppFontEffects-*.js  -> i18n runtime (LOCALES, LOCALE_LABEL_KEYS,
-//                                normalizeLocale, dictionary loader chain)
+//   - the i18n runtime chunk (LOCALES, LOCALE_LABEL_KEYS,
+//     normalizeLocale, dictionary loader chain; up to v2.1 in
+//     useAppFontEffects-*.js, since v2.2 in the app entry chunk)
 //   - <locale>-*.js           -> per-locale dictionaries (without ru by default)
 //   - ru-ruinstaller.js       -> bundled here, copied into assets by install
 
@@ -53,11 +54,22 @@ function escapeRegExp(s) {
 }
 
 function findMainChunk(assetsDir) {
-  const names = fs.readdirSync(assetsDir).filter((n) => /^useAppFontEffects-[^/]+\.js$/.test(n));
-  if (names.length !== 1) {
-    throw new Error(`expected exactly one useAppFontEffects chunk, found ${names.length}`);
-  }
-  return path.join(assetsDir, names[0]);
+  // Since v2.2 the i18n runtime no longer lives in a useAppFontEffects chunk
+  // (that file is now only a preload manifest); the runtime sits in the app
+  // entry chunk, whose name is not stable. Discover it by content: the only
+  // chunk containing the LOCALES array.
+  const names = fs.readdirSync(assetsDir).filter((n) => n.endsWith('.js'));
+  const byContent = names.filter((n) => {
+    try {
+      return fs.readFileSync(path.join(assetsDir, n), 'utf8').includes('["en",');
+    } catch {
+      return false;
+    }
+  });
+  if (byContent.length === 1) return path.join(assetsDir, byContent[0]);
+  const legacy = names.filter((n) => /^useAppFontEffects-[^/]+\.js$/.test(n));
+  if (byContent.length === 0 && legacy.length === 1) return path.join(assetsDir, legacy[0]);
+  throw new Error(`expected exactly one i18n runtime chunk, found ${byContent.length} by content (${legacy.length} legacy)`);
 }
 
 function backup(file) {
