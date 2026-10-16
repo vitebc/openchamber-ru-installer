@@ -1,4 +1,13 @@
 {
+ "references.picker.thread.resolved": "Решено",
+ "references.picker.thread.resolvedOneReply": "Решено · 1 ответ",
+ "references.picker.thread.resolvedReplies": "Решено · ответов: {count}",
+ "references.picker.thread.reply": "Ответить",
+ "references.picker.thread.replyPlaceholder": "Напишите ответ",
+ "references.picker.thread.cancel": "Отменить",
+ "references.picker.thread.resolve": "Решить",
+ "references.picker.thread.unresolve": "Вернуть в работу",
+ "references.picker.thread.collapse": "Свернуть",
  "references.picker.title.gitlab.attach": "Привязать из GitLab",
  "references.picker.title.gitlab.worktree": "Начать с GitLab",
  "references.picker.tab.mergeRequests": "Мердж-реквесты",
@@ -18,6 +27,9 @@
  "references.picker.tab.pulls": "Пул-реквесты",
  "references.picker.search.github": "Ищите или вставьте ссылку либо #номер",
  "references.picker.search.linear": "Ищите или вставьте ID задачи либо ссылку",
+ "references.picker.search.mobile.github": "Поиск или #номер",
+ "references.picker.search.mobile.linear": "Поиск или ID задачи",
+ "references.picker.search.mobile.gitlab": "Поиск",
  "references.picker.filter.open": "Открытые",
  "references.picker.filter.state.closed": "Закрытые",
  "references.picker.filter.state.merged": "Слитые",
@@ -109,5 +121,6 @@
  "references.picker.preview.worktree.issue": "Ворктрей получит новую ветку с именем этого issue.",
  "references.picker.preview.worktree.pull": "Ворктрей переключится на ветку этого pull request.",
  "references.picker.preview.reviewers": "Ревьюеры",
- "references.picker.preview.stateMenuAria": "Изменить состояние ({state})"
+ "references.picker.preview.stateMenuAria": "Изменить состояние ({state})",
+ "references.picker.preview.refresh": "Обновить"
 }

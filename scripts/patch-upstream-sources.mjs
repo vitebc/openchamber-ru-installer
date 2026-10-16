@@ -291,7 +291,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -365,6 +365,8 @@ const RUSSIAN_PER_LOCALE = {
     'third-party-integrations': 'thirdPartyIntegrationI18n', 'extension-catalog': 'extensionCatalogI18n',
     'reference-picker': 'referencePickerI18n', 'session-menu-hints': 'sessionMenuHintsI18n',
     environment: 'environmentI18n', 'source-board': 'sourceBoardI18n',
+    'html-render': 'htmlRenderI18n', 'project-actions': 'projectActionsI18n',
+    'project-knowledge': 'projectKnowledgeI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {
@@ -397,8 +399,9 @@ const RUSSIAN_PER_LOCALE = {
     if (fs.existsSync(testFile)) {
       let t = fs.readFileSync(testFile, 'utf8');
       if (!t.includes("'ru'")) {
-        if (!t.includes("'zh-TW', 'tr'] as const")) fail(`${mod} test: locales array marker not found`);
-        t = t.replace("'zh-TW', 'tr'] as const", "'zh-TW', 'tr', 'ru'] as const");
+        const m = t.match(/const locales = \[([^\]]+)\] as const/);
+        if (!m) fail(`${mod} test: locales array marker not found`);
+        t = t.replace(m[0], m[0].replace(/\] as const/, `, 'ru'] as const`));
         fs.writeFileSync(testFile, t);
         console.log(`[patch-upstream] patched ${mod}.i18n.test.ts (ru locale)`);
       } else {
