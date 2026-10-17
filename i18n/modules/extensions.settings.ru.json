@@ -128,5 +128,14 @@
  "settings.extensions.toast.updated": "{name} обновлено до {version}.",
  "settings.extensions.toast.updateFailed": "Не удалось обновить {name}.",
  "settings.extensions.toast.notGit": "Обновлять можно только расширения, установленные из git-URL.",
- "settings.extensions.toast.swapFailed": "Не удалось заменить установленные файлы. Предыдущая версия сохранена."
+ "settings.extensions.toast.swapFailed": "Не удалось заменить установленные файлы. Предыдущая версия сохранена.",
+ "settings.extensions.grid.addTitle": "Добавить расширение",
+ "settings.extensions.grid.addHint": "Папка, ZIP или Git URL",
+ "settings.extensions.grid.actionsAria": "Действия для {name}",
+ "settings.extensions.detail.back": "Назад к расширениям",
+ "settings.extensions.detail.section.details": "Сведения",
+ "settings.extensions.detail.section.permissions": "Разрешения",
+ "settings.extensions.detail.field.source": "Источник",
+ "settings.extensions.detail.field.version": "Версия",
+ "settings.extensions.detail.field.location": "Расположение"
 }

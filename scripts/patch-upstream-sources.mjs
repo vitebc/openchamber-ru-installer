@@ -291,7 +291,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -366,7 +366,9 @@ const RUSSIAN_PER_LOCALE = {
     'reference-picker': 'referencePickerI18n', 'session-menu-hints': 'sessionMenuHintsI18n',
     environment: 'environmentI18n', 'source-board': 'sourceBoardI18n',
     'html-render': 'htmlRenderI18n', 'project-actions': 'projectActionsI18n',
-    'project-knowledge': 'projectKnowledgeI18n',
+    'project-knowledge': 'projectKnowledgeI18n', 'file-content-search': 'fileContentSearchI18n',
+    'git-identity-editor': 'gitIdentityEditorI18n', 'integrations-catalog': 'integrationsCatalogI18n',
+    'settings-layout': 'settingsLayoutI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {

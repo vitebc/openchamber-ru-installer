@@ -1,0 +1,13 @@
+{
+ "sidebarFilesTree.search.mode.aria": "Режим поиска",
+ "sidebarFilesTree.search.mode.names": "Имена файлов",
+ "sidebarFilesTree.search.mode.contents": "Содержимое файлов",
+ "sidebarFilesTree.search.contentsPlaceholder": "Поиск в файлах...",
+ "sidebarFilesTree.search.regexTitle": "Использовать регулярное выражение",
+ "sidebarFilesTree.contentSearch.empty": "Совпадений нет.",
+ "sidebarFilesTree.contentSearch.limit": "Показаны первые совпадения: {count}.",
+ "sidebarFilesTree.contentSearch.deadline": "Поиск остановлен через 30 секунд, поэтому список может быть неполным.",
+ "sidebarFilesTree.contentSearch.unavailable": "Этот сервер не может искать в содержимом файлов: у него нет ripgrep.",
+ "sidebarFilesTree.contentSearch.invalidPattern": "Это регулярное выражение недействительно.",
+ "sidebarFilesTree.contentSearch.failed": "Не удалось выполнить поиск: {message}"
+}

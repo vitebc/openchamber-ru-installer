@@ -59,6 +59,13 @@ const required = [
   'usageStats.metric.cost',
   'chat.messageBody.forkDialog.toast.forked',
   'desktopHostSwitcher.instance.localOpenChamber',
+  // v2.4.0 modules
+  'integrationsCatalog.page.title',
+  'integrationsCatalog.entry.linear.description',
+  'integrationsCatalog.uninstall.description',
+  'settings.gitIdentities.editor.appearance.aria',
+  'sidebarFilesTree.search.mode.aria',
+  'settings.layout.general.desktopApp.title',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

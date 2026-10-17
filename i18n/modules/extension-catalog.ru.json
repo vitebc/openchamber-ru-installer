@@ -3,6 +3,8 @@
  "settings.integrations.extensionCatalog.info": "Дополнительные возможности от команды OpenChamber. Установите расширение здесь, и оно появится там, где вы им пользуетесь. Установленные расширения также перечислены в разделе Настройки → Расширения.",
  "settings.integrations.extensionCatalog.excalidraw.name": "Excalidraw",
  "settings.integrations.extensionCatalog.excalidraw.description": "Рисуйте в файлах .excalidraw и рисунках Obsidian прямо в разделе «Файлы».",
+ "settings.integrations.extensionCatalog.resourceMonitor.name": "Resource Monitor",
+ "settings.integrations.extensionCatalog.resourceMonitor.description": "Процессор и память вашего компьютера, OpenChamber и dev-серверов.",
  "settings.integrations.extensionCatalog.status.paused": "Выключено",
  "settings.integrations.extensionCatalog.status.needsApproval": "Нужно разрешение",
  "settings.integrations.extensionCatalog.actions.enable": "Включить",

@@ -2,8 +2,13 @@
  "chat.htmlRender.fullscreen": "Открыть на весь экран",
  "chat.htmlRender.download": "Скачать как HTML",
  "chat.htmlRender.downloadFailed": "Не удалось сохранить страницу.",
+ "chat.htmlRender.waiting": "Ожидается ваш ответ на странице",
+ "chat.htmlRender.answered": "Ответ: {summary}",
+ "chat.htmlRender.answeredInChat": "Отвечено в чате",
+ "chat.htmlRender.unanswered": "Без ответа",
+ "chat.htmlRender.answerFailed": "Не удалось отправить ответ",
  "settings.openchamber.tools.field.agentRenderTool": "Инструмент отображения для агентов",
  "settings.openchamber.tools.field.agentRenderToolAria": "Инструмент отображения для агентов",
- "settings.openchamber.tools.field.agentRenderToolSummary": "Разрешить агентам показывать графики, таблицы и диаграммы прямо в чате.",
+ "settings.openchamber.tools.field.agentRenderToolSummary": "Разрешить агентам показывать прямо в чате графики, таблицы, диаграммы и макеты интерфейса, а также просить вас выбрать там вариант.",
  "settings.openchamber.tools.field.agentRenderToolInfo": "Страницы работают в песочнице без доступа к вашим сессиям и файлам. Ссылки открываются в вашем браузере."
 }

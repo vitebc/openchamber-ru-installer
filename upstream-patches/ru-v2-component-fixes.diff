@@ -1,8 +1,8 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index 37779622a..529a318ab 100644
+index 2e4af6d88..4fa7a75e9 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-@@ -301,8 +301,8 @@ export function DesktopHostSwitcherDialog({
+@@ -302,8 +302,8 @@ export function DesktopHostSwitcherDialog({
        ...h,
        url: normalizeHostUrl(h.url) || h.url,
      }));
@@ -13,7 +13,7 @@ index 37779622a..529a318ab 100644
  
    React.useEffect(() => {
      return subscribeRuntimeEndpointChanged(() => setRuntimeEndpointEpoch((epoch) => epoch + 1));
-@@ -310,8 +310,12 @@ export function DesktopHostSwitcherDialog({
+@@ -311,8 +311,12 @@ export function DesktopHostSwitcherDialog({
  
    const current = React.useMemo(() => {
      void runtimeEndpointEpoch;
@@ -81,26 +81,10 @@ index e67d5eaa8..6f0ea763c 100644
    React.useEffect(() => {
      void refreshCurrentInstanceLabel();
 diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
-index 3a7cfe6b1..522d403a6 100644
+index fece96458..92a0af83b 100644
 --- a/packages/ui/src/hooks/useMenuActions.ts
 +++ b/packages/ui/src/hooks/useMenuActions.ts
-@@ -8,6 +8,7 @@ import { normalizeContextPanelDirectoryKey, useUIStore } from '@/stores/useUISto
- import { getZoneView, resolveZoneActiveTabId, shownContextModes, zoneOfMode } from '@/lib/workspace/zones';
- import { useUpdateStore } from '@/stores/useUpdateStore';
- import { useThemeSystem } from '@/contexts/useThemeSystem';
-+import { useI18n } from '@/lib/i18n';
- import { sessionEvents } from '@/lib/sessionEvents';
- import { createWorktreeSession } from '@/lib/worktreeSessionCreator';
- import { showOpenCodeStatus } from '@/lib/openCodeStatus';
-@@ -107,6 +108,7 @@ export const useMenuActions = (
-   const setSettingsDialogOpen = useUIStore((s) => s.setSettingsDialogOpen);
-   const setAboutDialogOpen = useUIStore((s) => s.setAboutDialogOpen);
-   const checkForUpdates = useUpdateStore((state) => state.checkForUpdates);
-+  const { t } = useI18n();
-   const { setThemeMode } = useThemeSystem();
-   const checkUpdatesInFlightRef = React.useRef(false);
- 
-@@ -120,20 +122,20 @@ export const useMenuActions = (
+@@ -115,20 +115,20 @@ export const useMenuActions = (
        .then(() => {
          const { available, error } = useUpdateStore.getState();
          if (error) {
@@ -124,25 +108,8 @@ index 3a7cfe6b1..522d403a6 100644
  
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
-@@ -331,7 +333,7 @@ export const useMenuActions = (
- 
-         case 'download-logs': {
-           void showOpenCodeStatus().catch(() => {
--            toast.error('Failed to collect OpenCode status');
-+            toast.error(t('openCodeStatusDialog.toast.collectFailed'));
-           });
-           break;
-         }
-@@ -348,6 +350,7 @@ export const useMenuActions = (
-       setCommandPaletteOpen,
-       setSettingsDialogOpen,
-       setThemeMode,
-+      t,
-       toggleCommandPalette,
-       toggleHelpDialog,
-       toggleSidebar,
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index 0fcb23419..8e37fa9ca 100644
+index 036dbd60a..5ac17e17d 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
 @@ -28,6 +28,7 @@ import { resolveProjectForSessionDirectory, normalizeProjectPath } from '@/lib/p
@@ -186,7 +153,7 @@ index 0fcb23419..8e37fa9ca 100644
    } catch {
      return '';
    }
-@@ -415,6 +422,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -417,6 +424,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -195,7 +162,7 @@ index 0fcb23419..8e37fa9ca 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -465,7 +474,10 @@ export const useTraySync = (): void => {
+@@ -467,7 +476,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -207,7 +174,7 @@ index 0fcb23419..8e37fa9ca 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -555,7 +567,7 @@ export const useTraySync = (): void => {
+@@ -557,7 +569,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -216,7 +183,7 @@ index 0fcb23419..8e37fa9ca 100644
  
    React.useEffect(() => {
      if (!isTrayPlatform() || !isTrayEnabled() || !canUseElectronDesktopIPC()) return;
-@@ -567,7 +579,7 @@ export const useTraySync = (): void => {
+@@ -569,7 +581,7 @@ export const useTraySync = (): void => {
        switch (action.type) {
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
@@ -225,7 +192,7 @@ index 0fcb23419..8e37fa9ca 100644
            });
            break;
        }
-@@ -590,5 +602,5 @@ export const useTraySync = (): void => {
+@@ -592,5 +604,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -405,10 +372,10 @@ index 66d3248fe..0da47cb94 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index c2282aa21..860daddca 100644
+index 8560c894e..1605ae563 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2152,11 +2152,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2141,11 +2141,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -426,7 +393,7 @@ index c2282aa21..860daddca 100644
      }
    },
  
-@@ -2168,11 +2172,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2157,11 +2161,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -445,10 +412,10 @@ index c2282aa21..860daddca 100644
    },
  
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
-index d838f7643..a5f7a0980 100644
+index c1a8688bf..d8086c6a2 100644
 --- a/packages/vscode/src/webviewHtml.ts
 +++ b/packages/vscode/src/webviewHtml.ts
-@@ -228,6 +228,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -236,6 +236,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
          locale = 'fr';
        } else if (detected.indexOf('tr') === 0) {
          locale = 'tr';
@@ -457,7 +424,7 @@ index d838f7643..a5f7a0980 100644
        }
  
        if (locale === 'fr') {
-@@ -252,6 +254,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -260,6 +262,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
            cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
          };
        }
