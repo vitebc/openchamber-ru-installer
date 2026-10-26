@@ -66,6 +66,14 @@ const required = [
   'settings.gitIdentities.editor.appearance.aria',
   'sidebarFilesTree.search.mode.aria',
   'settings.layout.general.desktopApp.title',
+  // v2.5.1 modules
+  'session.newWorktree.actions.startFromRepository.change',
+  'diffFind.previousAria',
+  'filesView.editor.gitHunk.revert',
+  'overview.title',
+  'chat.sessionNotice.restart',
+  'settings.openchamber.defaults.sessionWarming.aria',
+  'stacks.preview.label',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

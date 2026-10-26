@@ -291,7 +291,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'linear-integration', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -359,7 +359,7 @@ const RUSSIAN_PER_LOCALE = {
     routing: 'routingI18n', 'plugin-panel': 'pluginPanelI18n',
     'surface-panel': 'surfacePanelI18n', 'file-artifacts': 'fileArtifactsI18n',
     'usage-stats': 'usageStatsI18n', websearch: 'webSearchI18n',
-    'linear-integration': 'linearIntegrationI18n', 'guest-integrations': 'guestIntegrationsI18n',
+    'first-party-integrations': 'firstPartyIntegrationsI18n', 'guest-integrations': 'guestIntegrationsI18n',
     'extensions.settings': 'extensionsSettingsI18n', 'isolated-spaces': 'isolatedSpacesI18n',
     providers: 'providersI18n', 'mcp-grid': 'mcpGridI18n', 'plugins-grid': 'pluginsGridI18n',
     'third-party-integrations': 'thirdPartyIntegrationI18n', 'extension-catalog': 'extensionCatalogI18n',
@@ -369,6 +369,10 @@ const RUSSIAN_PER_LOCALE = {
     'project-knowledge': 'projectKnowledgeI18n', 'file-content-search': 'fileContentSearchI18n',
     'git-identity-editor': 'gitIdentityEditorI18n', 'integrations-catalog': 'integrationsCatalogI18n',
     'settings-layout': 'settingsLayoutI18n',
+    'change-review': 'changeReviewI18n', 'diff-find': 'diffFindI18n',
+    'file-editor-aids': 'fileEditorAidsI18n', overview: 'overviewI18n',
+    'session-notices': 'sessionNoticesI18n', 'session-warming': 'sessionWarmingI18n',
+    stacks: 'stacksI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {
@@ -389,8 +393,12 @@ const RUSSIAN_PER_LOCALE = {
       }
       lines.push('  },');
       const tail = '} as const;';
-      const idx = src.lastIndexOf(tail);
-      if (idx < 0) fail(`${mod}: module tail not found`);
+      let idx = src.lastIndexOf(tail);
+      if (idx < 0) {
+        // newer module shape ends in a plain `};`
+        idx = src.lastIndexOf('};');
+        if (idx < 0) fail(`${mod}: module tail not found`);
+      }
       src = `${src.slice(0, idx).replace(/\s+$/, '\n') + lines.join('\n')}\n${src.slice(idx)}`;
       fs.writeFileSync(file, src);
       console.log(`[patch-upstream] patched ${mod}.i18n.ts (ru block, ${order.length} keys)`);

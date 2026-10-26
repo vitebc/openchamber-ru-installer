@@ -1,0 +1,7 @@
+{
+ "filesView.editor.gitHunk.revert": "Отменить",
+ "filesView.editor.gitHunk.close": "Закрыть",
+ "filesView.editor.jsonSyntaxError": "Здесь разбор JSON прерывается",
+ "filesView.editor.importNotFound": "Файл для {path} не найден",
+ "filesView.editor.importLookupFailed": "Не удалось найти {path}"
+}
