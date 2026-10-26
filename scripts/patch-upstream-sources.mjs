@@ -452,6 +452,43 @@ const RUSSIAN_PER_LOCALE = {
   ];
   const LOCALES = ['en', 'de', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'uk', 'zh-CN', 'zh-TW', 'tr', 'ru', 'nl', 'ar', 'he'];
   const MESSAGES = path.join(I18N, 'messages');
+  // editor.search.* keys: English fallback for every locale, Russian for ru.
+  {
+    const ruVals = {
+      'editor.search.nextMatch': 'Следующее совпадение',
+      'editor.search.previousMatch': 'Предыдущее совпадение',
+      'editor.search.selectAllMatches': 'Выделить все совпадения',
+      'editor.search.replace': 'Заменить',
+      'editor.search.replaceAll': 'Заменить все',
+      'editor.search.close': 'Закрыть',
+      'editor.search.matchCase': 'Учитывать регистр',
+      'editor.search.regularExpression': 'Регулярное выражение',
+      'editor.search.matchWholeWord': 'Только целые слова',
+    };
+    const enVals = {
+      'editor.search.nextMatch': 'Next match',
+      'editor.search.previousMatch': 'Previous match',
+      'editor.search.selectAllMatches': 'Select all matches',
+      'editor.search.replace': 'Replace',
+      'editor.search.replaceAll': 'Replace all',
+      'editor.search.close': 'Close',
+      'editor.search.matchCase': 'Match case',
+      'editor.search.regularExpression': 'Regular expression',
+      'editor.search.matchWholeWord': 'Match whole word',
+    };
+    const keys = Object.keys(enVals);
+    const anchor = 'chat.toast.opencodeRestartInterrupted.openSession';
+    for (const loc of LOCALES) {
+      const mainFile = path.join(MESSAGES, `${loc}.ts`);
+      const src = fs.readFileSync(mainFile, 'utf8');
+      const vals = loc === 'ru' ? ruVals : enVals;
+      const missing = keys.filter((k) => !src.includes(`'${k}'`) && !src.includes(`"${k}"`));
+      if (missing.length) {
+        insertAfterAnchor(mainFile, anchor, missing.map((k) => [k, vals[k]]), fail);
+        console.log(`[patch-upstream] patched ${loc}.ts (editor.search, ${missing.length})`);
+      }
+    }
+  }
   for (const loc of LOCALES) {
     const mainFile = path.join(MESSAGES, `${loc}.ts`);
     const setFile = path.join(MESSAGES, `${loc}.settings.ts`);

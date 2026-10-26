@@ -80,6 +80,71 @@ index 87f4e1f13..374f10717 100644
  
    React.useEffect(() => {
      void refreshCurrentInstanceLabel();
+diff --git a/packages/ui/src/components/ui/CodeMirrorEditor.tsx b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
+index 0e2b82e7e..0432556a2 100644
+--- a/packages/ui/src/components/ui/CodeMirrorEditor.tsx
++++ b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
+@@ -11,33 +11,35 @@ import { createPortal } from 'react-dom';
+ import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
+ import { createVimModeExtensions } from '@/lib/codemirror/vimModeExtension';
+ import { cn } from '@/lib/utils';
++import { formatMessage, useI18nStore, type I18nKey } from '@/lib/i18n';
+ 
+ /** Patches `title` attributes onto CodeMirror search-panel controls for icon-only tooltips. */
+-const buttonTooltips: Record<string, string> = {
+-  next: 'Next match',
+-  prev: 'Previous match',
+-  select: 'Select all matches',
+-  replace: 'Replace',
+-  replaceAll: 'Replace all',
+-  close: 'Close',
++const buttonTooltips: Record<string, I18nKey> = {
++  next: 'editor.search.nextMatch',
++  prev: 'editor.search.previousMatch',
++  select: 'editor.search.selectAllMatches',
++  replace: 'editor.search.replace',
++  replaceAll: 'editor.search.replaceAll',
++  close: 'editor.search.close',
+ };
+-const checkboxTooltips: Record<string, string> = {
+-  case: 'Match case',
+-  re: 'Regular expression',
+-  word: 'Match whole word',
++const checkboxTooltips: Record<string, I18nKey> = {
++  case: 'editor.search.matchCase',
++  re: 'editor.search.regularExpression',
++  word: 'editor.search.matchWholeWord',
+ };
+ 
+-function patchSearchTooltips(root: HTMLElement) {
++function patchSearchTooltips(root: HTMLElement, dictionary: Record<I18nKey, string>) {
++  const t = (key: I18nKey) => formatMessage(dictionary, key);
+   const panel = root.querySelector('.cm-search');
+   if (!panel) return;
+-  for (const [name, title] of Object.entries(buttonTooltips)) {
++  for (const [name, key] of Object.entries(buttonTooltips)) {
+     const btn = panel.querySelector(`button[name="${name}"]`) as HTMLElement | null;
+-    if (btn && !btn.title) btn.title = title;
++    if (btn && !btn.title) btn.title = t(key);
+   }
+-  for (const [name, title] of Object.entries(checkboxTooltips)) {
++  for (const [name, key] of Object.entries(checkboxTooltips)) {
+     const input = panel.querySelector(`input[name="${name}"]`) as HTMLElement | null;
+     const label = input?.parentElement;
+-    if (label && !label.title) label.title = title;
++    if (label && !label.title) label.title = t(key);
+   }
+ }
+ 
+@@ -572,7 +574,7 @@ export function CodeMirrorEditor({
+       openSearchPanelCompat(view);
+       // Patch tooltips after panel DOM is mounted
+       requestAnimationFrame(() => {
+-        patchSearchTooltips(view.dom);
++        patchSearchTooltips(view.dom, useI18nStore.getState().dictionary);
+         syncSearchPanelStatus(view.dom, view, true);
+       });
+     } else {
 diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
 index 5fa00e4e1..99cbac0a0 100644
 --- a/packages/ui/src/hooks/useMenuActions.ts
@@ -403,6 +468,68 @@ index 0fc2ff44b..e00450b11 100644
 +      toast.error(formatMessage(dictionary, "chat.messageBody.forkDialog.toast.forkFailed"))
      }
    },
+ 
+diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
+index 510796a4c..03fafe3a8 100644
+--- a/packages/ui/src/sync/sync-context.tsx
++++ b/packages/ui/src/sync/sync-context.tsx
+@@ -616,10 +616,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
+ }
+ 
+ /** A location-scoped form names no session to open; the toast then only announces it. */
+-const formToastAction = (sessionID: string, directory: string, formID: string) => (
++const formToastAction = (
++  sessionID: string,
++  directory: string,
++  formID: string,
++  openSessionLabel: string
++) => (
+   sessionID === LOCATION_SCOPED_FORM_SESSION_ID
+     ? undefined
+-    : { label: "Open session", onClick: () => openRequestFromToast(sessionID, directory, formID) }
++    : { label: openSessionLabel, onClick: () => openRequestFromToast(sessionID, directory, formID) }
+ )
+ 
+ /** Blank server strings mean "absent" here, not "empty title". */
+@@ -1469,10 +1474,12 @@ export async function resyncBlockingRequestsForDirectory(
+         const toastKey = getFormToastKey(sessionId, form.id)
+         if (!toastKey || pendingFormToastIds.has(toastKey)) continue
+         pendingFormToastIds.add(toastKey)
++        const dictionary = useI18nStore.getState().dictionary
++        const openSessionLabel = formatMessage(dictionary, 'chat.toast.opencodeRestartInterrupted.openSession')
+         toast.info(form.title, {
+           id: `form-${toastKey}`,
+           description: FORM_TOAST_DESCRIPTION,
+-          action: formToastAction(sessionId, directory, form.id),
++          action: formToastAction(sessionId, directory, form.id, openSessionLabel),
+         })
+       }
+     }
+@@ -1917,10 +1924,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
+   const toastKey = getFormToastKey(sessionID, form.id)
+   if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
+   pendingFormToastIds.add(toastKey)
++  const dictionary = useI18nStore.getState().dictionary
++  const openSessionLabel = formatMessage(dictionary, 'chat.toast.opencodeRestartInterrupted.openSession')
+   toast.info(form.title, {
+     id: `form-${toastKey}`,
+     description: FORM_TOAST_DESCRIPTION,
+-    action: formToastAction(sessionID, directory, form.id),
++    action: formToastAction(sessionID, directory, form.id, openSessionLabel),
+   })
+ }
+ 
+@@ -1940,7 +1949,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
+   toast.info(page.title, {
+     id: `page-${sessionID}:${page.id}`,
+     description: FORM_TOAST_DESCRIPTION,
+-    action: { label: "Open session", onClick: () => openSessionFromToast(sessionID, directory) },
++    action: {
++      label: formatMessage(useI18nStore.getState().dictionary, 'chat.toast.opencodeRestartInterrupted.openSession'),
++      onClick: () => openSessionFromToast(sessionID, directory),
++    },
+   })
+ }
  
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
 index 12cc16c79..b7222cfd7 100644
