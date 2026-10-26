@@ -1,0 +1,4 @@
+{
+ "chat.fileMentionAutocomplete.sessionArchived": "в архиве",
+ "chat.sessionReference.unavailable": "Этой сессии или сообщения нет на этом сервере, или их не удалось прочитать. Ссылка остаётся текстом."
+}

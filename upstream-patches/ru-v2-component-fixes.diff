@@ -365,10 +365,10 @@ index 9f2150349..a30bf5c78 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 36c753e21..e61e76aec 100644
+index 0fc2ff44b..e00450b11 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2191,11 +2191,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2201,11 +2201,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -386,7 +386,7 @@ index 36c753e21..e61e76aec 100644
      }
    },
  
-@@ -2207,11 +2211,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2217,11 +2221,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -405,10 +405,10 @@ index 36c753e21..e61e76aec 100644
    },
  
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
-index 47d78b1c7..a9f755ced 100644
+index 12cc16c79..b7222cfd7 100644
 --- a/packages/vscode/src/webviewHtml.ts
 +++ b/packages/vscode/src/webviewHtml.ts
-@@ -240,6 +240,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -217,6 +217,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
          locale = 'fr';
        } else if (detected.indexOf('tr') === 0) {
          locale = 'tr';
@@ -417,7 +417,7 @@ index 47d78b1c7..a9f755ced 100644
        }
  
        if (locale === 'fr') {
-@@ -264,6 +266,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -241,6 +243,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
            cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
          };
        }

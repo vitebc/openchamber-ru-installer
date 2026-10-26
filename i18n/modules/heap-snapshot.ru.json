@@ -1,0 +1,13 @@
+{
+ "openCodeStatusDialog.heapSnapshot.action": "Сохранить снимок памяти OpenCode",
+ "openCodeStatusDialog.heapSnapshot.hint": "Для отчётов о памяти. Файл может содержать ключи API, промпты и содержимое файлов, поэтому передавайте его только приватно.",
+ "openCodeStatusDialog.heapSnapshot.writing": "Запись снимка. OpenCode приостановлен до завершения.",
+ "openCodeStatusDialog.heapSnapshot.written": "Сохранено в {path}",
+ "openCodeStatusDialog.heapSnapshot.unsupported": "Требуется OpenCode 2.1.4 или новее.",
+ "openCodeStatusDialog.heapSnapshot.failed": "OpenCode не смог записать снимок.",
+ "openCodeStatusDialog.heapSnapshot.reveal": "Показать в папке",
+ "openCodeStatusDialog.heapSnapshot.revealFailed": "Не удалось открыть папку",
+ "openCodeStatusDialog.heapSnapshot.copyPath": "Скопировать путь",
+ "openCodeStatusDialog.heapSnapshot.pathCopied": "Путь скопирован",
+ "openCodeStatusDialog.heapSnapshot.copyFailed": "Не удалось скопировать путь"
+}

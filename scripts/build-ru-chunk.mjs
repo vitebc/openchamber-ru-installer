@@ -74,6 +74,16 @@ const required = [
   'chat.sessionNotice.restart',
   'settings.openchamber.defaults.sessionWarming.aria',
   'stacks.preview.label',
+  // v2.5.2 modules
+  'chat.autocomplete.scope.user',
+  'chat.workStatus.guestView.reading',
+  'openCodeStatusDialog.heapSnapshot.action',
+  'chat.markdown.alert.note',
+  'session.newWorktree.discussionNumber',
+  'chat.fileMentionAutocomplete.sessionArchived',
+  'sessions.sidebar.header.displayMode.keepWorkInPlace',
+  'chat.workflow.state.awaitingApproval',
+  'sessions.sidebar.work.menu.archive',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

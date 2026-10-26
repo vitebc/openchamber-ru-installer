@@ -1,0 +1,19 @@
+{
+ "sessions.sidebar.header.displayMode.keepWorkInPlace": "Также показывать в работе в проектах",
+ "sessions.sidebar.work.rename.failed": "Не удалось переименовать задачу",
+ "sessions.sidebar.work.rename.placeholder": "Название задачи",
+ "sessions.sidebar.work.rename.aria": "Переименовать задачу",
+ "sessions.sidebar.work.done.failed": "Не удалось отметить задачу выполненной",
+ "sessions.sidebar.work.track.failed": "Не удалось поставить задачу в работу",
+ "sessions.sidebar.work.openAria": "Открыть {label}",
+ "sessions.sidebar.work.worktreeMark": "Ворктрей",
+ "sessions.sidebar.work.menu.label": "Меню задачи {label}",
+ "sessions.sidebar.work.menu.rename": "Переименовать задачу",
+ "sessions.sidebar.draft.attachmentsSingle": "Черновик с {count} вложением",
+ "sessions.sidebar.draft.attachmentsPlural": "Черновик с {count} вложениями",
+ "sessions.sidebar.draft.attachmentsMissing": "Не удалось прочитать некоторые вложения черновика.",
+ "sessions.sidebar.draft.discard": "Удалить черновик",
+ "sessions.sidebar.draft.discardFailed": "Не удалось удалить черновик",
+ "sessions.sidebar.draft.openAria": "Открыть черновик: {label}",
+ "sessions.sidebar.draft.tooLarge": "Вложения этого черновика слишком велики для ваших других устройств. Он останется здесь, пока вы не отправите его."
+}
