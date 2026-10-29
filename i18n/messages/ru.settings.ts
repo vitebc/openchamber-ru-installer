@@ -1431,7 +1431,7 @@ export const settingsDict = {
   'settings.projects.sidebar.total': 'Всего {count}',
   'settings.projects.sidebar.actions.addProject': 'Добавить проект',
   'settings.projects.page.empty.noProjects': 'Нет доступных проектов.',
-  'settings.projects.page.section.worktree': 'Worktree',
+  'settings.projects.page.section.worktree': 'ворктрей',
   'settings.projects.page.field.projectName': 'Название проекта',
   'settings.projects.page.field.projectAgent': 'Агент проекта',
   'settings.projects.page.field.projectModel': 'Модель проекта',
