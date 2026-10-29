@@ -291,7 +291,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -382,6 +382,10 @@ const RUSSIAN_PER_LOCALE = {
     'file-editor-aids': 'fileEditorAidsI18n', overview: 'overviewI18n',
     'session-notices': 'sessionNoticesI18n', 'session-warming': 'sessionWarmingI18n',
     stacks: 'stacksI18n',
+    'console-budgets': 'consoleBudgetsI18n',
+    'document-toolbar': 'documentToolbarI18n',
+    'image-tool': 'imageToolI18n',
+    snippets: 'snippetsI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {

@@ -1,0 +1,21 @@
+{
+ "settings.usage.consoleBudgets.title": "Бюджеты OpenCode Console",
+ "settings.usage.consoleBudgets.kind.all": "Все траты",
+ "settings.usage.consoleBudgets.kind.each": "Каждая модель",
+ "settings.usage.consoleBudgets.kind.vendors": "Модели {vendors}",
+ "settings.usage.consoleBudgets.kind.vendorsEach": "Каждая модель из {vendors}",
+ "settings.usage.consoleBudgets.kind.vendorsPrice": "Модели {vendors} от {price} за 1 млн входных токенов",
+ "settings.usage.consoleBudgets.kind.vendorsPriceEach": "Каждая модель из {vendors} от {price} за 1 млн входных токенов",
+ "settings.usage.consoleBudgets.kind.price": "Модели от {price} за 1 млн входных токенов",
+ "settings.usage.consoleBudgets.kind.priceEach": "Каждая модель от {price} за 1 млн входных токенов",
+ "settings.usage.consoleBudgets.kind.modelsMore": "{models} и ещё {count}",
+ "settings.usage.consoleBudgets.kind.modelsEach": "Каждая из {models}",
+ "settings.usage.consoleBudgets.kind.modelsEachMore": "Каждая из {models} и ещё {count}",
+ "settings.usage.consoleBudgets.sharing.you": "Только вы",
+ "settings.usage.consoleBudgets.sharing.everyone": "Общий для всех в {workspace}",
+ "settings.usage.consoleBudgets.sharing.everyoneWorkspace": "Общий для всех в рабочем пространстве",
+ "settings.usage.consoleBudgets.sharing.group": "Общий с вашей группой",
+ "settings.usage.consoleBudgets.left": "Осталось {amount}",
+ "settings.usage.consoleBudgets.reached": "Бюджет исчерпан",
+ "settings.usage.consoleBudgets.spentOf": "{spent} из {limit}"
+}

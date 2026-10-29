@@ -85,7 +85,7 @@
  "settings.classification.source.off.description": "Ничего никуда не отправляется. Защита и Auto скрыты, а сессии переходят в работу, только когда вы перемещаете их.",
  "settings.classification.source.zenPromo.name": "Акция OpenCode Zen",
  "settings.classification.source.zenPromo.description": "Бесплатно в течение ограниченного времени, ключ не нужен. Когда акция закончится, перейдите на ключ.",
- "settings.classification.source.zenPromo.ended": "Акция закончилась.",
+ "settings.classification.source.zenPromo.unavailable": "Временно недоступно. Пока что добавьте ключ API OpenCode Zen.",
  "settings.classification.source.zenKey.name": "Ключ OpenCode Zen",
  "settings.classification.source.zenKey.description": "API-ключ Zen, сохранённый в OpenCode, за счёт вашего баланса Zen.",
  "settings.classification.source.zenKey.missing": "В OpenCode нет API-ключа Zen. Вход через учётную запись OpenCode не подходит: добавьте API-ключ к поставщику OpenCode Zen.",

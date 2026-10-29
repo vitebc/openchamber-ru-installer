@@ -1,5 +1,5 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index a017f7a69..bff17d4b3 100644
+index aebbd572c..0a0f8e1ea 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 @@ -302,8 +302,8 @@ export function DesktopHostSwitcherDialog({
@@ -174,7 +174,7 @@ index 5fa00e4e1..99cbac0a0 100644
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index eede49250..0ed05ddea 100644
+index 42ba16097..fecda8091 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
 @@ -35,6 +35,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
@@ -185,7 +185,7 @@ index eede49250..0ed05ddea 100644
  
  // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
  // streams a compact snapshot of live session/approval state to it via the
-@@ -211,20 +212,26 @@ const buildUsage = (): TrayUsage => {
+@@ -212,20 +213,26 @@ const buildUsage = (): TrayUsage => {
  };
  
  // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
@@ -218,7 +218,7 @@ index eede49250..0ed05ddea 100644
    } catch {
      return '';
    }
-@@ -415,6 +422,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -417,6 +424,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -227,7 +227,7 @@ index eede49250..0ed05ddea 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -463,7 +472,10 @@ export const useTraySync = (): void => {
+@@ -474,7 +483,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -239,7 +239,7 @@ index eede49250..0ed05ddea 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -553,7 +565,7 @@ export const useTraySync = (): void => {
+@@ -558,7 +570,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -248,7 +248,7 @@ index eede49250..0ed05ddea 100644
  
    React.useEffect(() => {
      if (!isTrayPlatform() || !isTrayEnabled() || !canUseElectronDesktopIPC()) return;
-@@ -565,7 +577,7 @@ export const useTraySync = (): void => {
+@@ -570,7 +582,7 @@ export const useTraySync = (): void => {
        switch (action.type) {
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
@@ -257,7 +257,7 @@ index eede49250..0ed05ddea 100644
            });
            break;
        }
-@@ -588,5 +600,5 @@ export const useTraySync = (): void => {
+@@ -593,5 +605,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -430,10 +430,10 @@ index 9f2150349..a30bf5c78 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 0fc2ff44b..e00450b11 100644
+index 9cf520137..b3fabd8f1 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2201,11 +2201,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2501,11 +2501,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -451,7 +451,7 @@ index 0fc2ff44b..e00450b11 100644
      }
    },
  
-@@ -2217,11 +2221,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2517,11 +2521,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -470,10 +470,10 @@ index 0fc2ff44b..e00450b11 100644
    },
  
 diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
-index 510796a4c..03fafe3a8 100644
+index c5663c683..a24ec5276 100644
 --- a/packages/ui/src/sync/sync-context.tsx
 +++ b/packages/ui/src/sync/sync-context.tsx
-@@ -616,10 +616,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
+@@ -625,10 +625,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
  }
  
  /** A location-scoped form names no session to open; the toast then only announces it. */
@@ -491,7 +491,7 @@ index 510796a4c..03fafe3a8 100644
  )
  
  /** Blank server strings mean "absent" here, not "empty title". */
-@@ -1469,10 +1474,12 @@ export async function resyncBlockingRequestsForDirectory(
+@@ -1513,10 +1518,12 @@ export async function resyncBlockingRequestsForDirectory(
          const toastKey = getFormToastKey(sessionId, form.id)
          if (!toastKey || pendingFormToastIds.has(toastKey)) continue
          pendingFormToastIds.add(toastKey)
@@ -505,7 +505,7 @@ index 510796a4c..03fafe3a8 100644
          })
        }
      }
-@@ -1917,10 +1924,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
+@@ -1961,10 +1968,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
    const toastKey = getFormToastKey(sessionID, form.id)
    if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
    pendingFormToastIds.add(toastKey)
@@ -519,7 +519,7 @@ index 510796a4c..03fafe3a8 100644
    })
  }
  
-@@ -1940,7 +1949,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
+@@ -1984,7 +1993,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
    toast.info(page.title, {
      id: `page-${sessionID}:${page.id}`,
      description: FORM_TOAST_DESCRIPTION,

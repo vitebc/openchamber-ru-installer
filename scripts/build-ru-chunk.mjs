@@ -84,6 +84,11 @@ const required = [
   'sessions.sidebar.header.displayMode.keepWorkInPlace',
   'chat.workflow.state.awaitingApproval',
   'sessions.sidebar.work.menu.archive',
+  // v2.5.3 modules
+  'settings.usage.consoleBudgets.title',
+  'documentToolbar.moreActions',
+  'settings.openchamber.tools.field.agentImageTool',
+  'snippets.field.name',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {
