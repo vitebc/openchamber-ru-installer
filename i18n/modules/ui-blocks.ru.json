@@ -1,0 +1,17 @@
+{
+ "chat.uiBlock.invalid": "Не удалось отобразить этот блок. Его исходный код:",
+ "chat.uiBlock.sent": "Отправлено",
+ "chat.uiBlock.sendFailed": "Не отправлено. Попробуйте ещё раз.",
+ "chat.uiBlock.chosenCount": "Выбрано {count} из {total}",
+ "chat.uiBlock.sendChosen": "Отправить выбранное",
+ "chat.uiBlock.note.add": "Добавить комментарий",
+ "chat.uiBlock.note.placeholder": "Что ещё учесть",
+ "chat.uiBlock.note.label": "Комментарий",
+ "chat.uiBlock.change": "Изменить",
+ "chat.uiBlock.note.answerOnly": "Ответить только комментарием",
+ "chat.uiBlock.progress.ofTotal": "{value} из {max}",
+ "chat.uiBlock.chart.changeSince": "{change} с {label}",
+ "chat.uiBlock.chart.largest": "Наибольшее",
+ "chat.uiBlock.chart.average": "Среднее",
+ "chat.uiBlock.chart.total": "Итого"
+}

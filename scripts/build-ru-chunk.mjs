@@ -89,6 +89,13 @@ const required = [
   'documentToolbar.moreActions',
   'settings.openchamber.tools.field.agentImageTool',
   'snippets.field.name',
+  // v2.6.0 modules
+  'chat.agentStatus.thinking',
+  'settings.openchamber.defaults.compaction.title',
+  'chat.secretRequest.inputLabel',
+  'sessions.sidebar.sections.alsoInProjects',
+  'chat.uiBlock.sent',
+  'updateDialog.canary.version',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

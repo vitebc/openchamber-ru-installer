@@ -427,8 +427,6 @@
  "integrationsCatalog.entry.windmill.details": "Подключите Windmill, чтобы агент мог запускать ваши скрипты и процессы и работать с ресурсами вашего рабочего пространства.",
  "integrationsCatalog.entry.resource-monitor.description": "Наблюдение за CPU и памятью вашей машины, OpenChamber и дев-серверов",
  "integrationsCatalog.entry.resource-monitor.details": "Установите расширение Resource Monitor — панель с живыми данными о CPU и памяти вашей машины, OpenChamber, OpenCode и запущенных ими dev-серверах, а также кнопкой «Остановить» для команд, которые вышли из-под контроля. Оно работает в веб-версии и в десктопном приложении.",
- "integrationsCatalog.entry.opencode-claude.description": "Использование плана Claude Pro или Max через Claude Code CLI",
- "integrationsCatalog.entry.opencode-claude.details": "Установите плагин, чтобы получить провайдер Claude Code в OpenCode. Запросы идут через официальный Claude Agent SDK и claude CLI на вашей машине, поэтому API-ключ не нужен; расходуются лимиты вашего тарифа Claude.",
  "integrationsCatalog.entry.opencode-search-providers.description": "Поиск в интернете через SearXNG, Brave Search, Kagi, Perplexity, Linkup и Serper",
  "integrationsCatalog.entry.opencode-search-providers.details": "Добавляет шесть провайдеров во встроенный веб-поиск OpenCode: ваш собственный сервер SearXNG, Brave Search, Kagi, Perplexity Search, Linkup и Serper. После установки добавьте ключ или адрес вашего сервера SearXNG в разделе «Настройки → Поиск в интернете», и провайдер появится среди вариантов поиска."
 }

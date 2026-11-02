@@ -7,6 +7,7 @@
  "chat.htmlRender.waiting": "Ожидается ваш ответ на странице",
  "chat.htmlRender.answered": "Ответ: {summary}",
  "chat.htmlRender.answeredInChat": "Отвечено в чате",
+ "chat.htmlRender.chatSentEarlier": "Вы писали в чате до этой страницы",
  "chat.htmlRender.unanswered": "Без ответа",
  "chat.htmlRender.answerFailed": "Не удалось отправить ответ",
  "settings.openchamber.tools.field.agentRenderTool": "Инструмент отображения для агентов",

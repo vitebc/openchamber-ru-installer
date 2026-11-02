@@ -276,6 +276,35 @@ function moduleBlockKeys(src, locale) {
   return keys;
 }
 
+// Some upstream module files (e.g. ui-blocks) put a whole locale block on one
+// line. Expand every single-line `xx: { 'k': 'v', ... },` into one key per
+// line so the block parsers below (and the ru insertion) can do their job.
+{
+  const MESSAGES = path.join(I18N, 'messages');
+  const entryRe = /(['"])((?:\\.|(?!\1).)*)\1\s*:\s*(['"])((?:\\.|(?!\3).)*)\3/g;
+  for (const f of fs.readdirSync(MESSAGES)) {
+    if (!f.endsWith('.i18n.ts') || f.endsWith('.test.ts')) continue;
+    const file = path.join(MESSAGES, f);
+    const src = fs.readFileSync(file, 'utf8');
+    const out = [];
+    let changed = false;
+    for (const line of src.split('\n')) {
+      const m = line.match(/^(\s*)('?[\w-]+'?): \{ (.*) \}(,?)$/);
+      if (!m) { out.push(line); continue; }
+      const entries = [...m[3].matchAll(entryRe)];
+      if (!entries.length) { out.push(line); continue; }
+      changed = true;
+      out.push(`${m[1]}${m[2]}: {`);
+      for (const e of entries) out.push(`${m[1]}  '${e[2]}': '${e[4]}',`);
+      out.push(`${m[1]}}${m[4] ?? ''}`);
+    }
+    if (changed) {
+      fs.writeFileSync(file, out.join('\n'));
+      console.log(`[patch-upstream] normalized single-line locale blocks in ${f}`);
+    }
+  }
+}
+
 // ---- pre-patch audit: fail once with the COMPLETE list of untranslated keys ----
 {
   const MESSAGES = path.join(I18N, 'messages');
@@ -291,7 +320,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -386,6 +415,12 @@ const RUSSIAN_PER_LOCALE = {
     'document-toolbar': 'documentToolbarI18n',
     'image-tool': 'imageToolI18n',
     snippets: 'snippetsI18n',
+    'agent-status': 'agentStatusI18n',
+    'compaction-settings': 'compactionSettingsI18n',
+    'secret-request': 'secretRequestI18n',
+    'sidebar-sections': 'sidebarSectionsI18n',
+    'ui-blocks': 'uiBlocksI18n',
+    'update-dialog-canary': 'updateDialogCanaryI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {

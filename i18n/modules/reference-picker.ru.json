@@ -128,5 +128,8 @@
  "references.picker.preview.worktree.pull": "Ворктрей переключится на ветку этого pull request.",
  "references.picker.preview.reviewers": "Ревьюеры",
  "references.picker.preview.stateMenuAria": "Изменить состояние ({state})",
- "references.picker.preview.refresh": "Обновить"
+ "references.picker.preview.refresh": "Обновить",
+ "references.link.copy": "Копировать ссылку",
+ "references.link.copied": "Ссылка скопирована",
+ "references.link.copyFailed": "Не удалось скопировать ссылку"
 }

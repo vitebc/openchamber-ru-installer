@@ -15,5 +15,14 @@
  "filesView.artifact.table.empty": "В этом файле нет строк.",
  "filesView.artifact.binary.title": "Нет предпросмотра для этого файла",
  "filesView.artifact.binary.description": "OpenChamber не декодирует файлы такого типа. Скачайте его, чтобы открыть в другом приложении.",
- "filesView.artifact.binary.descriptionWithType": "OpenChamber не декодирует файлы {extension}. Скачайте его, чтобы открыть в другом приложении."
+ "filesView.artifact.binary.descriptionWithType": "OpenChamber не декодирует файлы {extension}. Скачайте его, чтобы открыть в другом приложении.",
+ "filesView.artifact.pdf.pagesSingle": "{pages} страница",
+ "filesView.artifact.pdf.pagesPlural": "Страниц: {pages}",
+ "filesView.artifact.pdf.pageLabel": "Страница {page} файла {name}",
+ "filesView.artifact.pdf.loadFailed": "Этот PDF нельзя показать здесь. Скачайте его, чтобы открыть в другом приложении.",
+ "filesView.artifact.state.loading": "Загрузка",
+ "filesView.artifact.state.readFailed": "Не удалось прочитать {name}",
+ "filesView.artifact.state.retry": "Повторить",
+ "filesView.artifact.image.loadFailed": "Это изображение нельзя показать",
+ "filesView.artifact.image.loadFailedDescription": "Возможно, файл повреждён или в формате, который здесь нельзя отобразить."
 }

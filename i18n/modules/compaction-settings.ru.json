@@ -1,0 +1,15 @@
+{
+ "settings.openchamber.defaults.compaction.title": "Сжатие",
+ "settings.openchamber.defaults.compaction.auto": "Сжимать автоматически",
+ "settings.openchamber.defaults.compaction.autoInfo": "Когда сессия приближается к лимиту контекста модели, OpenCode сам делает её сводку — и ещё раз, когда провайдер отклоняет запрос как слишком длинный. Если функция выключена, сжимает только /compact, а сессия, дошедшая до лимита, останавливается с ошибкой.",
+ "settings.openchamber.defaults.compaction.projectNote": "Действует для всех проектов. Проект, у которого эти параметры заданы в собственной конфигурации OpenCode, сохраняет свои значения.",
+ "settings.openchamber.defaults.compaction.buffer": "Запас до лимита",
+ "settings.openchamber.defaults.compaction.bufferInfo": "Какая часть окна контекста модели остаётся свободной. Сжатие начинается, когда остальное заполняется, поэтому при запасе 20% оно стартует на 80% заполнения. По умолчанию OpenCode оставляет свободными 15%, минимум 16K.",
+ "settings.openchamber.defaults.compaction.bufferDefault": "По умолчанию (15%)",
+ "settings.openchamber.defaults.compaction.keep": "Сохраняемый недавний контекст",
+ "settings.openchamber.defaults.compaction.keepInfo": "Сколько последних сообщений остаётся дословно рядом со сводкой после сжатия. Чем больше, тем точнее сохраняться недавние детали, но тем меньше места останется для новой работы.",
+ "settings.openchamber.defaults.compaction.keepDefault": "По умолчанию ({count})",
+ "settings.openchamber.defaults.compaction.tokens": "{count} токенов",
+ "settings.openchamber.defaults.compaction.background": "Сжимать в фоне",
+ "settings.openchamber.defaults.compaction.backgroundInfo": "Экспериментальная функция OpenCode. Когда сессия приближается к сжатию, OpenCode заранее пишет сводку и подставляет её, когда приходит черёд, поэтому сессия не прерывается. Сводка, которая так и не понадобилась, всё равно расходует токены. Сессии меньше примерно 64K токенов этого не делают."
+}

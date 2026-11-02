@@ -24,5 +24,20 @@
  "settings.integrations.guests.toast.authorizationFailed": "Время авторизации {name} истекло.",
  "settings.integrations.guests.toast.clientRequired": "Сначала сохраните client ID.",
  "settings.integrations.guests.toast.tokenRequired": "Сначала вставьте API-токен.",
- "settings.integrations.guests.toast.tokenInvalid": "Проверка токена расширением не удалась. Проверьте права токена и URL проверки, заданный расширением."
+ "settings.integrations.guests.toast.tokenInvalid": "Проверка токена расширением не удалась. Проверьте права токена и URL проверки, заданный расширением.",
+ "settings.integrations.channels.description": "Доставляет уведомления, которые OpenChamber вам показывает, через расширение {name}.",
+ "settings.integrations.channels.status.invalid": "Учётная запись требует внимания",
+ "settings.integrations.channels.account": "{account} на {instance}",
+ "settings.integrations.channels.invalid.hint": "{name} отклонил токен учётной записи. Подключите заново с новым токеном.",
+ "settings.integrations.channels.invalid.movedHint": "{name} теперь доставляет уведомления через другой сервер, а не тот, к которому была подключена эта учётная запись. Подключите заново.",
+ "settings.integrations.channels.toast.usernameInvalid": "{name} не может войти с этим именем пользователя. Используйте латинские буквы, цифры и знаки препинания, кроме «:».",
+ "settings.integrations.channels.field.token.info": "Вставьте токен для этой учётной записи. OpenChamber хранит его на этом компьютере; сервис расширения его не видит и обращается к серверу только через OpenChamber.",
+ "settings.integrations.channels.field.token.scopes": "Требования к токену:",
+ "settings.integrations.channels.actions.reconnect": "Подключить заново",
+ "settings.integrations.channels.toast.tokenRefused": "{name} отклонил этот токен.",
+ "settings.integrations.channels.toast.instanceRequired": "Сначала введите адрес сервера.",
+ "settings.integrations.channels.toast.unsupportedInstance": "{name} не может доставлять уведомления на этот сервер.",
+ "settings.integrations.channels.toast.unavailable": "Расширение {name} сейчас не отвечает. Попробуйте снова через минуту.",
+ "settings.integrations.channels.toast.connectFailed": "Не удалось подключить {name}.",
+ "settings.integrations.channels.toast.loadFailed": "Не удалось загрузить каналы уведомлений."
 }

@@ -18,6 +18,7 @@
  "chat.workflow.actionFailed": "Воркфлоу не выполнил это действие.",
  "chat.workflow.phase.unphased": "Другие агенты",
  "chat.workflow.unavailable": "Этот прогон воркфлоу больше нет на сервере.",
+ "chat.workflow.turnedOff": "Воркфлоу отключены. Включите инструмент воркфлоу в разделе «Настройки → Общие → Инструменты OpenChamber».",
  "chat.workflow.loading": "Загрузка воркфлоу",
  "chat.workflow.loadFailed": "Не удалось загрузить этот прогон воркфлоу.",
  "chat.workflow.report.completed": "Воркфлоу завершен: {name}",
