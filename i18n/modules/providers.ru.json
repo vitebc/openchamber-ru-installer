@@ -25,6 +25,8 @@
  "settings.providers.card.status.environment": "Из переменных окружения",
  "settings.providers.card.status.signInNeeded": "Вход не выполнен",
  "settings.providers.card.status.reauthNeeded": "Войдите снова",
+ "settings.providers.card.status.noModels": "Нет моделей",
+ "settings.providers.page.models.none": "OpenCode не показывает моделей у этого провайдера.",
  "settings.providers.card.source.project": "Проект",
  "settings.providers.page.back": "Все провайдеры",
  "settings.providers.page.configuredIn": "Настроено в: {sources}",

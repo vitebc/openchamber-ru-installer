@@ -1,6 +1,8 @@
 {
- "chat.uiBlock.invalid": "Не удалось отобразить этот блок. Его исходный код:",
+ "chat.uiBlock.invalid": "Не удалось отрисовать этот блок.",
+ "chat.uiBlock.source": "Источник",
  "chat.uiBlock.sent": "Отправлено",
+ "chat.uiBlock.send": "Отправить",
  "chat.uiBlock.sendFailed": "Не отправлено. Попробуйте ещё раз.",
  "chat.uiBlock.chosenCount": "Выбрано {count} из {total}",
  "chat.uiBlock.sendChosen": "Отправить выбранное",

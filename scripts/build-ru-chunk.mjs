@@ -96,6 +96,9 @@ const required = [
   'sessions.sidebar.sections.alsoInProjects',
   'chat.uiBlock.sent',
   'updateDialog.canary.version',
+  // v2.6.1
+  'review.fileMark.one',
+  'chat.uiBlock.source',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

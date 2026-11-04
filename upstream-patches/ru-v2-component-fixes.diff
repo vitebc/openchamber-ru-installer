@@ -174,10 +174,10 @@ index 8674392f0..b2c245d3a 100644
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index e891fdd0c..ce707e7ee 100644
+index b4df85e70..cde3bbf95 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
-@@ -38,6 +38,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
+@@ -44,6 +44,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
  import type { ProjectEntry } from '@/lib/api/types';
  import type { WorktreeMetadata } from '@/types/worktree';
  import { toast } from '@/components/ui';
@@ -185,7 +185,7 @@ index e891fdd0c..ce707e7ee 100644
  
  // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
  // streams a compact snapshot of live session/approval state to it via the
-@@ -217,20 +218,26 @@ const buildUsage = (): TrayUsage => {
+@@ -226,20 +227,26 @@ const buildUsage = (): TrayUsage => {
  };
  
  // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
@@ -218,7 +218,7 @@ index e891fdd0c..ce707e7ee 100644
    } catch {
      return '';
    }
-@@ -443,6 +450,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -467,6 +474,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -227,7 +227,7 @@ index e891fdd0c..ce707e7ee 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -509,7 +518,10 @@ export const useTraySync = (): void => {
+@@ -547,7 +556,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -239,7 +239,7 @@ index e891fdd0c..ce707e7ee 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -593,7 +605,7 @@ export const useTraySync = (): void => {
+@@ -622,7 +634,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -247,9 +247,9 @@ index e891fdd0c..ce707e7ee 100644
 +  }, [t]);
  
    React.useEffect(() => {
-     if (!isTrayPlatform() || !isTrayEnabled() || !canUseElectronDesktopIPC()) return;
-@@ -605,7 +617,7 @@ export const useTraySync = (): void => {
-       switch (action.type) {
+     if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
+@@ -640,7 +652,7 @@ export const useTraySync = (): void => {
+           break;
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
 -            toast.error('Failed to respond to permission request');
@@ -257,7 +257,7 @@ index e891fdd0c..ce707e7ee 100644
            });
            break;
        }
-@@ -628,5 +640,5 @@ export const useTraySync = (): void => {
+@@ -672,5 +684,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -430,10 +430,10 @@ index fe640046c..d9f421535 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 2ca253423..6909a690c 100644
+index d39c1253e..6932a1267 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2667,11 +2667,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2661,11 +2661,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -451,7 +451,7 @@ index 2ca253423..6909a690c 100644
      }
    },
  
-@@ -2683,11 +2687,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2677,11 +2681,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -470,10 +470,10 @@ index 2ca253423..6909a690c 100644
    },
  
 diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
-index 87e145a1a..6f78e0d5c 100644
+index b52881a2c..cf986f98c 100644
 --- a/packages/ui/src/sync/sync-context.tsx
 +++ b/packages/ui/src/sync/sync-context.tsx
-@@ -628,10 +628,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
+@@ -644,10 +644,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
  }
  
  /** A location-scoped form names no session to open; the toast then only announces it. */
@@ -491,7 +491,7 @@ index 87e145a1a..6f78e0d5c 100644
  )
  
  /** Blank server strings mean "absent" here, not "empty title". */
-@@ -1521,10 +1526,12 @@ export async function resyncBlockingRequestsForDirectory(
+@@ -1537,10 +1542,12 @@ export async function resyncBlockingRequestsForDirectory(
          const toastKey = getFormToastKey(sessionId, form.id)
          if (!toastKey || pendingFormToastIds.has(toastKey)) continue
          pendingFormToastIds.add(toastKey)
@@ -505,7 +505,7 @@ index 87e145a1a..6f78e0d5c 100644
          })
        }
      }
-@@ -1970,10 +1977,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
+@@ -1985,10 +1992,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
    const toastKey = getFormToastKey(sessionID, form.id)
    if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
    pendingFormToastIds.add(toastKey)
@@ -519,7 +519,7 @@ index 87e145a1a..6f78e0d5c 100644
    })
  }
  
-@@ -1993,7 +2002,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
+@@ -2004,7 +2013,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
    toast.info(page.title, {
      id: `page-${sessionID}:${page.id}`,
      description: FORM_TOAST_DESCRIPTION,

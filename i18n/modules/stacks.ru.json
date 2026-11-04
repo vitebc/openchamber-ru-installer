@@ -1,4 +1,13 @@
 {
+ "sourceBoard.merge.inQueue": "В очереди мержа",
+ "sourceBoard.merge.queuePosition": "В очереди мержа · {position}",
+ "sourceBoard.merge.autoMerge": "Авто-мерж включён",
+ "sourceBoard.merge.cancel": "Отменить мерж",
+ "sourceBoard.toast.autoMerge": "Авто-мерж включён для {reference}",
+ "sourceBoard.toast.mergeCancelled": "Мерж отменён для {reference}",
+ "sourceBoard.toast.mergeCancelFailed": "Не удалось отменить мерж для {reference}",
+ "settings.notifications.pullRequests.label": "Pull request'ы, которые вы мержите",
+ "settings.notifications.pullRequests.info": "Уведомлять, когда pull request смержен, закрыт, удалён из очереди мержа или когда его проверки завершились с ошибкой.",
  "stacks.preview.label": "Стек",
  "stacks.preview.position": "{position} из {size}",
  "stacks.preview.trunk": "Ветка, на которую ложится стек",

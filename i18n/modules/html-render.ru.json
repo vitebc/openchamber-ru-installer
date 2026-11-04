@@ -9,6 +9,7 @@
  "chat.htmlRender.answeredInChat": "Отвечено в чате",
  "chat.htmlRender.chatSentEarlier": "Вы писали в чате до этой страницы",
  "chat.htmlRender.unanswered": "Без ответа",
+ "chat.htmlRender.notDrawn": "Отправлено агенту на исправление",
  "chat.htmlRender.answerFailed": "Не удалось отправить ответ",
  "settings.openchamber.tools.field.agentRenderTool": "Инструмент отображения для агентов",
  "settings.openchamber.tools.field.agentRenderToolAria": "Инструмент отображения для агентов",
