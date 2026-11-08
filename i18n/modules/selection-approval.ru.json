@@ -1,0 +1,5 @@
+{
+ "chat.textSelection.title.approveSelection": "Схвалить выделенное",
+ "settings.openchamber.visual.field.selectionApprovalText": "Текст схваления выделенного",
+ "settings.openchamber.visual.field.selectionApprovalTextInfo": "Собственное сообщение для действия схваления выделенного текста ассистента. Оставьте пустым, чтобы использовать значение по умолчанию."
+}

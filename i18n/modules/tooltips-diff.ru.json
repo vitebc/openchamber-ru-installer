@@ -1,0 +1,18 @@
+{
+ "contextTooltips.diff.scope": "Выбрать, какие изменения показать",
+ "contextTooltips.diff.expandAll": "Развернуть все файлы",
+ "contextTooltips.diff.collapseAll": "Свернуть все файлы",
+ "contextTooltips.diff.review": "Запустить сессию ревью для этих изменений",
+ "contextTooltips.diff.walkthrough": "Пройтись по этим изменениям шаг за шагом",
+ "contextTooltips.diff.reviewSubmit": "Написать и отправить своё ревью",
+ "contextTooltips.diff.branchChoose": "Выбрать ветку для сравнения",
+ "contextTooltips.diff.branchCompared": "Сравнение с {branch}",
+ "contextTooltips.diff.commitShown": "Показывается коммит {hash}",
+ "contextTooltips.diff.hunkStage": "Добавить это изменение в индекс",
+ "contextTooltips.diff.hunkUnstage": "Убрать это изменение из индекса",
+ "contextTooltips.diff.hunkDiscard": "Отбросить это изменение",
+ "contextTooltips.diff.openAsProject": "Добавить эту папку в ваши проекты",
+ "contextTooltips.diff.attachThread": "Добавить это обсуждение к вашему сообщению",
+ "contextTooltips.diff.resolveThread": "Отметить это обсуждение как решённое",
+ "contextTooltips.diff.unresolveThread": "Снова открыть это обсуждение"
+}

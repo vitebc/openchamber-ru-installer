@@ -1,0 +1,10 @@
+{
+ "contextTooltips.panel.showFileTree": "Показать дерево файлов",
+ "contextTooltips.panel.hideFileTree": "Скрыть дерево файлов",
+ "contextTooltips.panel.showFileEditor": "Показать редактор файлов",
+ "contextTooltips.panel.hideFileEditor": "Скрыть редактор файлов",
+ "contextTooltips.panel.releaseSurface": "Перестать управлять поверхностью",
+ "contextTooltips.panel.reconnectSurface": "Переподключиться к поверхности",
+ "contextTooltips.panel.chooseWalkthroughModel": "Выбрать модель для этого разбора",
+ "contextTooltips.panel.chooseEffort": "Выбрать уровень рассуждений"
+}

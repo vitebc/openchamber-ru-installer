@@ -81,13 +81,13 @@ index 87f4e1f13..374f10717 100644
    React.useEffect(() => {
      void refreshCurrentInstanceLabel();
 diff --git a/packages/ui/src/components/ui/CodeMirrorEditor.tsx b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
-index 8baab8a7d..dbf1eb3b3 100644
+index 235f8cc82..3a8d2e1ea 100644
 --- a/packages/ui/src/components/ui/CodeMirrorEditor.tsx
 +++ b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
-@@ -12,33 +12,35 @@ import { AttachedOverlayScrollbar } from '@/components/ui/AttachedOverlayScrollb
- import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
+@@ -13,33 +13,35 @@ import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
  import { createVimModeExtensions } from '@/lib/codemirror/vimModeExtension';
  import { cn } from '@/lib/utils';
+ import { searchKeymapWithFindShortcut } from '@/lib/codemirror/findShortcut';
 +import { formatMessage, useI18nStore, type I18nKey } from '@/lib/i18n';
  
  /** Patches `title` attributes onto CodeMirror search-panel controls for icon-only tooltips. */
@@ -136,7 +136,7 @@ index 8baab8a7d..dbf1eb3b3 100644
    }
  }
  
-@@ -590,7 +592,7 @@ export function CodeMirrorEditor({
+@@ -589,7 +591,7 @@ export function CodeMirrorEditor({
        openSearchPanelCompat(view);
        // Patch tooltips after panel DOM is mounted
        requestAnimationFrame(() => {
@@ -146,10 +146,10 @@ index 8baab8a7d..dbf1eb3b3 100644
        });
      } else {
 diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
-index 8674392f0..b2c245d3a 100644
+index cd61d5c61..583bd7eaf 100644
 --- a/packages/ui/src/hooks/useMenuActions.ts
 +++ b/packages/ui/src/hooks/useMenuActions.ts
-@@ -117,20 +117,20 @@ export const useMenuActions = (
+@@ -127,20 +127,20 @@ export const useMenuActions = (
        .then(() => {
          const { available, error } = useUpdateStore.getState();
          if (error) {
@@ -174,10 +174,10 @@ index 8674392f0..b2c245d3a 100644
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index b4df85e70..cde3bbf95 100644
+index 86750ff4a..778d8b123 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
-@@ -44,6 +44,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
+@@ -45,6 +45,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
  import type { ProjectEntry } from '@/lib/api/types';
  import type { WorktreeMetadata } from '@/types/worktree';
  import { toast } from '@/components/ui';
@@ -185,7 +185,7 @@ index b4df85e70..cde3bbf95 100644
  
  // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
  // streams a compact snapshot of live session/approval state to it via the
-@@ -226,20 +227,26 @@ const buildUsage = (): TrayUsage => {
+@@ -227,20 +228,26 @@ const buildUsage = (): TrayUsage => {
  };
  
  // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
@@ -218,7 +218,7 @@ index b4df85e70..cde3bbf95 100644
    } catch {
      return '';
    }
-@@ -467,6 +474,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -469,6 +476,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -227,7 +227,7 @@ index b4df85e70..cde3bbf95 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -547,7 +556,10 @@ export const useTraySync = (): void => {
+@@ -551,7 +560,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -239,7 +239,7 @@ index b4df85e70..cde3bbf95 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -622,7 +634,7 @@ export const useTraySync = (): void => {
+@@ -626,7 +638,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -248,7 +248,7 @@ index b4df85e70..cde3bbf95 100644
  
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
-@@ -640,7 +652,7 @@ export const useTraySync = (): void => {
+@@ -644,7 +656,7 @@ export const useTraySync = (): void => {
            break;
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
@@ -257,7 +257,7 @@ index b4df85e70..cde3bbf95 100644
            });
            break;
        }
-@@ -672,5 +684,5 @@ export const useTraySync = (): void => {
+@@ -676,5 +688,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -430,10 +430,10 @@ index fe640046c..d9f421535 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index d39c1253e..6932a1267 100644
+index ee95db7a3..4d89d8967 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2661,11 +2661,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2687,11 +2687,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -451,7 +451,7 @@ index d39c1253e..6932a1267 100644
      }
    },
  
-@@ -2677,11 +2681,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2703,11 +2707,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -470,10 +470,10 @@ index d39c1253e..6932a1267 100644
    },
  
 diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
-index b52881a2c..cf986f98c 100644
+index f7fa5153b..5774c36c1 100644
 --- a/packages/ui/src/sync/sync-context.tsx
 +++ b/packages/ui/src/sync/sync-context.tsx
-@@ -644,10 +644,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
+@@ -648,10 +648,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
  }
  
  /** A location-scoped form names no session to open; the toast then only announces it. */
@@ -491,7 +491,7 @@ index b52881a2c..cf986f98c 100644
  )
  
  /** Blank server strings mean "absent" here, not "empty title". */
-@@ -1537,10 +1542,12 @@ export async function resyncBlockingRequestsForDirectory(
+@@ -1541,10 +1546,12 @@ export async function resyncBlockingRequestsForDirectory(
          const toastKey = getFormToastKey(sessionId, form.id)
          if (!toastKey || pendingFormToastIds.has(toastKey)) continue
          pendingFormToastIds.add(toastKey)
@@ -505,7 +505,7 @@ index b52881a2c..cf986f98c 100644
          })
        }
      }
-@@ -1985,10 +1992,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
+@@ -1989,10 +1996,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
    const toastKey = getFormToastKey(sessionID, form.id)
    if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
    pendingFormToastIds.add(toastKey)
@@ -519,18 +519,15 @@ index b52881a2c..cf986f98c 100644
    })
  }
  
-@@ -2004,7 +2013,10 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
-   toast.info(page.title, {
+@@ -2009,7 +2018,7 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
      id: `page-${sessionID}:${page.id}`,
      description: FORM_TOAST_DESCRIPTION,
--    action: { label: "Open session", onClick: () => openSessionFromToast(sessionID, directory) },
-+    action: {
+     action: {
+-      label: "Open session",
 +      label: formatMessage(useI18nStore.getState().dictionary, 'chat.toast.opencodeRestartInterrupted.openSession'),
-+      onClick: () => openSessionFromToast(sessionID, directory),
-+    },
-   })
- }
- 
+       onClick: () => {
+         revealWaitingPage(sessionID)
+         openSessionFromToast(sessionID, directory)
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
 index 12cc16c79..b7222cfd7 100644
 --- a/packages/vscode/src/webviewHtml.ts

@@ -4,5 +4,17 @@
  "chat.sessionNotice.moved": "Перемещено в {folder}",
  "chat.sessionNotice.movedUnknown": "Перемещено в другую папку",
  "chat.sessionNotice.showDetails": "Показать, что получил агент",
- "chat.sessionNotice.hideDetails": "Скрыть, что получил агент"
+ "chat.sessionNotice.hideDetails": "Скрыть, что получил агент",
+ "chat.sessionNotice.pullRequest.title": "Pull request #{number}",
+ "chat.sessionNotice.mergeRequest.title": "Мерж-запрос !{number}",
+ "chat.sessionNotice.change.title": "Запрос на изменение #{number}",
+ "chat.sessionNotice.pullRequest.merged": "Смержен",
+ "chat.sessionNotice.pullRequest.closed": "Закрыт без мержа",
+ "chat.sessionNotice.pullRequest.checksFailed": "Проверка не прошла",
+ "chat.sessionNotice.pullRequest.checksFailedNames": "Проверки не прошли: {names}",
+ "chat.sessionNotice.pullRequest.checksPassed": "Все проверки прошли",
+ "chat.sessionNotice.pullRequest.conflict": "Конфликт с базовой веткой",
+ "chat.sessionNotice.pullRequest.behind": "Отстаёт от базовой ветки",
+ "chat.sessionNotice.pullRequest.activity": "Новый комментарий или ревью",
+ "chat.sessionNotice.pullRequest.activityNames": "Новый комментарий или ревью от {names}"
 }

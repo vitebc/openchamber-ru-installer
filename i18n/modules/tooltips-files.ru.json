@@ -1,0 +1,17 @@
+{
+ "contextTooltips.files.retryFolder": "Загрузить эту папку заново",
+ "contextTooltips.files.retryFileList": "Загрузить список файлов заново",
+ "contextTooltips.files.retryFile": "Загрузить этот файл заново",
+ "contextTooltips.files.retryImage": "Загрузить это изображение заново",
+ "contextTooltips.files.downloadCopy": "Скачать копию этого файла",
+ "contextTooltips.files.openOutside": "Открыть вне OpenChamber",
+ "contextTooltips.files.excalidrawSettings": "Открыть расширение в разделе «Настройки»",
+ "contextTooltips.files.showCodeForFile": "Показать этот файл как код",
+ "contextTooltips.files.chooseSheet": "Выбрать лист",
+ "contextTooltips.files.retrySave": "Попробовать сохранить снова",
+ "contextTooltips.files.writeQuery": "Написать собственный SQL-запрос",
+ "contextTooltips.files.runQuery": "Выполнить на копии: файл останется без изменений",
+ "contextTooltips.files.closeQuery": "Закрыть поле запроса, его текст сохранится",
+ "contextTooltips.files.chooseTable": "Выбрать таблицу",
+ "contextTooltips.files.searchPlainText": "Искать как обычный текст"
+}

@@ -320,7 +320,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -422,6 +422,20 @@ const RUSSIAN_PER_LOCALE = {
     'ui-blocks': 'uiBlocksI18n',
     'update-dialog-canary': 'updateDialogCanaryI18n',
     'pr-review': 'prReviewI18n',
+    'extension-powers': 'extensionPowersI18n',
+    'openchamber-tool-output': 'openchamberToolOutputI18n',
+    'opencode-tool-output': 'opencodeToolOutputI18n',
+    'selection-approval': 'selectionApprovalI18n',
+    'tooltips-chat': 'tooltipsChatI18n',
+    'tooltips-diff': 'tooltipsDiffI18n',
+    'tooltips-files': 'tooltipsFilesI18n',
+    'tooltips-git': 'tooltipsGitI18n',
+    'tooltips-panel': 'tooltipsPanelI18n',
+    'tooltips-terminal-browser': 'tooltipsTerminalBrowserI18n',
+    'tooltips-tracker': 'tooltipsTrackerI18n',
+    'tooltips-walkthrough': 'tooltipsWalkthroughI18n',
+    'tooltips-workspace': 'tooltipsWorkspaceI18n',
+    'usage-tool': 'usageToolI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {
@@ -459,10 +473,19 @@ const RUSSIAN_PER_LOCALE = {
       let t = fs.readFileSync(testFile, 'utf8');
       if (!t.includes("'ru'")) {
         const m = t.match(/const locales = \[([^\]]+)\] as const/);
-        if (!m) fail(`${mod} test: locales array marker not found`);
-        t = t.replace(m[0], m[0].replace(/\] as const/, `, 'ru'] as const`));
-        fs.writeFileSync(testFile, t);
-        console.log(`[patch-upstream] patched ${mod}.i18n.test.ts (ru locale)`);
+        if (!m) {
+          // Newer test shape iterates Object.entries(module) directly — the
+          // ru block is covered automatically as soon as it exists.
+          if (/Object\.entries\(/.test(t)) {
+            console.log(`[patch-upstream] ${mod}.i18n.test.ts: dynamic locale iteration, no patch needed`);
+          } else {
+            fail(`${mod} test: locales array marker not found`);
+          }
+        } else {
+          t = t.replace(m[0], m[0].replace(/\] as const/, `, 'ru'] as const`));
+          fs.writeFileSync(testFile, t);
+          console.log(`[patch-upstream] patched ${mod}.i18n.test.ts (ru locale)`);
+        }
       } else {
         console.log(`[patch-upstream] ${mod}.i18n.test.ts: ru already present`);
       }

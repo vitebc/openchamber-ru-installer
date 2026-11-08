@@ -1,4 +1,5 @@
 {
+ "chat.uiBlock.partial": "Не удалось отрисовать часть этого блока.",
  "chat.uiBlock.invalid": "Не удалось отрисовать этот блок.",
  "chat.uiBlock.source": "Источник",
  "chat.uiBlock.sent": "Отправлено",

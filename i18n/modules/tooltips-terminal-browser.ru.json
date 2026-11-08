@@ -1,0 +1,9 @@
+{
+ "contextTooltips.terminalBrowser.terminal.newTab": "Новая вкладка терминала",
+ "contextTooltips.terminalBrowser.quickKeys.escape": "Отправить клавишу Escape",
+ "contextTooltips.terminalBrowser.quickKeys.holdModifier": "Удерживать {key} для следующей клавиши",
+ "contextTooltips.terminalBrowser.quickKeys.releaseModifier": "Отпустить {key}",
+ "contextTooltips.terminalBrowser.device.schemeSystem": "Использовать системное оформление",
+ "contextTooltips.terminalBrowser.device.schemeLight": "Показать страницу в светлом режиме",
+ "contextTooltips.terminalBrowser.device.schemeDark": "Показать страницу в тёмном режиме"
+}

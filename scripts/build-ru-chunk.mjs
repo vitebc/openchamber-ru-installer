@@ -99,6 +99,10 @@ const required = [
   // v2.6.1
   'review.fileMark.one',
   'chat.uiBlock.source',
+  // v2.7.0
+  'contextTooltips.git.stageFile',
+  'chat.uiBlock.partial',
+  'settings.openchamber.tools.field.agentUsageTool',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

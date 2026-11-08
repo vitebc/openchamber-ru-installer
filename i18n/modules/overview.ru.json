@@ -34,6 +34,7 @@
  "overview.activity.running": "работает",
  "overview.activity.subagent": "субагент",
  "overview.activity.shell": "фоновая команда",
+ "overview.activity.image": "генерирует изображение",
  "overview.signal.merged": "PR смержен",
  "overview.signal.issueClosed": "задача закрыта",
  "overview.signal.issueDropped": "задача отменена",
