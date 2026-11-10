@@ -136,10 +136,10 @@ function patchRuntime(runtimePath, ruChunkName) {
   }
 
   // 4. Dictionary loader chain: add the ru dynamic import as the last locale before the enDict fallback.
+  const fallbackRe = /:\{dict:[\w$]+\}/;
+  const fb = src.match(fallbackRe);
+  if (!fb && !src.includes('==="ru"?await')) throw new Error(`${name}: dictionary loader fallback not found`);
   if (!src.includes('==="ru"?await')) {
-    const fallbackRe = /:\{dict:[\w$]+\}/;
-    const fb = src.match(fallbackRe);
-    if (!fb) throw new Error(`${name}: dictionary loader fallback not found`);
     const beforeFallback = src.slice(0, src.indexOf(fb[0]));
     const lastBranchRe =
       /(\w+)==="[^"]+"\?await (\w+)\(\(\)=>import\("\.\/[^"]+"\),(?:__vite__mapDeps\(\[[0-9,]*\]\)|\[\])\):[^:]*$/;
@@ -148,9 +148,19 @@ function patchRuntime(runtimePath, ruChunkName) {
     if (!lm) throw new Error(`${name}: dictionary loader last branch not found`);
     const lVar = lm[1];
     const wrap = lm[2];
-    const ruBranch = `:${lVar}==="ru"?await ${wrap}(()=>import("./${ruChunkName}"),[]):${fb[0].slice(1)}`;
+    // .catch keeps startup alive if the chunk is gone (app auto-update wiped assets
+    // while leaving the patched chunk behind; an unhandled import rejection used to
+    // strand the UI on the loading screen forever).
+    const ruBranch = `:${lVar}==="ru"?await ${wrap}(()=>import("./${ruChunkName}"),[]).catch(()=>(${fb[0].slice(1)})):${fb[0].slice(1)}`;
     src = src.replace(fallbackRe, ruBranch);
     log(`${name}: patched dictionary loader`);
+  } else if (!src.includes('.catch(()=>({dict:') && fb) {
+    // Upgrade a previously patched loader (no import fallback) to the catching form.
+    const plain = `(()=>import("./${ruChunkName}"),[]):`;
+    if (src.includes(plain)) {
+      src = src.replace(plain, `(()=>import("./${ruChunkName}"),[]).catch(()=>(${fb[0].slice(1)})):`);
+      log(`${name}: added import fallback to ru loader`);
+    }
   } else {
     log(`${name}: dictionary loader already patched`);
   }

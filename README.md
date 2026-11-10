@@ -140,6 +140,16 @@ Workflow `.github/workflows/sync-upstream.yml` следит за релизам�
 - `patch/ru-ruinstaller.js` — пресобранный русский словарь
 - `i18n/messages/ru.ts`, `ru.settings.ts` — исходники перевода (для регенерации)
 
+## Если приложение зависло на экране загрузки
+
+После автообновления OpenChamber файлы патча теряются из `assets`, а пропатченный главный чанк может остаться и пытаться загрузить несуществующий `ru-ruinstaller.js` — интерфейс зависает на загрузке. Лечение одно: полностью закройте OpenChamber (трей → Quit) и повторно запустите установку — свежие скрипты подтянутся с GitHub и починят загрузчик:
+
+```powershell
+irm https://raw.githubusercontent.com/vitebc/openchamber-ru-installer/main/install.ps1 | iex
+```
+
+Полностью удалить патч (вернуть оригинальные файлы из `*.bak`): `uninstall-desktop-ru.ps1`.
+
 ## Лицензия
 
 Распространяется под лицензией [MIT](LICENSE). Copyright © 2026 vitebc.
