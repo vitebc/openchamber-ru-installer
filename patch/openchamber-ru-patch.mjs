@@ -67,6 +67,14 @@ function findMainChunk(assetsDir) {
     }
   });
   if (byContent.length === 1) return path.join(assetsDir, byContent[0]);
+  if (byContent.length > 1) {
+    // PWA installs ship a second chunk carrying the same LOCALES array — pick the
+    // one that also holds the dictionary loader, or we patch a file the app never loads.
+    const withLoader = byContent.filter((n) =>
+      fs.readFileSync(path.join(assetsDir, n), 'utf8').includes('{dict:'));
+    if (withLoader.length === 1) return path.join(assetsDir, withLoader[0]);
+    throw new Error(`multiple locale-array chunks, dictionary loader ambiguous (${byContent.join(', ')})`);
+  }
   const legacy = names.filter((n) => /^useAppFontEffects-[^/]+\.js$/.test(n));
   if (byContent.length === 0 && legacy.length === 1) return path.join(assetsDir, legacy[0]);
   throw new Error(`expected exactly one i18n runtime chunk, found ${byContent.length} by content (${legacy.length} legacy)`);
