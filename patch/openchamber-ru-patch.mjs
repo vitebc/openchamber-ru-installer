@@ -176,6 +176,39 @@ function patchRuntime(runtimePath, ruChunkName) {
   fs.writeFileSync(runtimePath, src);
 }
 
+// The app maps a UI locale to a lazy joke-file loader. A locale the fork adds
+// but upstream never ships (ru) has no loader, and since v2.7.0 the module asks
+// for one on every locale change: LOADERS[locale]() throws inside the store
+// subscription and the app never leaves the splash screen. An optional call
+// keeps the callers' ordinary translated text for an unknown locale.
+const EASTER_LOADER_BROKEN = /([A-Za-z_$][\w$]*)\[([A-Za-z_$][\w$]*)\]\(\)\.then\(\(\{copy:/;
+const EASTER_LOADER_PATCHED = /([A-Za-z_$][\w$]*)\[([A-Za-z_$][\w$]*)\](\?\.\(\))\.then\(\(\{copy:/;
+const EASTER_LOADER_GUARDED = /([A-Za-z_$][\w$]*)\[([A-Za-z_$][\w$]*)\];([A-Za-z_$][\w$]*)&&\([A-Za-z_$][\w$]*\.add\(\2\),\3\(\)\.then\(\(\{copy:/;
+
+function patchEasterEggLoaders(assetsDir) {
+  let patched = 0;
+  let guarded = 0;
+  for (const name of fs.readdirSync(assetsDir).filter((n) => n.endsWith('.js'))) {
+    const file = path.join(assetsDir, name);
+    const src = fs.readFileSync(file, 'utf8');
+    if (!src.includes('.then(({copy:')) continue;
+    if (EASTER_LOADER_PATCHED.test(src) || EASTER_LOADER_GUARDED.test(src)) {
+      guarded += 1;
+      continue;
+    }
+    if (!EASTER_LOADER_BROKEN.test(src)) {
+      throw new Error(`${name}: easter-egg loader shape not recognized`);
+    }
+    const next = src.replace(EASTER_LOADER_BROKEN, '$1[$2]?.().then(({copy:');
+    backup(file);
+    fs.writeFileSync(file, next);
+    log(`${name}: patched easter-egg loader fallback`);
+    patched += 1;
+  }
+  if (patched === 0 && guarded === 0) throw new Error('easter-egg loader not found');
+  if (guarded > 0 && patched === 0) log('easter-egg loader: already guarded');
+}
+
 function patchLocales(assetsDir) {
   const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
   const names = fs.readdirSync(assetsDir).filter((n) => localeRe.test(n));
@@ -220,17 +253,14 @@ function cmdInstall(assetsDir) {
   backup(runtime);
   patchRuntime(runtime, RUSSIAN_NAME);
   patchLocales(assetsDir);
+  patchEasterEggLoaders(assetsDir);
   log('DONE — restart OpenChamber, then Settings -> Appearance -> Language -> Russian.');
 }
 
 function cmdUninstall(assetsDir) {
-  const runtime = findMainChunk(assetsDir);
-  if (restore(runtime)) {
-    const names = fs.readdirSync(assetsDir).filter((n) => /^[a-z]{2}(-[A-Z]{2})?-[^/]+\.js$/.test(n));
-    for (const name of names) {
-      const file = path.join(assetsDir, name);
-      if (fs.existsSync(`${file}.bak`)) restore(file);
-    }
+  const backups = fs.readdirSync(assetsDir).filter((n) => n.endsWith('.js.bak'));
+  for (const name of backups) {
+    restore(path.join(assetsDir, name.slice(0, -'.bak'.length)));
   }
   const ruChunk = path.join(assetsDir, RUSSIAN_NAME);
   if (fs.existsSync(ruChunk)) {

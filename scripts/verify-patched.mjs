@@ -68,6 +68,23 @@ if (!ruSrc.includes('common.language.russian":"Русский')) {
 }
 console.log(`[verify] ok: ru-ruinstaller.js (${ruSrc.length} chars)`);
 
+// Upstream v2.7.0 asks the easter-egg copy module for a loader on every locale
+// change; the ru fork has no copy file, so an unguarded call crashes startup.
+let easterChecked = 0;
+for (const f of fs.readdirSync(dir)) {
+  if (!f.endsWith('.js')) continue;
+  const file = path.join(dir, f);
+  const c = fs.readFileSync(file, 'utf8');
+  if (!c.includes('.then(({copy:')) continue;
+  if (/([A-Za-z_$][\w$]*)\[([A-Za-z_$][\w$]*)\]\(\)\.then\(\(\{copy:/.test(c)) {
+    fail(`${f}: easter-egg loader is unguarded (ru locale would crash startup)`);
+  }
+  checkSyntax(file);
+  easterChecked += 1;
+}
+if (easterChecked === 0) fail('easter-egg loader not found');
+console.log(`[verify] ok: easter-egg loader guarded in ${easterChecked} chunk(s)`);
+
 const localeRe = /^(en|de|es|fr|ja|ko|pl|pt-BR|tr|uk|zh-CN|zh-TW)-[^/]+\.js$/;
 let locales = 0;
 let skipped = 0;
