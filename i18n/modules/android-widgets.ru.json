@@ -1,0 +1,17 @@
+{
+ "mobile.androidWidget.sessions.title": "Сессии",
+ "mobile.androidWidget.sessions.empty": "Пока нет сессий",
+ "mobile.androidWidget.sessions.new": "Новая сессия",
+ "mobile.androidWidget.status.running": "Выполняется",
+ "mobile.androidWidget.status.retrying": "Повторная попытка",
+ "mobile.androidWidget.status.error": "Ошибка",
+ "mobile.androidWidget.usage.title": "Использование",
+ "mobile.androidWidget.usage.empty": "Нет данных об использовании",
+ "mobile.androidWidget.usage.remaining": "осталось",
+ "mobile.androidWidget.usage.used": "использовано",
+ "mobile.androidWidget.updated": "Обновлено {time}",
+ "mobile.androidWidget.refreshing": "Обновление…",
+ "mobile.androidWidget.queued": "Откройте OpenChamber, чтобы обновить",
+ "mobile.androidWidget.failed": "Не удалось обновить. Проверьте соединение",
+ "mobile.androidWidget.refresh": "Обновить"
+}

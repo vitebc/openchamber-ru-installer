@@ -1,10 +1,8 @@
 {
  "settings.openchamber.tools.field.agentImageTool": "Инструмент изображений для агентов",
- "settings.openchamber.tools.field.agentImageToolSummary": "Позволяет агентам генерировать и редактировать изображения с помощью выбранной вами модели.",
- "settings.openchamber.tools.field.agentImageToolInfo": "Агент описывает картинку и получает обратно файлы изображений, которые отображаются в чате. Ваша модель чата остаётся прежней. Каждое изображение тарифицируется провайдером модели изображений.",
+ "settings.openchamber.tools.field.agentImageToolSummary": "Позволяет агентам генерировать и редактировать изображения с помощью выбранной вами модели, с оплатой её провайдеру.",
  "settings.openchamber.tools.field.agentImageToolAria": "Включить инструмент изображений для агентов",
  "settings.openchamber.tools.imageModel.label": "Модель изображений",
- "settings.openchamber.tools.imageModel.info": "Модель, которая рисует. В списке только модели, которые генерируют изображения.",
  "settings.openchamber.tools.imageModel.aria": "Модель изображений",
  "settings.openchamber.tools.imageModel.placeholder": "Выберите модель",
  "settings.openchamber.tools.imageModel.empty": "Нет моделей изображений у ваших провайдеров",

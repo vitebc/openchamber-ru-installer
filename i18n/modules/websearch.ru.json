@@ -11,7 +11,6 @@
  "chat.webSearchConsent.notNow": "Не сейчас",
  "chat.webSearchConsent.settingsHint": "Это можно будет изменить позже в «Настройки → Поиск в интернете».",
  "settings.page.webSearch.title": "Поиск в интернете",
- "settings.page.webSearch.description": "Выберите, как агенты ищут в интернете.",
  "settings.webSearch.section.provider": "Провайдер поиска",
  "settings.webSearch.section.providerInfo": "Сохраняется как настройка websearch в вашей конфигурации OpenCode. Конфигурация проекта может её переопределить.",
  "settings.webSearch.option.default": "По умолчанию",

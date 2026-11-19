@@ -103,6 +103,13 @@ const required = [
   'contextTooltips.git.stageFile',
   'chat.uiBlock.partial',
   'settings.openchamber.tools.field.agentUsageTool',
+  // v2.7.1
+  'search.omni.searchIn.label',
+  'sessions.sidebar.project.copyPath.error',
+  // v2.7.2
+  'chat.sharePage.unavailable',
+  'chat.sharedPage.chip.label',
+  'mobile.androidWidget.sessions.title',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

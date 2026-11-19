@@ -1,8 +1,8 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index ded60f501..909835cf1 100644
+index ecc4762f0..bf6f5f18a 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-@@ -303,8 +303,8 @@ export function DesktopHostSwitcherDialog({
+@@ -308,8 +308,8 @@ export function DesktopHostSwitcherDialog({
        ...h,
        url: normalizeHostUrl(h.url) || h.url,
      }));
@@ -13,7 +13,7 @@ index ded60f501..909835cf1 100644
  
    React.useEffect(() => {
      return subscribeRuntimeEndpointChanged(() => setRuntimeEndpointEpoch((epoch) => epoch + 1));
-@@ -312,8 +312,12 @@ export function DesktopHostSwitcherDialog({
+@@ -317,8 +317,12 @@ export function DesktopHostSwitcherDialog({
  
    const current = React.useMemo(() => {
      void runtimeEndpointEpoch;
@@ -81,7 +81,7 @@ index 87f4e1f13..374f10717 100644
    React.useEffect(() => {
      void refreshCurrentInstanceLabel();
 diff --git a/packages/ui/src/components/ui/CodeMirrorEditor.tsx b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
-index 235f8cc82..3a8d2e1ea 100644
+index c34672d63..113812fdf 100644
 --- a/packages/ui/src/components/ui/CodeMirrorEditor.tsx
 +++ b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
 @@ -13,33 +13,35 @@ import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
@@ -136,7 +136,7 @@ index 235f8cc82..3a8d2e1ea 100644
    }
  }
  
-@@ -589,7 +591,7 @@ export function CodeMirrorEditor({
+@@ -598,7 +600,7 @@ export function CodeMirrorEditor({
        openSearchPanelCompat(view);
        // Patch tooltips after panel DOM is mounted
        requestAnimationFrame(() => {
@@ -174,10 +174,10 @@ index cd61d5c61..583bd7eaf 100644
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index 86750ff4a..778d8b123 100644
+index 5162d9480..b590895e0 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
-@@ -45,6 +45,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
+@@ -46,6 +46,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
  import type { ProjectEntry } from '@/lib/api/types';
  import type { WorktreeMetadata } from '@/types/worktree';
  import { toast } from '@/components/ui';
@@ -185,7 +185,7 @@ index 86750ff4a..778d8b123 100644
  
  // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
  // streams a compact snapshot of live session/approval state to it via the
-@@ -227,20 +228,26 @@ const buildUsage = (): TrayUsage => {
+@@ -228,20 +229,26 @@ const buildUsage = (): TrayUsage => {
  };
  
  // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
@@ -218,7 +218,7 @@ index 86750ff4a..778d8b123 100644
    } catch {
      return '';
    }
-@@ -469,6 +476,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -471,6 +478,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -227,7 +227,7 @@ index 86750ff4a..778d8b123 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -551,7 +560,10 @@ export const useTraySync = (): void => {
+@@ -555,7 +564,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -239,7 +239,7 @@ index 86750ff4a..778d8b123 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -626,7 +638,7 @@ export const useTraySync = (): void => {
+@@ -630,7 +642,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -248,7 +248,7 @@ index 86750ff4a..778d8b123 100644
  
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
-@@ -644,7 +656,7 @@ export const useTraySync = (): void => {
+@@ -648,7 +660,7 @@ export const useTraySync = (): void => {
            break;
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
@@ -257,7 +257,7 @@ index 86750ff4a..778d8b123 100644
            });
            break;
        }
-@@ -676,5 +688,5 @@ export const useTraySync = (): void => {
+@@ -680,5 +692,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -464,10 +464,10 @@ index fe640046c..d9f421535 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index ee95db7a3..4d89d8967 100644
+index 471255c9e..6d79a2b42 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2687,11 +2687,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2696,11 +2696,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -485,7 +485,7 @@ index ee95db7a3..4d89d8967 100644
      }
    },
  
-@@ -2703,11 +2707,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2712,11 +2716,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -504,10 +504,10 @@ index ee95db7a3..4d89d8967 100644
    },
  
 diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
-index f7fa5153b..5774c36c1 100644
+index 7a0e2ef4b..3b99f8376 100644
 --- a/packages/ui/src/sync/sync-context.tsx
 +++ b/packages/ui/src/sync/sync-context.tsx
-@@ -648,10 +648,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
+@@ -652,10 +652,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
  }
  
  /** A location-scoped form names no session to open; the toast then only announces it. */
@@ -525,7 +525,7 @@ index f7fa5153b..5774c36c1 100644
  )
  
  /** Blank server strings mean "absent" here, not "empty title". */
-@@ -1541,10 +1546,12 @@ export async function resyncBlockingRequestsForDirectory(
+@@ -1554,10 +1559,12 @@ export async function resyncBlockingRequestsForDirectory(
          const toastKey = getFormToastKey(sessionId, form.id)
          if (!toastKey || pendingFormToastIds.has(toastKey)) continue
          pendingFormToastIds.add(toastKey)
@@ -539,7 +539,7 @@ index f7fa5153b..5774c36c1 100644
          })
        }
      }
-@@ -1989,10 +1996,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
+@@ -2025,10 +2032,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
    const toastKey = getFormToastKey(sessionID, form.id)
    if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
    pendingFormToastIds.add(toastKey)
@@ -553,7 +553,7 @@ index f7fa5153b..5774c36c1 100644
    })
  }
  
-@@ -2009,7 +2018,7 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
+@@ -2045,7 +2054,7 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
      id: `page-${sessionID}:${page.id}`,
      description: FORM_TOAST_DESCRIPTION,
      action: {

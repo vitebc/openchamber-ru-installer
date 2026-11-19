@@ -12,9 +12,9 @@
  "chat.htmlRender.notDrawn": "Отправлено агенту на исправление",
  "chat.htmlRender.decline": "Отклонить",
  "chat.htmlRender.declined": "Отклонено",
+ "chat.htmlRender.undelivered": "ещё не передано агенту",
  "chat.htmlRender.answerFailed": "Не удалось отправить ответ",
  "settings.openchamber.tools.field.agentRenderTool": "Инструмент отображения для агентов",
  "settings.openchamber.tools.field.agentRenderToolAria": "Инструмент отображения для агентов",
- "settings.openchamber.tools.field.agentRenderToolSummary": "Разрешить агентам показывать прямо в чате графики, таблицы, диаграммы и макеты интерфейса, а также просить вас выбрать там вариант.",
- "settings.openchamber.tools.field.agentRenderToolInfo": "Страницы работают в песочнице без доступа к вашим сессиям и файлам. Ссылки открываются в вашем браузере."
+ "settings.openchamber.tools.field.agentRenderToolSummary": "Позволяет агентам показывать прямо в чате графики, таблицы, диаграммы и макеты интерфейса — в песочнице, без доступа к вашим файлам, — а также просить вас выбрать там вариант."
 }

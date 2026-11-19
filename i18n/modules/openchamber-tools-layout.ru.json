@@ -1,0 +1,16 @@
+{
+ "settings.openchamber.tools.group.work": "Работа агентов",
+ "settings.openchamber.tools.group.chat": "В чате",
+ "settings.openchamber.tools.group.knowledge": "Что знают агенты",
+ "settings.openchamber.tools.name.control": "Сессии и ворктреи",
+ "settings.openchamber.tools.name.workflow": "Воркфлоу",
+ "settings.openchamber.tools.name.schedule": "Запланированные задачи",
+ "settings.openchamber.tools.name.web": "Браузер",
+ "settings.openchamber.tools.name.render": "Графики и макеты",
+ "settings.openchamber.tools.name.image": "Изображения",
+ "settings.openchamber.tools.name.secret": "Секреты",
+ "settings.openchamber.tools.name.notify": "Уведомления",
+ "settings.openchamber.tools.name.memory": "Память",
+ "settings.openchamber.tools.name.knowledge": "Знания проекта",
+ "settings.openchamber.tools.name.usage": "Лимиты использования"
+}

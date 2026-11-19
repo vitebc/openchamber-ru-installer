@@ -264,8 +264,9 @@ function flatKeys(src) {
 
 function moduleBlockKeys(src, locale) {
   const lines = src.split('\n');
-  const open = locale.includes('-') ? `  '${locale}': {` : `  ${locale}: {`;
-  const s = lines.findIndex((l) => l === open);
+  // Upstream alternates between `en: {`, `'en': {` and `"en": {` block openers.
+  const openers = [`  ${locale}: {`, `  '${locale}': {`, `  "${locale}": {`];
+  const s = lines.findIndex((l) => openers.includes(l));
   if (s < 0) return null;
   const keys = [];
   for (let i = s + 1; i < lines.length; i++) {
@@ -320,7 +321,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool', 'about-release-notes', 'markdown-outline', 'memory-dreaming', 'omni-search', 'openchamber-tools-layout', 'settings-hints', 'update-check-errors', 'android-widgets', 'questions-in-chat', 'received-pages', 'share-pages'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -436,6 +437,17 @@ const RUSSIAN_PER_LOCALE = {
     'tooltips-walkthrough': 'tooltipsWalkthroughI18n',
     'tooltips-workspace': 'tooltipsWorkspaceI18n',
     'usage-tool': 'usageToolI18n',
+    'about-release-notes': 'aboutReleaseNotesI18n',
+    'markdown-outline': 'markdownOutlineI18n',
+    'memory-dreaming': 'memoryDreamingI18n',
+    'omni-search': 'omniSearchI18n',
+    'openchamber-tools-layout': 'openchamberToolsLayoutI18n',
+    'settings-hints': 'settingsHintsI18n',
+    'update-check-errors': 'updateCheckErrorsI18n',
+    'android-widgets': 'androidWidgetsI18n',
+    'questions-in-chat': 'questionsInChatI18n',
+    'received-pages': 'receivedPagesI18n',
+    'share-pages': 'sharePagesI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {
@@ -446,7 +458,7 @@ const RUSSIAN_PER_LOCALE = {
     let src = fs.readFileSync(file, 'utf8');
     if (!/^\s*ru: \{$/m.test(src)) {
       // Key order follows the en block so diffs stay reviewable.
-      const enBlock = src.match(/^  en: \{$([\s\S]*?)^  \},?$/m);
+      const enBlock = src.match(/^  "?en"?: \{$([\s\S]*?)^  \},?$/m);
       if (!enBlock) fail(`${mod}: en block not found`);
       const order = [...enBlock[1].matchAll(/^\s*['"]([^'"]+)['"]\s*:/gm)].map((m) => m[1]);
       const lines = ['  ru: {'];
@@ -474,9 +486,10 @@ const RUSSIAN_PER_LOCALE = {
       if (!t.includes("'ru'")) {
         const m = t.match(/const locales = \[([^\]]+)\] as const/);
         if (!m) {
-          // Newer test shape iterates Object.entries(module) directly — the
-          // ru block is covered automatically as soon as it exists.
-          if (/Object\.entries\(/.test(t)) {
+          // Newer test shapes iterate dynamically — over Object.entries(module)
+          // or over the runtime LOCALES list, which the base registration already
+          // extends with ru. The ru block is covered automatically; no patch needed.
+          if (/Object\.entries\(|of LOCALES/.test(t)) {
             console.log(`[patch-upstream] ${mod}.i18n.test.ts: dynamic locale iteration, no patch needed`);
           } else {
             fail(`${mod} test: locales array marker not found`);

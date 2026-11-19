@@ -7,7 +7,6 @@
  "contextTooltips.workspace.todo.complete": "Отметить выполненной",
  "contextTooltips.workspace.todo.reopen": "Отметить невыполненной",
  "contextTooltips.workspace.todo.send": "Отправить в сессию",
- "contextTooltips.workspace.todo.clearCompleted": "Удалить все выполненные задачи",
  "contextTooltips.workspace.memory.scope.project": "Показать память этого проекта",
  "contextTooltips.workspace.memory.scope.global": "Показать память о вас",
  "contextTooltips.workspace.memory.tidy": "Запустить сессию, которая наведёт порядок в памяти",
