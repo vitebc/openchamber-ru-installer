@@ -99,7 +99,9 @@ function patchFunctionEnd(src, fnMarker, onFail, makeInsertion) {
   }
   if (closeIndex < 0) onFail('function body end not found');
   const body = src.slice(openIndex + 1, closeIndex);
-  const returns = [...body.matchAll(/\n([ \t]*)return\s+DEFAULT_LOCALE;/g)];
+  // v2.7.2 and earlier end the locale chain with `return DEFAULT_LOCALE;`;
+  // v2.7.3 split normalizeLocale, and the chain function returns undefined.
+  const returns = [...body.matchAll(/\n([ \t]*)return\s+(?:DEFAULT_LOCALE|undefined);/g)];
   if (returns.length === 0) onFail('function fallback not found');
   const target = returns[returns.length - 1];
   const insertion = makeInsertion(target[1]);
@@ -134,7 +136,12 @@ patchFile('runtime.ts', (src, onFail) => {
     if (!src.includes("ru: 'common.language.russian'")) onFail('LOCALE_LABEL_KEYS entry not inserted');
   }
   if (!src.includes("normalized === 'ru'")) {
-    src = patchFunctionEnd(src, 'export function normalizeLocale(', onFail, (bodyIndent) => (
+    // v2.7.3 moved the locale chain into supportedLocale(); older trees keep
+    // it inline in normalizeLocale(). Insert before the chain's last return.
+    const anchor = src.includes('function supportedLocale(')
+      ? 'function supportedLocale('
+      : 'export function normalizeLocale(';
+    src = patchFunctionEnd(src, anchor, onFail, (bodyIndent) => (
       `\n${bodyIndent}if (normalized === 'ru' || normalized.startsWith('ru-')) {\n` +
       `${bodyIndent}  return 'ru';\n` +
       `${bodyIndent}}`
@@ -321,7 +328,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool', 'about-release-notes', 'markdown-outline', 'memory-dreaming', 'omni-search', 'openchamber-tools-layout', 'settings-hints', 'update-check-errors', 'android-widgets', 'questions-in-chat', 'received-pages', 'share-pages'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool', 'about-release-notes', 'markdown-outline', 'memory-dreaming', 'omni-search', 'openchamber-tools-layout', 'settings-hints', 'update-check-errors', 'android-widgets', 'questions-in-chat', 'received-pages', 'share-pages', 'connection-heartbeat', 'mobile-app-settings', 'operator-children', 'subagents'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -448,6 +455,10 @@ const RUSSIAN_PER_LOCALE = {
     'questions-in-chat': 'questionsInChatI18n',
     'received-pages': 'receivedPagesI18n',
     'share-pages': 'sharePagesI18n',
+    'connection-heartbeat': 'connectionHeartbeatI18n',
+    'mobile-app-settings': 'mobileAppSettingsI18n',
+    'operator-children': 'operatorChildrenI18n',
+    'subagents': 'subagentsI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {

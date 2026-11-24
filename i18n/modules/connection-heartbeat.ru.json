@@ -1,0 +1,5 @@
+{
+ "mobile.instances.heartbeat.latency": "{ms} мс",
+ "mobile.instances.heartbeat.latencyAria": "Время ответа {ms} мс",
+ "mobile.instances.heartbeat.noAnswer": "Нет ответа"
+}

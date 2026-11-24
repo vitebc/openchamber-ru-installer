@@ -1,8 +1,8 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index ecc4762f0..bf6f5f18a 100644
+index 10f2271275..3540f87197 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-@@ -308,8 +308,8 @@ export function DesktopHostSwitcherDialog({
+@@ -301,8 +301,8 @@ export function DesktopHostSwitcherDialog({
        ...h,
        url: normalizeHostUrl(h.url) || h.url,
      }));
@@ -13,7 +13,7 @@ index ecc4762f0..bf6f5f18a 100644
  
    React.useEffect(() => {
      return subscribeRuntimeEndpointChanged(() => setRuntimeEndpointEpoch((epoch) => epoch + 1));
-@@ -317,8 +317,12 @@ export function DesktopHostSwitcherDialog({
+@@ -310,8 +310,14 @@ export function DesktopHostSwitcherDialog({
  
    const current = React.useMemo(() => {
      void runtimeEndpointEpoch;
@@ -25,14 +25,16 @@ index ecc4762f0..bf6f5f18a 100644
 +      t('desktopHostSwitcher.instance.fallback'),
 +    );
 +  }, [allHosts, runtimeEndpointEpoch, t]);
-   // Null when the default is not in the list, such as Local without a local
-   // server: naming it would point at an entry nobody can pick.
++  // Null when the default is not in the list, such as Local without a local
++  // server: naming it would point at an entry nobody can pick.
    const currentDefaultLabel = React.useMemo(() => {
+     const id = defaultHostId || LOCAL_HOST_ID;
+     return allHosts.find((h) => h.id === id)?.label ?? null;
 diff --git a/packages/ui/src/components/desktop/DesktopInstanceMenu.tsx b/packages/ui/src/components/desktop/DesktopInstanceMenu.tsx
-index 87f4e1f13..374f10717 100644
+index 542a370752..c75f0a8b8b 100644
 --- a/packages/ui/src/components/desktop/DesktopInstanceMenu.tsx
 +++ b/packages/ui/src/components/desktop/DesktopInstanceMenu.tsx
-@@ -44,7 +44,7 @@ function DesktopInstanceMenuContent({ className }: Props): React.ReactNode {
+@@ -40,7 +40,7 @@ function DesktopInstanceMenuContent({ className }: Props): React.ReactNode {
    const { t } = useI18n();
    const shortcutOverrides = useUIStore((state) => state.shortcutOverrides);
    const [open, setOpen] = React.useState(false);
@@ -41,7 +43,7 @@ index 87f4e1f13..374f10717 100644
    const [currentInstanceIsLocal, setCurrentInstanceIsLocal] = React.useState(true);
    const [remoteUpdateDialogOpen, setRemoteUpdateDialogOpen] = React.useState(false);
    const [remoteUpdateInfo, setRemoteUpdateInfo] = React.useState<UpdateInfo | null>(null);
-@@ -53,7 +53,7 @@ function DesktopInstanceMenuContent({ className }: Props): React.ReactNode {
+@@ -49,25 +49,29 @@ function DesktopInstanceMenuContent({ className }: Props): React.ReactNode {
  
    const refreshCurrentInstanceLabel = React.useCallback(async () => {
      if (isDesktopLocalOriginActive()) {
@@ -50,9 +52,7 @@ index 87f4e1f13..374f10717 100644
        setCurrentInstanceIsLocal(true);
        return;
      }
-@@ -62,19 +62,23 @@ function DesktopInstanceMenuContent({ className }: Props): React.ReactNode {
-     // the panel it opens can never disagree about which instance this is.
-     // Without the saved instances the window's own runtime still names it.
+ 
      const hosts = await desktopHostsGet()
 -      .then((cfg) => withLocalDesktopHost(cfg.hosts, cfg.localOrigin))
 -      .catch(() => withLocalDesktopHost([], getLocalDesktopOrigin()));
@@ -81,16 +81,14 @@ index 87f4e1f13..374f10717 100644
    React.useEffect(() => {
      void refreshCurrentInstanceLabel();
 diff --git a/packages/ui/src/components/ui/CodeMirrorEditor.tsx b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
-index c34672d63..113812fdf 100644
+index f9ba7a3e12..d55e18e497 100644
 --- a/packages/ui/src/components/ui/CodeMirrorEditor.tsx
 +++ b/packages/ui/src/components/ui/CodeMirrorEditor.tsx
-@@ -13,33 +13,35 @@ import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
+@@ -13,32 +13,35 @@ import { searchPanelSpace } from '@/lib/codemirror/searchPanelSpace';
  import { createVimModeExtensions } from '@/lib/codemirror/vimModeExtension';
  import { cn } from '@/lib/utils';
  import { searchKeymapWithFindShortcut } from '@/lib/codemirror/findShortcut';
-+import { formatMessage, useI18nStore, type I18nKey } from '@/lib/i18n';
- 
- /** Patches `title` attributes onto CodeMirror search-panel controls for icon-only tooltips. */
+-
 -const buttonTooltips: Record<string, string> = {
 -  next: 'Next match',
 -  prev: 'Previous match',
@@ -98,6 +96,9 @@ index c34672d63..113812fdf 100644
 -  replace: 'Replace',
 -  replaceAll: 'Replace all',
 -  close: 'Close',
++import { formatMessage, useI18nStore, type I18nKey } from '@/lib/i18n';
++
++/** Patches `title` attributes onto CodeMirror search-panel controls for icon-only tooltips. */
 +const buttonTooltips: Record<string, I18nKey> = {
 +  next: 'editor.search.nextMatch',
 +  prev: 'editor.search.previousMatch',
@@ -136,9 +137,9 @@ index c34672d63..113812fdf 100644
    }
  }
  
-@@ -598,7 +600,7 @@ export function CodeMirrorEditor({
+@@ -588,7 +591,7 @@ export function CodeMirrorEditor({
+     if (searchOpen) {
        openSearchPanelCompat(view);
-       // Patch tooltips after panel DOM is mounted
        requestAnimationFrame(() => {
 -        patchSearchTooltips(view.dom);
 +        patchSearchTooltips(view.dom, useI18nStore.getState().dictionary);
@@ -146,7 +147,7 @@ index c34672d63..113812fdf 100644
        });
      } else {
 diff --git a/packages/ui/src/hooks/useMenuActions.ts b/packages/ui/src/hooks/useMenuActions.ts
-index cd61d5c61..583bd7eaf 100644
+index c500974925..c052632b94 100644
 --- a/packages/ui/src/hooks/useMenuActions.ts
 +++ b/packages/ui/src/hooks/useMenuActions.ts
 @@ -127,20 +127,20 @@ export const useMenuActions = (
@@ -174,7 +175,7 @@ index cd61d5c61..583bd7eaf 100644
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
 diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index 5162d9480..b590895e0 100644
+index 8c38f5ceb0..e6d40ca6e7 100644
 --- a/packages/ui/src/hooks/useTraySync.ts
 +++ b/packages/ui/src/hooks/useTraySync.ts
 @@ -46,6 +46,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
@@ -183,15 +184,14 @@ index 5162d9480..b590895e0 100644
  import { toast } from '@/components/ui';
 +import { useI18n } from '@/lib/i18n';
  
- // Native tray/menu bar bridge. The Electron main process owns the Tray UI; this hook
- // streams a compact snapshot of live session/approval state to it via the
-@@ -228,20 +229,26 @@ const buildUsage = (): TrayUsage => {
+ const TRAY_ACTION_EVENT = 'openchamber:tray-action';
+ const POLL_INTERVAL_MS = 5000;
+@@ -193,18 +194,27 @@ const buildUsage = (): TrayUsage => {
+   return { mode, groups };
  };
  
- // Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
--// the local origin shows as "Local OpenChamber"; a remote host shows its
--// configured name. Async because the host config is read over IPC.
 -const resolveInstanceName = async (): Promise<string> => {
++// Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
 +// the local origin shows as the localized "Local OpenChamber" label; a remote
 +// host shows its configured name. Async because the host config is read over IPC.
 +const resolveInstanceName = async ({
@@ -218,7 +218,7 @@ index 5162d9480..b590895e0 100644
    } catch {
      return '';
    }
-@@ -471,6 +478,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
+@@ -385,6 +395,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
  };
  
  export const useTraySync = (): void => {
@@ -227,7 +227,7 @@ index 5162d9480..b590895e0 100644
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
      const trayEnabled = isTrayEnabled();
-@@ -555,7 +564,10 @@ export const useTraySync = (): void => {
+@@ -455,7 +467,10 @@ export const useTraySync = (): void => {
        return stopBadgeSync;
      }
  
@@ -239,7 +239,7 @@ index 5162d9480..b590895e0 100644
        if (disposed) return;
        instanceName = name;
        flushNow();
-@@ -630,7 +642,7 @@ export const useTraySync = (): void => {
+@@ -523,7 +538,7 @@ export const useTraySync = (): void => {
        for (const unsub of storeUnsubs.values()) unsub();
        storeUnsubs.clear();
      };
@@ -248,7 +248,7 @@ index 5162d9480..b590895e0 100644
  
    React.useEffect(() => {
      if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
-@@ -648,7 +660,7 @@ export const useTraySync = (): void => {
+@@ -541,7 +556,7 @@ export const useTraySync = (): void => {
            break;
          case 'respond-permission':
            void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
@@ -257,7 +257,7 @@ index 5162d9480..b590895e0 100644
            });
            break;
        }
-@@ -680,5 +692,5 @@ export const useTraySync = (): void => {
+@@ -573,5 +588,5 @@ export const useTraySync = (): void => {
          // ignore
        }
      };
@@ -265,15 +265,20 @@ index 5162d9480..b590895e0 100644
 +  }, [t]);
  };
 diff --git a/packages/ui/src/lib/desktopCurrentHost.ts b/packages/ui/src/lib/desktopCurrentHost.ts
-index 189769ed6..d7310cf69 100644
+index 4de7b840cc..d4cc1d2da7 100644
 --- a/packages/ui/src/lib/desktopCurrentHost.ts
 +++ b/packages/ui/src/lib/desktopCurrentHost.ts
-@@ -36,8 +36,12 @@ export const getLocalDesktopOrigin = (): string => {
-  * its local server listens. Without a local server, an entry for it would
-  * point at nothing.
-  */
+@@ -15,8 +15,17 @@ export const getLocalDesktopOrigin = (): string => {
+   return window.__OPENCHAMBER_LOCAL_ORIGIN__?.trim() || '';
+ };
+ 
 -export const withLocalDesktopHost = (hosts: DesktopHost[], localOrigin: string | null | undefined): DesktopHost[] => (
 -  localOrigin ? [{ id: LOCAL_HOST_ID, label: 'Local', url: localOrigin }, ...hosts] : hosts
++/**
++ * The configured instances with Local in front, when the shell reported where
++ * its local server listens. Without a local server, an entry for it would
++ * point at nothing.
++ */
 +export const withLocalDesktopHost = (
 +  hosts: DesktopHost[],
 +  localOrigin: string | null | undefined,
@@ -283,7 +288,7 @@ index 189769ed6..d7310cf69 100644
  );
  
  export const runtimeKeyForDesktopHost = (host: DesktopHost): string => {
-@@ -51,7 +55,11 @@ type ResolvedDesktopHost = {
+@@ -30,7 +39,11 @@ type ResolvedDesktopHost = {
    url: string;
  };
  
@@ -296,7 +301,7 @@ index 189769ed6..d7310cf69 100644
    const currentHref = typeof window === 'undefined' ? '' : window.location.href;
    const localOrigin = hosts.find((host) => host.id === LOCAL_HOST_ID)?.url || getLocalDesktopOrigin();
    const runtimeApiBaseUrl = getRuntimeApiBaseUrl();
-@@ -68,7 +76,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+@@ -44,7 +57,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
    }
  
    if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) {
@@ -305,7 +310,7 @@ index 189769ed6..d7310cf69 100644
    }
  
    const runtimeMatch = hosts.find((host) => (
-@@ -84,7 +92,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+@@ -60,7 +73,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
    }
  
    if (currentHref && locationMatchesHost(currentHref, localOrigin)) {
@@ -314,16 +319,16 @@ index 189769ed6..d7310cf69 100644
    }
  
    const match = hosts.find((host) => (currentHref ? locationMatchesHost(currentHref, host.url) : false));
-@@ -98,7 +106,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
-   // Without a local server (OPENCHAMBER_SKIP_LOCAL_SERVER=1) that address is
-   // all there is, and calling it Local named an entry the list does not have.
+@@ -71,7 +84,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+ 
+   const packagedPage = currentHref.startsWith('openchamber-ui://');
    if (packagedPage && localOrigin && !runtimeApiBaseUrl) {
 -    return { id: LOCAL_HOST_ID, label: 'Local', url: normalizedLocal };
 +    return { id: LOCAL_HOST_ID, label: localLabel, url: normalizedLocal };
    }
  
-   // Nothing configured matches. Naming the address is still more use than the
-@@ -109,7 +117,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
+   const address = runtimeApiBaseUrl
+@@ -79,7 +92,7 @@ export const resolveCurrentDesktopHost = (hosts: DesktopHost[]): ResolvedDesktop
      : packagedPage ? '' : normalizedCurrent;
    return {
      id: 'custom',
@@ -333,7 +338,7 @@ index 189769ed6..d7310cf69 100644
    };
  };
 diff --git a/packages/ui/src/lib/easter-eggs/easterEggCopy.ts b/packages/ui/src/lib/easter-eggs/easterEggCopy.ts
-index 60b45530f..c34646e8e 100644
+index 382703aefc..cb6cea76a7 100644
 --- a/packages/ui/src/lib/easter-eggs/easterEggCopy.ts
 +++ b/packages/ui/src/lib/easter-eggs/easterEggCopy.ts
 @@ -5,6 +5,8 @@ import { useI18n, useI18nStore, type Locale } from '@/lib/i18n';
@@ -367,18 +372,17 @@ index 60b45530f..c34646e8e 100644
    LOADERS[locale]()
      .then(({ copy }) => useCopyStore.setState((state) => ({ byLocale: { ...state.byLocale, [locale]: copy } })))
 diff --git a/packages/ui/src/lib/worktreeSessionCreator.ts b/packages/ui/src/lib/worktreeSessionCreator.ts
-index fe640046c..d9f421535 100644
+index 94e76030f6..c60f5f928e 100644
 --- a/packages/ui/src/lib/worktreeSessionCreator.ts
 +++ b/packages/ui/src/lib/worktreeSessionCreator.ts
-@@ -5,6 +5,7 @@
-  */
+@@ -1,5 +1,6 @@
  
  import { toast } from '@/components/ui';
 +import { formatMessage, useI18nStore, type I18nKey, type I18nParams } from '@/lib/i18n';
  import { useSessionUIStore, type NewSessionDraftState } from '@/sync/session-ui-store';
  import { useProjectsStore } from '@/stores/useProjectsStore';
  import { useConfigStore } from '@/stores/useConfigStore';
-@@ -34,6 +35,9 @@ import { projectPathForCheckoutFolder } from '@/lib/worktrees/worktreePaths';
+@@ -29,6 +30,9 @@ import { projectPathForCheckoutFolder } from '@/lib/worktrees/worktreePaths';
  import { normalizePath } from '@/lib/pathNormalization';
  import { resolveProjectForDirectory } from '@/lib/projectResolution';
  
@@ -388,7 +392,7 @@ index fe640046c..d9f421535 100644
  const waitForWorktreeBootstrapIfEnabled = async (project: ProjectRef, directory: string): Promise<void> => {
    if (await getWorktreeSetupWaitEnabled(project)) {
      await waitForWorktreeBootstrap(directory);
-@@ -179,8 +183,8 @@ const createInstantWorktreeDraft = async (options?: {
+@@ -157,8 +161,8 @@ const createInstantWorktreeDraft = async (options?: {
  
    const activeProject = useProjectsStore.getState().getActiveProject();
    if (!activeProject?.path) {
@@ -399,7 +403,7 @@ index fe640046c..d9f421535 100644
      });
      return null;
    }
-@@ -195,8 +199,8 @@ const createInstantWorktreeDraft = async (options?: {
+@@ -173,8 +177,8 @@ const createInstantWorktreeDraft = async (options?: {
    }
  
    if (!isGitRepo) {
@@ -410,7 +414,7 @@ index fe640046c..d9f421535 100644
      });
      return null;
    }
-@@ -255,14 +259,14 @@ const createInstantWorktreeDraft = async (options?: {
+@@ -229,14 +233,14 @@ const createInstantWorktreeDraft = async (options?: {
  
      return metadata.path;
    } catch (error) {
@@ -427,7 +431,7 @@ index fe640046c..d9f421535 100644
        description: message,
      });
      return null;
-@@ -317,14 +321,14 @@ export async function createWorktreeSessionForNewBranch(
+@@ -279,14 +283,14 @@ export async function createWorktreeSessionForNewBranch(
      const start = startPoint?.trim() || 'HEAD';
      const base = preferredBranchName?.trim();
      if (!base) {
@@ -444,7 +448,7 @@ index fe640046c..d9f421535 100644
      }
  
      let isGitRepo = false;
-@@ -371,15 +375,15 @@ export async function createWorktreeSessionForNewBranch(
+@@ -333,15 +337,15 @@ export async function createWorktreeSessionForNewBranch(
        const session = await sessionStore.createSession(undefined, startDirectory);
        if (!session) {
          await removeProjectWorktree(projectRef, metadata, { deleteLocalBranch: true }).catch(() => undefined);
@@ -464,10 +468,10 @@ index fe640046c..d9f421535 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index 471255c9e..6d79a2b42 100644
+index b8e4bbb112..c58c9caa91 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2696,11 +2696,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2216,11 +2216,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -485,7 +489,7 @@ index 471255c9e..6d79a2b42 100644
      }
    },
  
-@@ -2712,11 +2716,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2232,11 +2236,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -503,57 +507,28 @@ index 471255c9e..6d79a2b42 100644
      }
    },
  
-diff --git a/packages/ui/src/sync/sync-context.tsx b/packages/ui/src/sync/sync-context.tsx
-index 7a0e2ef4b..3b99f8376 100644
---- a/packages/ui/src/sync/sync-context.tsx
-+++ b/packages/ui/src/sync/sync-context.tsx
-@@ -652,10 +652,15 @@ const openRequestFromToast = (sessionID: string, directory: string, requestID: s
- }
+diff --git a/packages/ui/src/sync/sync-request-notifications.ts b/packages/ui/src/sync/sync-request-notifications.ts
+index c3412cab99..944f8c9f36 100644
+--- a/packages/ui/src/sync/sync-request-notifications.ts
++++ b/packages/ui/src/sync/sync-request-notifications.ts
+@@ -18,6 +18,7 @@ import { getPermissionToastKey, showPermissionNeededToast } from "./permission-t
+ import { type DirectoryEventBatch, getDirectoryEventState } from "./directory-event-batch"
+ import { isViewedInCurrentSession } from "./viewed-sessions"
+ import { resolveCachedSessionDirectory } from "./event-routing-index"
++import { formatMessage, useI18nStore } from "@/lib/i18n"
  
- /** A location-scoped form names no session to open; the toast then only announces it. */
--const formToastAction = (sessionID: string, directory: string, formID: string) => (
-+const formToastAction = (
-+  sessionID: string,
-+  directory: string,
-+  formID: string,
-+  openSessionLabel: string
-+) => (
+ export const pendingFormToastIds = new Set<string>()
+ 
+@@ -50,7 +51,7 @@ export const openRequestFromToast = (sessionID: string, directory: string, reque
+ export const formToastAction = (sessionID: string, directory: string, formID: string) => (
    sessionID === LOCATION_SCOPED_FORM_SESSION_ID
      ? undefined
 -    : { label: "Open session", onClick: () => openRequestFromToast(sessionID, directory, formID) }
-+    : { label: openSessionLabel, onClick: () => openRequestFromToast(sessionID, directory, formID) }
++    : { label: formatMessage(useI18nStore.getState().dictionary, 'chat.toast.opencodeRestartInterrupted.openSession'), onClick: () => openRequestFromToast(sessionID, directory, formID) }
  )
  
- /** Blank server strings mean "absent" here, not "empty title". */
-@@ -1554,10 +1559,12 @@ export async function resyncBlockingRequestsForDirectory(
-         const toastKey = getFormToastKey(sessionId, form.id)
-         if (!toastKey || pendingFormToastIds.has(toastKey)) continue
-         pendingFormToastIds.add(toastKey)
-+        const dictionary = useI18nStore.getState().dictionary
-+        const openSessionLabel = formatMessage(dictionary, 'chat.toast.opencodeRestartInterrupted.openSession')
-         toast.info(form.title, {
-           id: `form-${toastKey}`,
-           description: FORM_TOAST_DESCRIPTION,
--          action: formToastAction(sessionId, directory, form.id),
-+          action: formToastAction(sessionId, directory, form.id, openSessionLabel),
-         })
-       }
-     }
-@@ -2025,10 +2032,12 @@ const notifyFormCreated = (form: FormRequest, directory: string): void => {
-   const toastKey = getFormToastKey(sessionID, form.id)
-   if (isViewedInCurrentSession(directory, sessionID) || !toastKey || pendingFormToastIds.has(toastKey)) return
-   pendingFormToastIds.add(toastKey)
-+  const dictionary = useI18nStore.getState().dictionary
-+  const openSessionLabel = formatMessage(dictionary, 'chat.toast.opencodeRestartInterrupted.openSession')
-   toast.info(form.title, {
-     id: `form-${toastKey}`,
-     description: FORM_TOAST_DESCRIPTION,
--    action: formToastAction(sessionID, directory, form.id),
-+    action: formToastAction(sessionID, directory, form.id, openSessionLabel),
-   })
- }
- 
-@@ -2045,7 +2054,7 @@ const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber.page-w
+ export const trimmedOrUndefined = (value: string | undefined): string | undefined => {
+@@ -161,7 +162,7 @@ export const notifyWaitingPage = (event: Extract<SyncEvent, { type: "openchamber
      id: `page-${sessionID}:${page.id}`,
      description: FORM_TOAST_DESCRIPTION,
      action: {
@@ -563,10 +538,10 @@ index 7a0e2ef4b..3b99f8376 100644
          revealWaitingPage(sessionID)
          openSessionFromToast(sessionID, directory)
 diff --git a/packages/vscode/src/webviewHtml.ts b/packages/vscode/src/webviewHtml.ts
-index 12cc16c79..b7222cfd7 100644
+index 3c333be663..8a54516019 100644
 --- a/packages/vscode/src/webviewHtml.ts
 +++ b/packages/vscode/src/webviewHtml.ts
-@@ -217,6 +217,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -209,6 +209,8 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
          locale = 'fr';
        } else if (detected.indexOf('tr') === 0) {
          locale = 'tr';
@@ -575,7 +550,7 @@ index 12cc16c79..b7222cfd7 100644
        }
  
        if (locale === 'fr') {
-@@ -241,6 +243,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
+@@ -233,6 +235,17 @@ export function getWebviewHtml(options: WebviewHtmlOptions): string {
            cliNotFound: 'OpenCode CLI bulunamadı. Lütfen önce kurun.',
          };
        }

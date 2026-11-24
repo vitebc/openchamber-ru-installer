@@ -1,0 +1,18 @@
+{
+ "chat.workflow.proposedBy": "Предложено в {title}",
+ "sessions.sidebar.session.menu.takeOver": "Забрать себе",
+ "chat.container.readOnlyOperatorChildPromptBanner": "Эту сессию ведёт другой агент. Чтобы писать здесь, выберите «Забрать себе» в её меню в боковой панели.",
+ "chat.container.readOnlyFolderMissingBanner": "Папка {name} этой сессии больше не существует, поэтому она открывается только для чтения.",
+ "chat.container.readOnlyFolderOutsideBanner": "Папка {name} этой сессии находится вне ваших проектов, поэтому она открывается только для чтения.",
+ "sessions.sidebar.session.menuHint.takeOver": "Делает сессию вашей: она уходит от агента, который её ведёт, получает собственную строку и может задавать вам вопросы.",
+ "sessions.sidebar.session.takeOver.failed": "Не удалось забрать себе сессию",
+ "sessions.sidebar.work.menu.takeOverOne": "Забрать себе сессию агента",
+ "sessions.sidebar.work.menu.takeOverMany": "Забрать себе сессии агента ({count})",
+ "sessions.operatorChildren.done.title": "Её дочерние сессии ещё работают",
+ "sessions.operatorChildren.done.descriptionOne": "Сессия, которую эта запустила для своей работы, ещё выполняется.",
+ "sessions.operatorChildren.done.descriptionMany": "Сессии, которые эта запустила для своей работы, ещё выполняются: {count}.",
+ "sessions.operatorChildren.done.finishOne": "Дать ей завершиться",
+ "sessions.operatorChildren.done.finishMany": "Дать им завершиться",
+ "sessions.operatorChildren.done.stopOne": "Остановить её",
+ "sessions.operatorChildren.done.stopMany": "Остановить их"
+}

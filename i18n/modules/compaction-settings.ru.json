@@ -11,5 +11,5 @@
  "settings.openchamber.defaults.compaction.keepDefault": "По умолчанию ({count})",
  "settings.openchamber.defaults.compaction.tokens": "{count} токенов",
  "settings.openchamber.defaults.compaction.background": "Сжимать в фоне",
- "settings.openchamber.defaults.compaction.backgroundInfo": "Экспериментальная функция OpenCode. Когда сессия приближается к сжатию, OpenCode заранее пишет сводку и подставляет её, когда приходит черёд, поэтому сессия не прерывается. Сводка, которая так и не понадобилась, всё равно расходует токены. Сессии меньше примерно 64K токенов этого не делают."
+ "settings.openchamber.defaults.compaction.backgroundInfo": "Когда сессия приближается к сжатию, OpenCode заранее пишет сводку и подставляет её, когда приходит черёд, поэтому сессия не прерывается. Сводка, которая так и не понадобилась, всё равно расходует токены."
 }

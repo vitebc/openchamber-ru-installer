@@ -76,10 +76,19 @@ const labelRe = /,ru:"common\.language\.russian"\}/;
 if (!labelRe.test(src)) fail('LOCALE_LABEL_KEYS strip regex not found');
 src = src.replace(labelRe, '}');
 
-// normalizeLocale branch: '<var>==="ru"||<var>.startsWith("ru-")?"ru":' removed
-const normRe = /(\w+)==="ru"\|\|\1\.startsWith\("ru-"\)\?"ru":/;
-if (!normRe.test(src)) fail('normalizeLocale strip regex not found');
-src = src.replace(normRe, '');
+// normalizeLocale branch: old builds carry the ternary
+// '<var>==="ru"||<var>.startsWith("ru-")?"ru":'; v2.7.3 builds carry the if
+// statement '<var>==="ru"||<var>.startsWith("ru-"))return"ru";' inside the
+// chain helper. Strip whichever form the fork build produced.
+const normTernary = /(\w+)==="ru"\|\|\1\.startsWith\("ru-"\)\?"ru":/;
+const normIf = /if\((\w+)==="ru"\|\|\1\.startsWith\("ru-"\)\)return"ru";?/;
+if (normTernary.test(src)) {
+  src = src.replace(normTernary, '');
+} else if (normIf.test(src)) {
+  src = src.replace(normIf, '');
+} else {
+  fail('normalizeLocale strip regex not found');
+}
 
 // Dictionary loader branch: '<var>==="ru"?await <fn>(()=>import("./ru-*.js"),[]):' removed
 // (v2 shares vendor deps via __vite__mapDeps([...]); 1.x used empty [].)

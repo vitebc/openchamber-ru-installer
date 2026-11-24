@@ -110,6 +110,10 @@ const required = [
   'chat.sharePage.unavailable',
   'chat.sharedPage.chip.label',
   'mobile.androidWidget.sessions.title',
+  // v2.7.3
+  'mobile.instances.heartbeat.latency',
+  'settings.layout.general.mobileApp.title',
+  'chat.workStatus.subagent.activity.thinking',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

@@ -51,7 +51,7 @@ checkSyntax(path.join(dir, main[0]));
 const checks = [
   ['LOCALES contains ru', /"ru"\]/.test(mainSrc)],
   ['LOCALE_LABEL_KEYS has ru', /ru:"common\.language\.russian"/.test(mainSrc)],
-  ['normalizeLocale has ru branch', /startsWith\("ru-"\)\?"ru"/.test(mainSrc)],
+  ['normalizeLocale has ru branch', /startsWith\("ru-"\)\?"ru"|startsWith\("ru-"\)\)+return"ru"/.test(mainSrc)],
   ['loader imports ru chunk', /import\("\.\/ru-ruinstaller\.js"\)/.test(mainSrc)],
 ];
 for (const [name, ok] of checks) {

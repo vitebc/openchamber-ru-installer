@@ -19,6 +19,8 @@
  "settings.providers.grid.noMatches": "Нет провайдеров по запросу «{query}».",
  "settings.providers.grid.empty": "Провайдеров пока нет. Подключите провайдера, чтобы начать общение.",
  "settings.providers.card.models": "Моделей: {count}",
+ "settings.providers.card.billing.payPerUse": "Оплата за использование",
+ "settings.providers.card.billing.subscription": "Подписка",
  "settings.providers.card.status.connected": "Подключено",
  "settings.providers.card.status.accounts": "Аккаунтов: {count}",
  "settings.providers.card.status.environment": "Из переменных окружения",
