@@ -1,0 +1,19 @@
+{
+ "settings.openchamber.externalPlugin.notice": "OpenChamber подключён к внешнему серверу OpenCode. Добавьте плагин OpenChamber в глобальную конфигурацию OpenCode, чтобы эти инструменты, аварийное переключение и названия сессий работали и там.",
+ "settings.openchamber.externalPlugin.inGlobal": "Плагин OpenChamber зарегистрирован в {path}. Его инструменты остаются активными, пока запущен OpenChamber, и отключаются при его закрытии.",
+ "settings.openchamber.externalPlugin.added": "Плагин OpenChamber добавлен в {path}. OpenCode загрузит его автоматически или после перезапуска.",
+ "settings.openchamber.externalPlugin.remote": "OpenChamber подключён к удалённому серверу OpenCode. Инструменты OpenChamber работают только с локальным сервером OpenCode.",
+ "settings.openchamber.externalPlugin.add": "Добавить в конфигурацию OpenCode",
+ "settings.openchamber.externalPlugin.remove": "Удалить",
+ "settings.openchamber.externalPlugin.copyPath": "Копировать путь",
+ "settings.openchamber.externalPlugin.copied": "Путь к плагину скопирован",
+ "settings.openchamber.externalPlugin.toast.addFailed": "Не удалось обновить конфигурацию OpenCode.",
+ "settings.openchamber.externalPlugin.toast.addFailedReason": "Не удалось обновить конфигурацию OpenCode: {reason}",
+ "settings.openchamber.externalPlugin.toast.removed": "Плагин OpenChamber удалён из {path}.",
+ "settings.openchamber.externalPlugin.toast.removeFailed": "Не удалось удалить плагин из конфигурации OpenCode.",
+ "settings.openchamber.externalPlugin.toast.removeFailedReason": "Не удалось удалить плагин из конфигурации OpenCode: {reason}",
+ "settings.openchamber.opencodeCli.field.useSharedService": "Использовать общий сервис OpenCode",
+ "settings.openchamber.opencodeCli.field.useSharedServiceInfo": "Подключается к локальному демону opencode serve --service, общему с OpenCode CLI и TUI, или запускает его, если он не запущен.",
+ "settings.openchamber.opencodeCli.field.useSharedServiceAria": "Использовать общий сервис OpenCode",
+ "settings.openchamber.opencodeCli.sharedServiceSwitchFailed": "Не удалось переключить режим сервиса OpenCode: {reason}"
+}

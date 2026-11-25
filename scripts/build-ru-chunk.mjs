@@ -114,6 +114,10 @@ const required = [
   'mobile.instances.heartbeat.latency',
   'settings.layout.general.mobileApp.title',
   'chat.workStatus.subagent.activity.thinking',
+  // v2.8.0
+  'sessions.sidebar.project.actions.newLead',
+  'settings.openchamber.externalPlugin.notice',
+  'tray.instance.fallback',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

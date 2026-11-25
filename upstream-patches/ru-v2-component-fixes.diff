@@ -1,8 +1,8 @@
 diff --git a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-index 10f2271275..3540f87197 100644
+index f40db60355..e50adffbfb 100644
 --- a/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
 +++ b/packages/ui/src/components/desktop/DesktopHostSwitcher.tsx
-@@ -301,8 +301,8 @@ export function DesktopHostSwitcherDialog({
+@@ -272,8 +272,8 @@ export function DesktopHostSwitcherDialog({
        ...h,
        url: normalizeHostUrl(h.url) || h.url,
      }));
@@ -13,7 +13,7 @@ index 10f2271275..3540f87197 100644
  
    React.useEffect(() => {
      return subscribeRuntimeEndpointChanged(() => setRuntimeEndpointEpoch((epoch) => epoch + 1));
-@@ -310,8 +310,14 @@ export function DesktopHostSwitcherDialog({
+@@ -281,8 +281,14 @@ export function DesktopHostSwitcherDialog({
  
    const current = React.useMemo(() => {
      void runtimeEndpointEpoch;
@@ -174,96 +174,6 @@ index c500974925..c052632b94 100644
  
    const handleChangeWorkspace = React.useCallback(() => {
      sessionEvents.requestDirectoryDialog();
-diff --git a/packages/ui/src/hooks/useTraySync.ts b/packages/ui/src/hooks/useTraySync.ts
-index 8c38f5ceb0..e6d40ca6e7 100644
---- a/packages/ui/src/hooks/useTraySync.ts
-+++ b/packages/ui/src/hooks/useTraySync.ts
-@@ -46,6 +46,7 @@ import { findWorktreeHoldingDirectory } from '@/lib/worktrees/worktreePaths';
- import type { ProjectEntry } from '@/lib/api/types';
- import type { WorktreeMetadata } from '@/types/worktree';
- import { toast } from '@/components/ui';
-+import { useI18n } from '@/lib/i18n';
- 
- const TRAY_ACTION_EVENT = 'openchamber:tray-action';
- const POLL_INTERVAL_MS = 5000;
-@@ -193,18 +194,27 @@ const buildUsage = (): TrayUsage => {
-   return { mode, groups };
- };
- 
--const resolveInstanceName = async (): Promise<string> => {
-+// Mirrors the header's instance resolution (Header.refreshCurrentInstanceLabel):
-+// the local origin shows as the localized "Local OpenChamber" label; a remote
-+// host shows its configured name. Async because the host config is read over IPC.
-+const resolveInstanceName = async ({
-+  localName,
-+  fallbackName,
-+}: {
-+  localName: string;
-+  fallbackName: string;
-+}): Promise<string> => {
-   try {
--    if (isDesktopLocalOriginActive()) return 'Local OpenChamber';
-+    if (isDesktopLocalOriginActive()) return localName;
-     const localOrigin = (window as unknown as { __OPENCHAMBER_LOCAL_ORIGIN__?: string }).__OPENCHAMBER_LOCAL_ORIGIN__
-       || window.location.origin;
-     const runtimeApiBaseUrl = getRuntimeApiBaseUrl();
--    if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) return 'Local OpenChamber';
-+    if (runtimeApiBaseUrl && locationMatchesHost(runtimeApiBaseUrl, localOrigin)) return localName;
-     const cfg = await desktopHostsGet();
-     const match = cfg.hosts.find((host) =>
-       runtimeApiBaseUrl ? locationMatchesHost(runtimeApiBaseUrl, getDesktopHostApiUrl(host)) : false);
-     if (match?.label?.trim()) return redactSensitiveUrl(match.label.trim());
--    return 'Instance';
-+    return fallbackName;
-   } catch {
-     return '';
-   }
-@@ -385,6 +395,8 @@ const buildSnapshot = (instanceName: string, includeTray: boolean): TraySnapshot
- };
- 
- export const useTraySync = (): void => {
-+  const { t } = useI18n();
-+
-   React.useEffect(() => {
-     if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
-     const trayEnabled = isTrayEnabled();
-@@ -455,7 +467,10 @@ export const useTraySync = (): void => {
-       return stopBadgeSync;
-     }
- 
--    void resolveInstanceName().then((name) => {
-+    void resolveInstanceName({
-+      localName: t('desktopHostSwitcher.instance.localOpenChamber'),
-+      fallbackName: t('desktopHostSwitcher.instance.fallback'),
-+    }).then((name) => {
-       if (disposed) return;
-       instanceName = name;
-       flushNow();
-@@ -523,7 +538,7 @@ export const useTraySync = (): void => {
-       for (const unsub of storeUnsubs.values()) unsub();
-       storeUnsubs.clear();
-     };
--  }, []);
-+  }, [t]);
- 
-   React.useEffect(() => {
-     if (!isTrayPlatform() || !canUseElectronDesktopIPC()) return;
-@@ -541,7 +556,7 @@ export const useTraySync = (): void => {
-           break;
-         case 'respond-permission':
-           void respondToPermission(action.sessionId, action.id, action.response).catch(() => {
--            toast.error('Failed to respond to permission request');
-+            toast.error(t('chat.permissionToast.respondFailed'));
-           });
-           break;
-       }
-@@ -573,5 +588,5 @@ export const useTraySync = (): void => {
-         // ignore
-       }
-     };
--  }, []);
-+  }, [t]);
- };
 diff --git a/packages/ui/src/lib/desktopCurrentHost.ts b/packages/ui/src/lib/desktopCurrentHost.ts
 index 4de7b840cc..d4cc1d2da7 100644
 --- a/packages/ui/src/lib/desktopCurrentHost.ts
@@ -468,10 +378,10 @@ index 94e76030f6..c60f5f928e 100644
      }
    } finally {
 diff --git a/packages/ui/src/sync/session-ui-store.ts b/packages/ui/src/sync/session-ui-store.ts
-index b8e4bbb112..c58c9caa91 100644
+index 837645d96c..b6f9f1eb7f 100644
 --- a/packages/ui/src/sync/session-ui-store.ts
 +++ b/packages/ui/src/sync/session-ui-store.ts
-@@ -2216,11 +2216,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2197,11 +2197,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkFromMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
@@ -489,7 +399,7 @@ index b8e4bbb112..c58c9caa91 100644
      }
    },
  
-@@ -2232,11 +2236,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
+@@ -2213,11 +2217,15 @@ export const useSessionUIStore = create<SessionUIState>()((set, get) => ({
        await forkAfterMessageAction(sessionId, messageId)
  
        const { toast } = await import("sonner")
