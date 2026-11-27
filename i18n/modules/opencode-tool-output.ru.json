@@ -38,6 +38,7 @@
  "chat.toolPart.opencode.schedule.done": "Завершено",
  "chat.toolPart.opencode.automation.event": "При событии {value}",
  "chat.toolPart.opencode.automation.code": "Скрипт Code Mode",
+ "chat.toolPart.opencode.automation.shell": "Shell-команда",
  "chat.toolPart.opencode.automation.subagent": "Новый субагент {value}",
  "chat.toolPart.opencode.field.sendsTo": "Куда",
  "chat.toolPart.opencode.worktree.root": "Папка проекта",

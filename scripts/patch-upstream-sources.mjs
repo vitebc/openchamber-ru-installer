@@ -328,7 +328,7 @@ function moduleBlockKeys(src, locale) {
   for (const k of enKeys) {
     if (!ruKeys.has(k)) gaps.push(`dict: ${k}`);
   }
-  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool', 'about-release-notes', 'markdown-outline', 'memory-dreaming', 'omni-search', 'openchamber-tools-layout', 'settings-hints', 'update-check-errors', 'android-widgets', 'questions-in-chat', 'received-pages', 'share-pages', 'connection-heartbeat', 'mobile-app-settings', 'operator-children', 'subagents', 'lead', 'external-opencode-plugin'];
+  const MODULE_FILES = ['linear-issue-picker', 'linear-panel', 'routing', 'plugin-panel', 'surface-panel', 'file-artifacts', 'usage-stats', 'websearch', 'first-party-integrations', 'guest-integrations', 'extensions.settings', 'isolated-spaces', 'providers', 'mcp-grid', 'plugins-grid', 'third-party-integrations', 'extension-catalog', 'reference-picker', 'session-menu-hints', 'environment', 'source-board', 'html-render', 'project-actions', 'project-knowledge', 'file-content-search', 'git-identity-editor', 'integrations-catalog', 'settings-layout', 'change-review', 'diff-find', 'file-editor-aids', 'overview', 'session-notices', 'session-warming', 'stacks', 'autocomplete-scope', 'guest-status-view', 'heap-snapshot', 'markdown-github', 'repository-discussions', 'session-references', 'sidebar-work', 'workflows', 'worktree-archive', 'console-budgets', 'document-toolbar', 'image-tool', 'snippets', 'agent-status', 'compaction-settings', 'secret-request', 'sidebar-sections', 'ui-blocks', 'update-dialog-canary', 'pr-review', 'extension-powers', 'openchamber-tool-output', 'opencode-tool-output', 'selection-approval', 'tooltips-chat', 'tooltips-diff', 'tooltips-files', 'tooltips-git', 'tooltips-panel', 'tooltips-terminal-browser', 'tooltips-tracker', 'tooltips-walkthrough', 'tooltips-workspace', 'usage-tool', 'about-release-notes', 'markdown-outline', 'memory-dreaming', 'omni-search', 'openchamber-tools-layout', 'settings-hints', 'update-check-errors', 'android-widgets', 'questions-in-chat', 'received-pages', 'share-pages', 'connection-heartbeat', 'mobile-app-settings', 'operator-children', 'subagents', 'lead', 'external-opencode-plugin', 'chat-exchange', 'context-window', 'integrate-conflict', 'session-cost', 'update-idle'];
   for (const mod of MODULE_FILES) {
     const dataFile = path.join(INSTALLER_ROOT, 'i18n', 'modules', `${mod}.ru.json`);
     if (!fs.existsSync(dataFile)) {
@@ -461,6 +461,11 @@ const RUSSIAN_PER_LOCALE = {
     'subagents': 'subagentsI18n',
     'lead': 'leadI18n',
     'external-opencode-plugin': 'externalOpenCodePluginI18n',
+    'chat-exchange': 'chatExchangeI18n',
+    'context-window': 'contextWindowI18n',
+    'integrate-conflict': 'integrateConflictI18n',
+    'session-cost': 'sessionCostI18n',
+    'update-idle': 'updateIdleI18n',
   };
   const MESSAGES = path.join(I18N, 'messages');
   for (const mod of Object.keys(MODULES)) {

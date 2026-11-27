@@ -15,7 +15,7 @@ import { fileEditorAidsI18n } from './file-editor-aids.i18n';
 import { htmlRenderI18n } from './html-render.i18n';
 import { documentToolbarI18n } from './document-toolbar.i18n';
 import { uiBlocksI18n } from './ui-blocks.i18n';
-import { updateDialogCanaryI18n } from './update-dialog-canary.i18n';
+import { updateDialogCanaryI18n } from './update-dialog-canary.i18n'; import { updateIdleI18n } from './update-idle.i18n';
 import { aboutReleaseNotesI18n } from './about-release-notes.i18n';
 import { updateCheckErrorsI18n } from './update-check-errors.i18n';
 import { secretRequestI18n } from './secret-request.i18n';
@@ -25,6 +25,7 @@ import { settingsHintsI18n } from './settings-hints.i18n';
 import { usageStatsI18n } from './usage-stats.i18n';
 import { webSearchI18n } from './websearch.i18n';
 import { sessionWarmingI18n } from './session-warming.i18n';
+import { sessionCostI18n } from './session-cost.i18n';
 import { connectionHeartbeatI18n } from './connection-heartbeat.i18n';
 import { compactionSettingsI18n } from './compaction-settings.i18n';
 import { heapSnapshotI18n } from './heap-snapshot.i18n';
@@ -62,9 +63,12 @@ import { mcpGridI18n } from './mcp-grid.i18n';
 import { pluginsGridI18n } from './plugins-grid.i18n';
 import { integrationsCatalogI18n } from './integrations-catalog.i18n';
 import { diffFindI18n } from './diff-find.i18n';
+import { contextWindowI18n } from './context-window.i18n';
 import { markdownOutlineI18n } from './markdown-outline.i18n';
 import { markdownGithubI18n } from './markdown-github.i18n';
 import { autocompleteScopeI18n } from './autocomplete-scope.i18n';
+import { chatExchangeI18n } from './chat-exchange.i18n';
+import { integrateConflictI18n } from './integrate-conflict.i18n';
 import { workflowsI18n } from './workflows.i18n';
 import { subagentsI18n } from './subagents.i18n';
 import { sessionReferencesI18n } from './session-references.i18n';
@@ -115,10 +119,14 @@ export const dict: Record<I18nKey, string> = {
   'sessions.aiRename.noSmallModel': 'Нужна Small Model. Войдите в провайдера моделей или выберите её в «Настройки → Сессии».',
   'commitComparison.mode': 'Коммит',
   'pullRequestComparison.select': 'Выберите pull request',
+  'pullRequestComparison.searchShort': 'Поиск pull request',
   'pullRequestComparison.pickAbove': 'Выберите pull request выше',
   'pullRequestComparison.diffUnavailable': '{provider} не отдаёт диффы pull request, поэтому здесь их нельзя показать или пошагово просмотреть',
   'pullRequestComparison.partial': 'Не удалось загрузить некоторые pull request',
   'commitComparison.select': 'Выбрать коммит',
+  'commitComparison.branchDividerSingle': 'Выше: коммит только в {branch}. Ниже: уже в {base}.',
+  'commitComparison.branchDividerPlural': 'Выше: {count} коммитов только в {branch}. Ниже: уже в {base}.',
+  'commitComparison.backToList': 'Назад к коммитам',
   'commitComparison.search': 'Поиск коммитов...',
   'commitComparison.loadError': 'Не удалось загрузить коммиты',
   'commitComparison.noCommits': 'Коммиты не найдены',
@@ -212,7 +220,7 @@ export const dict: Record<I18nKey, string> = {
   ...htmlRenderI18n.ru,
   ...documentToolbarI18n.ru,
   ...uiBlocksI18n.ru,
-  ...updateDialogCanaryI18n.ru,
+  ...updateDialogCanaryI18n.ru, ...updateIdleI18n.ru,
   ...aboutReleaseNotesI18n.ru,
   ...updateCheckErrorsI18n.ru,
   ...secretRequestI18n.ru,
@@ -222,6 +230,7 @@ export const dict: Record<I18nKey, string> = {
   ...usageStatsI18n.ru,
   ...webSearchI18n.ru,
   ...sessionWarmingI18n.ru,
+  ...sessionCostI18n.ru,
   ...connectionHeartbeatI18n.ru,
   ...compactionSettingsI18n.ru,
   ...heapSnapshotI18n.ru,
@@ -258,9 +267,12 @@ export const dict: Record<I18nKey, string> = {
   ...pluginsGridI18n.ru,
   ...integrationsCatalogI18n['ru'],
   ...diffFindI18n['ru'],
+  ...contextWindowI18n['ru'],
   ...markdownOutlineI18n['ru'],
   ...markdownGithubI18n['ru'],
   ...autocompleteScopeI18n['ru'],
+  ...chatExchangeI18n['ru'],
+  ...integrateConflictI18n['ru'],
   ...workflowsI18n['ru'],
   ...subagentsI18n['ru'],
   ...sessionReferencesI18n['ru'],
@@ -420,10 +432,6 @@ export const dict: Record<I18nKey, string> = {
   'mobile.menu.update': 'Обновить',
   'mobile.menu.settings': 'Настройки',
   'mobile.sessions.newChatCta': 'Новый чат в {project}',
-  'mobile.sessions.dateGroup.today': 'Сегодня',
-  'mobile.sessions.dateGroup.yesterday': 'Вчера',
-  'mobile.sessions.dateGroup.thisWeek': 'Ранее на этой неделе',
-  'mobile.sessions.dateGroup.older': 'Старее',
   'mobile.sessions.section.worktrees': 'Worktrees',
   'mobile.sessions.section.otherProjects': 'Переключить проект',
   'mobile.sessions.section.projects': 'Проекты',
@@ -700,6 +708,7 @@ export const dict: Record<I18nKey, string> = {
   'sessions.sidebar.header.displayMode.minimal': 'Минимальный',
   'sessions.sidebar.header.displayMode.showWork': 'Показывать в разделе «Работа»',
   'sessions.sidebar.header.displayMode.showPinned': 'Показывать закреплённые',
+  'sessions.sidebar.header.displayMode.showSubagents': 'Показывать сессии субагентов',
   'sessions.sidebar.header.displayMode.detailedZoneRows': 'Подробные строки',
   'sessions.sidebar.header.displayMode.worktreeNameByBranch': 'Называть ворктреи по веткам',
   'sessions.sidebar.activity.pinnedTitle': 'Закреплённые',
@@ -728,6 +737,7 @@ export const dict: Record<I18nKey, string> = {
   'sessions.sidebar.empty.noMatches.description': 'Попробуйте другое название или ветку.',
   'sessions.sidebar.activity.chatsTitle': 'чаты',
   'sessions.sidebar.activity.chatsEmpty': 'Чатов пока нет.',
+  'sessions.sidebar.timeline.noSessionsYet': 'Сессий пока нет',
   'chat.chatInput.chooseProject': 'Выбрать проект',
   'sessions.sidebar.header.projectDisplay.label': 'Показывать проекты',
   'sessions.sidebar.header.projectDisplay.all': 'Все проекты',
@@ -876,6 +886,8 @@ export const dict: Record<I18nKey, string> = {
   'sessions.sidebar.session.status.movingToWorktree': 'Перемещение сессии в новый worktree',
   'sessions.sidebar.session.status.permissionRequired': 'Требуется разрешение',
   'sessions.sidebar.session.status.questionPending': 'Вопрос без ответа',
+  'sessions.sidebar.session.status.permissionRequiredOpen': 'Требуется разрешение. Открывает сессию с запросом',
+  'sessions.sidebar.session.status.questionPendingOpen': 'Вопрос без ответа. Открывает сессию с вопросом',
   'sessions.sidebar.session.status.activeFor': 'Активна уже {duration}',
   'sessions.sidebar.session.status.lastTurnDuration': 'Последний ход длился {duration}',
   'sessions.sidebar.session.subsessions.collapse': 'Свернуть подсессии',
@@ -1332,6 +1344,8 @@ export const dict: Record<I18nKey, string> = {
   'worktree.bootstrap.toast.invalidConfiguration': 'Проверьте конфигурацию сабмодулей репозитория и Git LFS, затем повторите попытку.',
   'worktree.bootstrap.toast.repositoryTooManyFiles': 'В репозитории слишком много файлов.',
   'worktree.bootstrap.toast.branchNameConflict': 'Имя ветки конфликтует с уже существующей: такое же имя либо одна ветка вложена в другую. Переименуйте ветку и создайте ворктрей заново.',
+  'worktree.bootstrap.toast.submoduleSourceLocal': 'Сабмодули не забраны: OpenChamber забирает их только через сетевой удалённый сервер, а этому ворктрею использовать нечего. Удалённый сервер репозитория — папка на этом компьютере, либо у репозитория нет удалённого сервера, либо его ветка ничего не отслеживает. Работайте в самой папке репозитория или создайте ворктрей из ветки, чей upstream — сетевой удалённый сервер.',
+  'worktree.bootstrap.toast.lfsSourceLocal': 'Файлы Git LFS не забраны: OpenChamber забирает их только через сетевой удалённый сервер, а этому ворктрею использовать нечего. Удалённый сервер репозитория — папка на этом компьютере, либо у репозитория нет удалённого сервера, либо его ветка ничего не отслеживает. Работайте в самой папке репозитория или создайте ворктрей из ветки, чей upstream — сетевой удалённый сервер.',
   'worktree.bootstrap.toast.cancelled': 'Настройка ворктрея отменена. Повторите попытку, когда будете готовы.',
   'worktree.bootstrap.toast.transportFailed': 'Проверьте доступ к репозиторию и сетевое подключение, затем повторите попытку.',
   'worktree.bootstrap.toast.timeoutDescription': 'Worktree был создан, но время фоновой настройки истекло.',
@@ -1597,6 +1611,7 @@ export const dict: Record<I18nKey, string> = {
   'walkthrough.blocked.emptyDiff.description': 'В этой области пока нет изменений.',
   'walkthrough.blocked.contextTooSmall.title': 'Этот diff слишком велик для текущей модели',
   'walkthrough.blocked.contextTooSmall.description': '{model} вмещает около {available} тыс. символов, а этому diff нужно около {required} тыс. Ничего не обрезается — выберите модель с большим контекстом.',
+  'walkthrough.blocked.contextTooSmall.descriptionRefused': '{model} отвергла этот diff, потому что он слишком длинный. Выберите модель с большим контекстом или разберите более узкую область.',
   'walkthrough.blocked.structuredOutput.title': 'Эта модель не умеет выдавать структурированный вывод',
   'walkthrough.blocked.structuredOutput.description': '{model} не поддерживает структурированные ответы, нужные для разбора.',
   'walkthrough.blocked.chooseModel': 'Выбрать малую модель',
@@ -1673,6 +1688,7 @@ export const dict: Record<I18nKey, string> = {
   'contextPanel.browser.annotate.intro': 'Это аннотированный фрагмент из встроенного браузера.',
   'contextPanel.browser.annotate.attached': 'Аннотация добавлена в чат',
   'contextPanel.browser.annotate.noSession': 'Откройте сессию чата, прежде чем добавлять аннотацию',
+  'contextPanel.browser.annotate.readOnly': 'Этот чат доступен только для чтения, поэтому аннотации к нему нельзя добавить',
   'contextPanel.browser.annotate.noPage': 'Загрузите страницу, прежде чем аннотировать',
   'contextPanel.browser.annotate.failed': 'Не удалось аннотировать эту страницу',
   'contextPanel.browser.annotate.tool.element': 'Элемент',
@@ -1925,7 +1941,8 @@ export const dict: Record<I18nKey, string> = {
   'contextSidebar.tokens.cacheRead': 'Чтение из кэша',
   'contextSidebar.tokens.cacheWrite': 'Запись в кэш',
   'contextSidebar.tokens.cacheHit': 'Попадание в кэш',
-  'chat.workStatus.replyCacheHit': 'Попадание в кэш (ответ)',
+  'chat.workStatus.replyCacheHit': 'Кэш промпта',
+  'chat.workStatus.replyCacheHitDescription': 'Доля промпта, прочитанная из кэша в последнем ответе.',
   'contextSidebar.actions.copyJson': 'Копировать JSON',
   'contextSidebar.actions.copy': 'Копировать',
   'contextSidebar.actions.copied': 'Скопировано',
@@ -1994,6 +2011,8 @@ export const dict: Record<I18nKey, string> = {
   'diffView.state.loadingDiff': 'Загрузка диффа...',
   'diffView.state.loadingChanges': 'Загрузка изменений...',
   'diffView.state.largeDiff': 'Большой дифф ({count} изменённых строк)',
+  'diffView.state.largeDiffLongLines': 'Большой дифф (очень длинные строки)',
+  'diffView.state.largeFile': 'Большой файл',
   'diffView.state.largeDiffDescription': 'Отрисовка может быть медленной. Вы всё равно можете посмотреть дифф, нажав ниже.',
   'diffView.summary.changedFilesSingle': 'Изменён {count} файл',
   'diffView.summary.changedFilesPlural': 'Изменено {count} файлов',
@@ -2018,6 +2037,10 @@ export const dict: Record<I18nKey, string> = {
   'diffView.layout.sideBySide': 'Вид в два столбца',
   'diffView.actions.wrapLines': 'Переносить строки',
   'diffView.actions.moreActions': 'Ещё действия',
+  'diffView.actions.viewOptions': 'Параметры просмотра диффа',
+  'gitView.sidebar.resizeAria': 'Изменить размер панели Git',
+  'gitView.commit.stagedCountSummary': '{count} в индексе',
+  'gitView.commit.collapseAria': 'Свернуть форму коммита',
   'diffView.actions.openFileInEditorAtChange': 'Открыть этот файл в редакторе на изменении',
   'diffView.actions.openFileAtFirstChangedLine': 'Открыть этот файл на первой изменённой строке',
   'diffView.actions.reviewAria': 'Проверить изменения',
@@ -2413,6 +2436,9 @@ export const dict: Record<I18nKey, string> = {
   'session.githubPrPicker.empty.noPullRequestsFound': 'Pull request не найдены',
   'session.githubPrPicker.loading.pullRequests': 'Загрузка pull request...',
   'session.githubPrPicker.actions.loadMore': 'Загрузить ещё',
+  'session.githubPrPicker.filter.group.repository': 'Репозиторий',
+  'session.githubPrPicker.filter.group.author': 'Автор',
+  'session.githubPrPicker.filter.clearAll': 'Сбросить фильтры',
   'session.newWorktree.title': 'Новый ворктрей',
   'session.newWorktree.mode.newBranch': 'Новая ветка',
   'session.newWorktree.mode.existingBranch': 'Существующая ветка',
@@ -2555,6 +2581,7 @@ export const dict: Record<I18nKey, string> = {
   'chat.revert.toast.undo': 'Откачено до {preview}',
   'chat.revert.toast.redo': 'Повторено',
   'chat.revert.toast.restored': 'Все сообщения восстановлены',
+  "chat.revert.toast.filesUnchanged": 'Чат откачен. Файлы не изменялись.',
   'chat.toast.opencodeRestartInterrupted.title': 'Чат прерван',
   'chat.toast.opencodeRestartInterrupted.description': 'OpenCode перезапустился, пока ответ ещё формировался. Отправьте сообщение, чтобы продолжить.',
   'chat.toast.opencodeRestartInterrupted.autoResumeDescription': 'OpenCode перезапустился, пока ответ ещё формировался. Чат возобновится автоматически; отправьте сообщение, если этого не произойдёт.',
@@ -2687,6 +2714,7 @@ export const dict: Record<I18nKey, string> = {
   'chat.textSelection.title.saveInsightToNotes': 'Сохранить выделенный текст в заметки',
   'chat.messageBody.actions.revertAria': 'Откатить до этого сообщения',
   'chat.messageBody.actions.revert': 'Откатить отсюда',
+  'chat.messageBody.status.waitingForAgent': 'Ожидание агента',
   'chat.messageBody.actions.forkAria': 'Создать форк с этого сообщения',
   'chat.messageBody.actions.fork': 'Создать форк отсюда',
   'chat.messageBody.actions.copyMessageAria': 'Копировать текст сообщения',
@@ -2787,6 +2815,7 @@ export const dict: Record<I18nKey, string> = {
   'chat.chatInput.toast.sendAttachmentsFailed': 'Не удалось отправить вложения. Попробуйте меньше файлов или изображения меньшего размера.',
   'chat.chatInput.toast.messageSendFailed': 'Не удалось отправить сообщение. Вложения восстановлены.',
   'chat.chatInput.toast.agentUnavailable': 'Агент «{agent}» недоступен в папке этой сессии. Выберите другого агента и отправьте снова.',
+  'chat.chatInput.toast.skillLoadFailed': 'Навык «{skill}» не загрузился со своего MCP-сервера. Проверьте, что он подключён в разделе «Настройки», затем отправьте снова.',
   'chat.chatInput.toast.noModelSelected': 'Выберите провайдера и модель перед отправкой.',
   'chat.chatInput.toast.clipboardAttachFailed': 'Не удалось прикрепить изображение из буфера обмена',
   'chat.chatInput.toast.clipboardTextAttachFailed': 'Не удалось прикрепить вставленный текст как файл',
@@ -3138,6 +3167,11 @@ export const dict: Record<I18nKey, string> = {
   'openInApp.actions.copyPath': 'Копировать путь',
   'openInApp.actions.refreshApps': 'Обновить приложения',
   'openInApp.toast.pathCopied': 'Путь скопирован в буфер обмена',
+  'openInApp.toast.sshOpenFailed': 'Не удалось открыть {app}. Проверьте, что приложение установлено на этом компьютере.',
+  'openInApp.toast.sshInstanceChanged': 'Окно переключилось на другой экземпляр, ещё до открытия {app}. Повторите попытку.',
+  'openInApp.toast.sshSettingsMismatch': '{app} не подключится так, как этот экземпляр: его SSH-команда задаёт {settings}, а {app} их не читает. Перенесите их в запись хоста в ~/.ssh/config.',
+  'openInApp.toast.sshUnresolved': 'Не удалось прочитать SSH-настройки этого экземпляра, поэтому {app} не открылось. Проверьте SSH-команду экземпляра.',
+  'openInApp.toast.sshUnsupported': '{app} не умеет открывать этот проект по SSH.',
   'projectActions.actions.addActionAria': 'Добавить действие',
   'projectActions.actions.addAction': 'Добавить действие',
   'projectActions.actions.addNewAction': 'Добавить новое действие',

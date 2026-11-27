@@ -1,6 +1,7 @@
 {
  "settings.openchamber.externalPlugin.notice": "OpenChamber подключён к внешнему серверу OpenCode. Добавьте плагин OpenChamber в глобальную конфигурацию OpenCode, чтобы эти инструменты, аварийное переключение и названия сессий работали и там.",
  "settings.openchamber.externalPlugin.inGlobal": "Плагин OpenChamber зарегистрирован в {path}. Его инструменты остаются активными, пока запущен OpenChamber, и отключаются при его закрытии.",
+ "settings.openchamber.externalPlugin.notLoaded": "Плагин OpenChamber зарегистрирован в {path}, но OpenCode не загрузил его для этого проекта. Перезапустите OpenCode или проверьте, не отключён ли он в конфигурации OpenCode этого проекта.",
  "settings.openchamber.externalPlugin.added": "Плагин OpenChamber добавлен в {path}. OpenCode загрузит его автоматически или после перезапуска.",
  "settings.openchamber.externalPlugin.remote": "OpenChamber подключён к удалённому серверу OpenCode. Инструменты OpenChamber работают только с локальным сервером OpenCode.",
  "settings.openchamber.externalPlugin.add": "Добавить в конфигурацию OpenCode",

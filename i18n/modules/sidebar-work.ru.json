@@ -1,6 +1,7 @@
 {
  "sessions.sidebar.header.displayMode.keepWorkInPlace": "Также показывать в работе в проектах",
  "sessions.sidebar.header.displayMode.keepPinnedInPlace": "Также показывать закреплённое в проектах",
+ "sessions.sidebar.header.displayMode.pinnedInWork": "Закреплённые могут быть в работе",
  "sessions.sidebar.work.rename.failed": "Не удалось переименовать задачу",
  "sessions.sidebar.work.rename.placeholder": "Название задачи",
  "sessions.sidebar.work.rename.aria": "Переименовать задачу",

@@ -1,0 +1,12 @@
+{
+ "settings.openchamber.sessionCost.title": "Стоимость сессии",
+ "settings.openchamber.sessionCost.field.enabled": "Предупреждать, когда сессия становится дорогой",
+ "settings.openchamber.sessionCost.field.enabledInfo": "Стоимость в «Статусе работы» станет жёлтой, а затем красной, когда сессия и её субагенты превысят эти суммы. Пока сессия выполняется, уведомление появляется в момент превышения одной из них. Это суммы, которые отчитывает OpenCode; подписка может их не тарифицировать.",
+ "settings.openchamber.sessionCost.field.warnAt": "Жёлтый от",
+ "settings.openchamber.sessionCost.field.warnAtAria": "Стоимость сессии, при которой она станет жёлтой, в долларах США",
+ "settings.openchamber.sessionCost.field.criticalAt": "Красный от",
+ "settings.openchamber.sessionCost.field.criticalAtAria": "Стоимость сессии, при которой она станет красной, в долларах США",
+ "settings.openchamber.sessionCost.field.orderError": "Жёлтый порог должен быть ниже красного. Последние допустимые суммы сохраняются, пока это не исправлено.",
+ "chat.toast.sessionCost.title": "Стоимость сессии превысила {threshold}",
+ "chat.toast.sessionCost.openSession": "Открыть сессию"
+}

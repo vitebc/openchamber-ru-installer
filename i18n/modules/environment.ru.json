@@ -2,6 +2,7 @@
  "settings.environment.user.title": "Переменные окружения",
  "settings.environment.user.info": "Добавляются в окружение OpenCode, Git, терминала и действий проекта. Значения хранятся на этом сервере и больше никогда не показываются. Проект может добавить собственные в разделе «Проекты».",
  "settings.environment.user.enterpriseNote": "Корпоративный режим: они доходят до Git, терминала и действий проекта, но не до OpenCode.",
+ "settings.environment.user.sharedServiceNote": "Общий сервис: они доходят до Git, терминала и действий проекта, но не до OpenCode.",
  "settings.environment.user.restartNote": "OpenCode подхватит изменение после перезапуска.",
  "settings.environment.editor.empty": "Переменных пока нет.",
  "settings.environment.editor.nameAria": "Имя переменной",

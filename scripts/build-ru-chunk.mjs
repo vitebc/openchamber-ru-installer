@@ -118,6 +118,10 @@ const required = [
   'sessions.sidebar.project.actions.newLead',
   'settings.openchamber.externalPlugin.notice',
   'tray.instance.fallback',
+  // v2.8.1
+  'settings.openchamber.sessionCost.title',
+  'chat.exchange.earlier',
+  'chat.uiBlock.strayQuote',
 ];
 const missing = required.filter((k) => !src.includes(k));
 if (missing.length) {

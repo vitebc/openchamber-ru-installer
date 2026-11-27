@@ -1,0 +1,11 @@
+{
+ "updateDialog.actions.installWhenIdle": "Установить в простое",
+ "updateDialog.actions.cancelIdleInstall": "Отмена",
+ "updateDialog.idle.waiting": "Ждём завершения всех запущенных задач",
+ "updateDialog.idle.countingOne": "Установка через {seconds} секунду",
+ "updateDialog.idle.counting": "Установка через {seconds} секунд",
+ "updateDialog.idle.reason.install-failed": "Установка не завершилась. Загруженное обновление осталось на месте.",
+ "settings.openchamber.about.field.autoUpdate": "Автоматические обновления",
+ "settings.openchamber.about.field.autoUpdateDescription": "Скачивает обновления в фоне и устанавливает их при выходе.",
+ "settings.openchamber.about.toast.autoUpdateNotSaved": "Не удалось сохранить настройку автоматических обновлений."
+}

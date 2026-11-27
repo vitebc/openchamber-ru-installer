@@ -1,0 +1,21 @@
+{
+ "chat.exchange.earlier": "Предыдущих ответов: {count}",
+ "chat.exchange.noAnswer": "Без ответа",
+ "chat.exchange.unread": "не прочитано",
+ "chat.exchange.wake": "Фоновое событие",
+ "chat.exchange.subagentFinished": "Субагент завершил работу: {title}",
+ "chat.exchange.subagentFailed": "Субагент не справился: {title}",
+ "chat.exchange.subagentStopped": "Субагент остановлен: {title}",
+ "chat.exchange.commandFinished": "Фоновая команда завершена",
+ "chat.exchange.commandFailed": "Фоновая команда завершилась с ошибкой",
+ "chat.exchange.commandStopped": "Фоновая команда остановлена",
+ "chat.activityGroup.read": "{count} чтение",
+ "chat.activityGroup.reads": "{count} чтений",
+ "chat.activityGroup.search": "{count} поиск",
+ "chat.activityGroup.searches": "{count} поисков",
+ "chat.activityGroup.webCall": "{count} запрос в интернет",
+ "chat.activityGroup.webCalls": "{count} запросов в интернет",
+ "chat.activityGroup.skill": "{count} навык",
+ "chat.activityGroup.skills": "{count} навыков",
+ "chat.activityGroup.failed": "{count} с ошибкой"
+}
